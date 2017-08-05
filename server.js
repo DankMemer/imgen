@@ -3,8 +3,7 @@ const app = express()
 const hb = require('handlebars')
 const fs = require('fs')
 
-const source = hb.compile(fs.readFileSync('./website/index.html').toString())
-app.use(express.static('website'))
+const source = hb.compile(fs.readFileSync('./index.html').toString())
 
 const endpoints = {}
 const stats = {
@@ -59,12 +58,7 @@ app.get('/', (req, res) => {
 	res.status(200).send(source(data))
 })
 
-app.get('/favicon.ico', (req, res) => {
-	res.sendFile(`${__dirname}/favicon.ico`)
-})
-
 app.listen('80', console.log('Server ready.'))
-
 
 function formatTime(time) {
 	let days = Math.floor(time % 31536000 / 86400),
