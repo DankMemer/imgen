@@ -51,9 +51,7 @@ app.get('/', (req, res) => {
 		'uptime': formatTime(process.uptime()),
 		'ram': (process.memoryUsage().rss / 1024 / 1024).toFixed(2),
 		'requests': stats.requests,
-		'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>'),
-		'guilds': client.guilds.size,
-		'users': client.users.size
+		'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>')
 	}
 	res.status(200).send(source(data))
 })
