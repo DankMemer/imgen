@@ -10,8 +10,6 @@ const stats = {
 	requests: 0,
 	cmds: {}
 }
-setInterval(function () { dogapi.metric.send('api.requests', stats.requests) }, 2000)
-
 
 fs.readdir('./assets/', (err, files) => {
 	files.forEach(file => {
