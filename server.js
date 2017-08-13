@@ -10,6 +10,8 @@ const stats = {
 	requests: 0,
 	cmds: {}
 }
+setInterval(function () { dogapi.metric.send('api.requests', stats.requests) }, 2000)
+
 
 fs.readdir('./assets/', (err, files) => {
 	files.forEach(file => {
@@ -23,10 +25,10 @@ fs.readdir('./assets/', (err, files) => {
 	})
 })
 
-app.get('/api/*', async(req, res) => {
+app.get('/api/*', async (req, res) => {
 	stats.requests++
 
-		let keys = require('./keys.json')
+	let keys = require('./keys.json')
 	delete require.cache[require.resolve('./keys.json')]
 
 	if (!req.headers['api-key'] || !keys.includes(req.headers['api-key']))
@@ -37,10 +39,10 @@ app.get('/api/*', async(req, res) => {
 		return res.status(404).send('<h1>404 - Not Found</h1><br>Endpoint not found.')
 
 	stats.cmds[endpoint]++
-		const data = await endpoints[endpoint](req.headers['data-src'])
-			.catch(err => {
-				return res.status(400).send(err.message)
-			})
+	const data = await endpoints[endpoint](req.headers['data-src'])
+		.catch(err => {
+			return res.status(400).send(err.message)
+		})
 
 	res.status(200).send(data)
 
@@ -51,12 +53,19 @@ app.get('/', (req, res) => {
 		'uptime': formatTime(process.uptime()),
 		'ram': (process.memoryUsage().rss / 1024 / 1024).toFixed(2),
 		'requests': stats.requests,
-		'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>')
+		'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>'),
+		'guilds': client.guilds.size,
+		'users': client.users.size
 	}
 	res.status(200).send(source(data))
 })
 
+app.get('/favicon.ico', (req, res) => {
+	res.sendFile(`${__dirname}/favicon.ico`)
+})
+
 app.listen('80', console.log('Server ready.'))
+
 
 function formatTime(time) {
 	let days = Math.floor(time % 31536000 / 86400),

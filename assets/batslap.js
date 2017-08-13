@@ -14,7 +14,7 @@ exports.run = (URL) => {
 			Jimp.read(URL[0]),
 			Jimp.read(URL[1])
 		]).catch(reject)
-		const bat = await Jimp.read('./resources/batman/batman.jpg').catch(err => {
+		const bat = await Jimp.read('./resources/batslap/batman.jpg').catch(err => {
 			reject(err)
 		})
 
