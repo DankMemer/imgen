@@ -1,6 +1,6 @@
 const Jimp = require('jimp')
 
-exports.run = (URL) => {
+exports.run = async (URL) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			URL = JSON.parse(URL)
@@ -23,7 +23,7 @@ exports.run = (URL) => {
 		bat.resize(670, 400)
 		bat.composite(avatar, 390, 215)
 		bat.composite(author, 240, 75)
-		bat.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
+		bat.getBuffer(Jimp.MIME_PNG, async (err, buffer) => {
 			if (err)
 				return reject(err)
 			resolve(buffer)

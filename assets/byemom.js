@@ -1,6 +1,6 @@
 const Jimp = require('jimp')
 
-exports.run = (URL) => {
+exports.run = async (URL) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 			URL = JSON.parse(URL)
@@ -21,13 +21,13 @@ exports.run = (URL) => {
 		mom.composite(avatar, 530, 15)
 		mom.composite(avatar2, 70, 340)
 
-		Jimp.loadFont(Jimp.FONT_SANS_16_BLACK).then(function (font) {
+		Jimp.loadFont(Jimp.FONT_SANS_16_BLACK).then(function async (font) {
 			blank.resize(275, 200)
-			let search = blank.print(font, 0, 0, text, 275)
+			let search = await blank.print(font, 0, 0, text, 275)
 			search.rotate(337)
 
 			mom.composite(search, 380, 435)
-			mom.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
+			mom.getBuffer(Jimp.MIME_PNG, async (err, buffer) => {
 				if (err)
 					return reject(err)
 				resolve(buffer)
