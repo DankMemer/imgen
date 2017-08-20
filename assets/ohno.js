@@ -15,8 +15,8 @@ exports.run = (URL) => {
 		}
 
 		const text = args
-		const mom = await Jimp.read('./assets/imgen/ohno.png')
-		const blank = await Jimp.read('./assets/imgen/Empty.png')
+		const mom = await Jimp.read('./resources/ohno/ohno.png')
+		const blank = await Jimp.read('./resources/ohno/Empty.png')
 
 		mom.resize(500, 500)
 		Jimp.loadFont(fontSetting).then(function (font) {
