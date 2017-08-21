@@ -17,8 +17,8 @@ fs.readdir('./assets/', (err, files) => {
 		try {
 			endpoints[file] = require(`./assets/${file}`).run
 			stats.cmds[file] = 0
-		} catch (e) {
-			console.warn(`[ERR] Failed to load resource '${file}'`)
+		} catch (err) {
+			console.warn(`[ERR] Failed to load resource '${file}': ${err.stack}`)
 		}
 	})
 })
@@ -54,10 +54,6 @@ app.get('/', (req, res) => {
 		'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>')
 	}
 	res.status(200).send(source(data))
-})
-
-app.get('/favicon.ico', (req, res) => {
-	res.sendFile(`${__dirname}/favicon.ico`)
 })
 
 app.listen('80', console.log('Server ready.'))
