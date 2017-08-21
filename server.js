@@ -39,7 +39,7 @@ app.get('/api/*', async (req, res) => {
 	stats.cmds[endpoint]++
 	const data = await endpoints[endpoint](req.headers['data-src'])
 		.catch(err => {
-			return res.status(400).send(err.message)
+			return res.status(400).send(err.stack)
 		})
 
 	res.status(200).send(data)
