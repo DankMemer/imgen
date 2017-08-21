@@ -12,7 +12,7 @@ exports.run = (URL) => {
 		jail.resize(350, 350)
 		avatar.greyscale()
 		avatar.composite(jail, 0, 0)
-		avatar.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
+		avatar.getBuffer(Jimp.MIME_PNG, async (err, buffer) => {
 			if (err)
 				return reject(err)
 			resolve(buffer)

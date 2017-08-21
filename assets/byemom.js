@@ -1,11 +1,11 @@
 const Jimp = require('jimp')
 
-exports.run = async (URL) => {
-	return new Promise(async (resolve, reject) => {
+exports.run = async(URL) => {
+	return new Promise(async(resolve, reject) => {
 		try {
 			URL = JSON.parse(URL)
-		} catch (e) {
-			return reject('Unable to parse data-src.')
+		} catch (err) {
+			return reject('Unable to parse data-src: ' + err.message)
 		}
 		if (URL.length < 2)
 			return reject('data-src must be an array of 3 strings')
@@ -21,17 +21,16 @@ exports.run = async (URL) => {
 		mom.composite(avatar, 530, 15)
 		mom.composite(avatar2, 70, 340)
 
-		Jimp.loadFont(Jimp.FONT_SANS_16_BLACK).then(function async (font) {
-			blank.resize(275, 200)
-			let search = await blank.print(font, 0, 0, text, 275)
-			search.rotate(337)
+		let font = await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK)
+		blank.resize(275, 200)
+		let search = await blank.print(font, 0, 0, text, 275)
+		search.rotate(337)
 
-			mom.composite(search, 380, 435)
-			mom.getBuffer(Jimp.MIME_PNG, async (err, buffer) => {
-				if (err)
-					return reject(err)
-				resolve(buffer)
-			})
+		mom.composite(search, 380, 435)
+		mom.getBuffer(Jimp.MIME_PNG, async(err, buffer) => {
+			if (err)
+				{return console.error(err.stack)}
+			resolve(buffer)
 		})
 
 	})

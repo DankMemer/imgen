@@ -4,7 +4,7 @@ const GIFEncoder = require('gifencoder')
 
 const frameCount = 8
 
-exports.run = (URL) => {
+exports.run = async (URL) => {
 	return new Promise(async (resolve, reject) => {
 		const avatar = await Jimp.read(URL).catch(reject);
 		const horn = await Jimp.read('./resources/dank/horn.png').catch(reject)

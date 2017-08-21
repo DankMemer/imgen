@@ -6,7 +6,7 @@ exports.run = (URL) => {
 			reject(err)
 		})
 		avatar.pixelate(12)
-		avatar.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
+		avatar.getBuffer(Jimp.MIME_PNG, async (err, buffer) => {
 			if (err)
 				return reject(err)
 			resolve(buffer)

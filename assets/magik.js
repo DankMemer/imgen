@@ -11,8 +11,9 @@ exports.run = (dataURL) => {
 		if (data.status !== 200)
 			return reject(data.status)
 		gm(data.body)
-			.implode(-8)
-			.swirl(`${getRandomInt(0, 1) === 1 ? '+' : '-'}${getRandomInt(40, 80)}`)
+			.out('-liquid-rescale', '50%', '-liquid-rescale', '150%')
+			//.implode(-8)
+			//.swirl(`${getRandomInt(0, 1) === 1 ? '+' : '-'}${getRandomInt(40, 80)}`)
 			.toBuffer('PNG', (err, buffer) => {
 				if (err)
 					return reject(err)

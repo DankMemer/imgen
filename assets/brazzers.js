@@ -10,8 +10,9 @@ exports.run = async (URL) => {
 		banner.resize(Jimp.AUTO, 100)
 		avatar.composite(banner, 150, 275)
 		avatar.getBuffer(Jimp.MIME_PNG, async (err, buffer) => {
-			if (err)
-				return reject(err)
+			if (err) {
+				return console.error(err.stack)
+			}
 			resolve(buffer)
 		})
 	})
