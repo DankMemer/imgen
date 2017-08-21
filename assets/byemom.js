@@ -1,6 +1,6 @@
 const Jimp = require('jimp')
 
-exports.run = async(URL) => {
+exports.run = (URL) => {
 	return new Promise(async(resolve, reject) => {
 		try {
 			URL = JSON.parse(URL)
