@@ -11,7 +11,7 @@ const stats = {
 	cmds: {}
 }
 
-fs.readdir('./assets/', (err, files) => {
+fs.readdir('./assets/', async (err, files) => {
 	files.forEach(file => {
 		file = file.replace('.js', '')
 		try {
