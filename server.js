@@ -18,7 +18,7 @@ fs.readdir('./assets/', async (err, files) => {
 			endpoints[file] = require(`./assets/${file}`).run
 			stats.cmds[file] = 0
 		} catch (err) {
-			console.warn(`[ERR] Failed to load resource '${file}': ${err.stack}`)
+			console.warn(`There was an error with '${file}': ${err.message} | ${err.stack}`)
 		}
 	})
 })
@@ -30,17 +30,19 @@ app.get('/api/*', async (req, res) => {
 	delete require.cache[require.resolve('./keys.json')]
 
 	if (!req.headers['api-key'] || !keys.includes(req.headers['api-key']))
-		return res.status(401).send('<h1>401 - Unauthorized</h1><br>You are not authorized to access this endpoint.')
+		return res.status(401).send('<h1>401 - Unauthorized</h1><br>You are not authorized to access this endpoint, dummy.')
 
 	const endpoint = req.originalUrl.slice(req.originalUrl.lastIndexOf('/') + 1)
 	if (!endpoints[endpoint])
 		return res.status(404).send('<h1>404 - Not Found</h1><br>Endpoint not found.')
 
 	stats.cmds[endpoint]++
-	const data = await endpoints[endpoint](req.headers['data-src'])
-		.catch(err => {
-			return res.status(400).send(err.stack)
-		})
+	try {
+		const data = await endpoints[endpoint](req.headers['data-src'])
+	} catch (err) {
+		console.warn(`There was an error: ${err.message} | ${err.stack}`)
+		return res.status(400).send(`${err.message} | ${err.stack}`)
+	}
 
 	res.status(200).send(data)
 

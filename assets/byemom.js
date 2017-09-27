@@ -26,7 +26,7 @@ exports.run = (URL) => {
 		let search = await blank.print(font, 0, 0, text, 275)
 		search.rotate(337)
 
-		mom.composite(search, 380, 435)
+		mom.composite(search, 385, 440)
 		mom.getBuffer(Jimp.MIME_PNG, async(err, buffer) => {
 			if (err)
 				{return console.error(err.stack)}
