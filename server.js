@@ -39,12 +39,11 @@ app.get('/api/*', async (req, res) => {
 	stats.cmds[endpoint]++
 	try {
 		const data = await endpoints[endpoint](req.headers['data-src'])
+		res.status(200).send(data)
 	} catch (err) {
 		console.warn(`There was an error: ${err.message} | ${err.stack}`)
 		return res.status(400).send(`${err.message} | ${err.stack}`)
 	}
-
-	res.status(200).send(data)
 
 })
 
