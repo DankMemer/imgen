@@ -1,10 +1,13 @@
+const cluster = require('cluster');
 const express = require('express')
 const app = express()
 const hb = require('handlebars')
 const fs = require('fs')
 
-const source = hb.compile(fs.readFileSync('./index.html').toString())
+const cpusLength = require('os').cpus().length;
 
+const source = hb.compile(fs.readFileSync('./index.html').toString())
+const port = 80;
 const endpoints = {}
 const stats = {
 	requests: 0,
@@ -57,8 +60,20 @@ app.get('/', (req, res) => {
 	res.status(200).send(source(data))
 })
 
-app.listen('80', console.log('Server ready.'))
+const launchServer = function() => {
+    app.listen(port);
+    console.log('Server started on port: ' + port);
+}
 
+if (cluster.master) {
+    const workerNumber = cpusLength;
+    console.log('Starting workers ' + workerNumber);
+    for (let i = 0; i < workerNumber; i++) {
+        cluster.fork();
+    }
+} else {
+    launchServer();
+}
 
 function formatTime(time) {
 	let days = Math.floor(time % 31536000 / 86400),
