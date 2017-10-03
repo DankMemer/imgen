@@ -1,3 +1,4 @@
+import {getBuffer} from 'util.js'
 const Jimp = require('jimp')
 
 exports.run = (URL) => {
@@ -12,9 +13,6 @@ exports.run = (URL) => {
     jail.resize(350, 350)
     avatar.greyscale()
     avatar.composite(jail, 0, 0)
-    avatar.getBuffer(Jimp.MIME_PNG, async (err, buffer) => {
-      if (err) { return reject(err) }
-      resolve(buffer)
-    })
+    getBuffer(avatar, resolve, reject)
   })
 }

@@ -1,3 +1,4 @@
+import {getBuffer} from 'util.js'
 const Jimp = require('jimp')
 
 exports.run = (URL) => {
@@ -22,9 +23,6 @@ exports.run = (URL) => {
     spank.resize(500, 500)
     spank.composite(avatar, 350, 220)
     spank.composite(author, 225, 5)
-    spank.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
-      if (err) { return reject(err) }
-      resolve(buffer)
-    })
+    getBuffer(spank, resolve, reject)
   })
 }

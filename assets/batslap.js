@@ -1,12 +1,9 @@
+import {tryParse} from 'utils.js'
 const Jimp = require('jimp')
 
 exports.run = async (URL) => {
   return new Promise(async (resolve, reject) => {
-    try {
-      URL = JSON.parse(URL)
-    } catch (err) {
-      return Promise.reject(new Error('Unable to parse data-src: ' + err.message))
-    }
+    tryParse(URL)
     if (URL.length < 2) { return Promise.reject(new Error('data-src must be an array of 2 strings (URLs)')) }
 
     const [avatar, author] = await Promise.all([

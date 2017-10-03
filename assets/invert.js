@@ -1,3 +1,4 @@
+import {getBuffer} from 'util.js'
 const Jimp = require('jimp')
 
 exports.run = (URL) => {
@@ -6,9 +7,6 @@ exports.run = (URL) => {
       console.error(err.stack)
     })
     avatar.invert()
-    avatar.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
-      if (err) { return reject(err) }
-      resolve(buffer)
-    })
+    getBuffer(avatar, resolve, reject)
   })
 }

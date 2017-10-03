@@ -1,11 +1,8 @@
+import {tryParse} from 'utils.js'
 const Jimp = require('jimp')
 exports.run = (URL) => {
   return new Promise(async(resolve, reject) => {
-    try {
-      URL = JSON.parse(URL)
-    } catch (err) {
-      return Promise.reject(new Error('Unable to parse data-src: ' + err.stack))
-    }
+    tryParse(URL)
     let args = URL[0]
     let fontSetting
     if (args.join(' ').length < 38) {
