@@ -1,4 +1,4 @@
-import {tryParse} from 'utils.js'
+const tryParse = require('./utils.js').tryParse
 const Jimp = require('jimp')
 
 exports.run = (URL) => {
