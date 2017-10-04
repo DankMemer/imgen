@@ -1,4 +1,4 @@
-import {getBuffer} from 'util.js'
+const getBuffer = require('./utils.js').getBuffer
 const Jimp = require('jimp')
 
 exports.run = (URL) => {

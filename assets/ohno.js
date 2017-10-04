@@ -1,4 +1,4 @@
-import {tryParse} from 'utils.js'
+const tryParse = ('./utils.js').tryParse
 const Jimp = require('jimp')
 exports.run = (URL) => {
   return new Promise(async(resolve, reject) => {

@@ -14,7 +14,7 @@ const stats = {
   cmds: {}
 }
 
-fs.readdir('./assets/', async (files) => {
+fs.readdir(`${__dirname}/assets/`, async (err, files) => {
   files.forEach(file => {
     file = file.replace('.js', '')
     try {
@@ -57,20 +57,24 @@ app.get('/', (req, res) => {
   res.status(200).send(source(data))
 })
 
-const launchServer = function () {
+function launchServer () {
   app.listen(port)
   console.log('Server started on port: ' + port)
 }
 
-if (cluster.master) {
+if (cluster.isMaster) {
   const workerNumber = cpusLength
-  console.log('Starting workers ' + workerNumber)
+  console.log(`Starting ${workerNumber} workers`)
   for (let i = 0; i < workerNumber; i++) {
     cluster.fork()
   }
 } else {
   launchServer()
 }
+
+cluster.on('online', (worker) => {
+  console.log(`Worker ${worker.id} started`)
+});
 
 function formatTime (time) {
   let days = Math.floor(time % 31536000 / 86400)

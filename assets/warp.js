@@ -1,4 +1,3 @@
-
 const sf = require('snekfetch')
 const gm = require('gm').subClass({
   imageMagick: true
