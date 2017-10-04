@@ -3,8 +3,8 @@ const Jimp = require('jimp')
 
 exports.run = (URL) => {
   return new Promise(async(resolve, reject) => {
-    tryParse(URL)
-    if (URL.length < 2) { return Promise.reject(new Error('data-src must be an array of 3 strings')) }
+    URL = await tryParse(URL)
+    if (URL.length < 2) { return Promise.reject(new Error('data-src must be an array of 2 strings')) }
 
     const avatar = await Jimp.read(URL[0])
     const avatar2 = avatar.clone()

@@ -1,15 +1,16 @@
-const tryParse = require ('./utils.js').tryParse
+const tryParse = require('./utils.js').tryParse
 const Jimp = require('jimp')
 
 exports.run = async (URL) => {
   return new Promise(async (resolve, reject) => {
-    tryParse(URL)
+    URL = await tryParse(URL)
     if (URL.length < 2) { return Promise.reject(new Error('data-src must be an array of 2 strings (URLs)')) }
 
     const [avatar, author] = await Promise.all([
       Jimp.read(URL[0]),
       Jimp.read(URL[1])
     ]).catch(reject)
+
     const bat = await Jimp.read('./resources/batslap/batman.jpg').catch(err => {
       console.error(err.stack)
     })

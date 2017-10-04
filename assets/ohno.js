@@ -1,8 +1,8 @@
-const tryParse = ('./utils.js').tryParse
+const tryParse = require('./utils.js').tryParse
 const Jimp = require('jimp')
 exports.run = (URL) => {
   return new Promise(async(resolve, reject) => {
-    tryParse(URL)
+    URL = await tryParse(URL)
     let args = URL[0]
     let fontSetting
     if (args.join(' ').length < 38) {
