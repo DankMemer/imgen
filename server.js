@@ -27,7 +27,7 @@ fs.readdir(`${__dirname}/assets/`, async (err, files) => {
 })
 
 app.get('/api/*', async (req, res) => {
-  stats.requests++
+  process.send('request')
 
   let keys = require('./keys.json')
   delete require.cache[require.resolve('./keys.json')]
@@ -37,7 +37,7 @@ app.get('/api/*', async (req, res) => {
   const endpoint = req.originalUrl.slice(req.originalUrl.lastIndexOf('/') + 1)
   if (!endpoints[endpoint]) { return res.status(404).send('<h1>404 - Not Found</h1><br>Endpoint not found.') }
 
-  stats.cmds[endpoint]++
+  process.send({endpoint: endpoint});
   try {
     const data = await endpoints[endpoint](req.headers['data-src'])
     res.status(200).send(data)
@@ -48,27 +48,51 @@ app.get('/api/*', async (req, res) => {
 })
 
 app.get('/', (req, res) => {
-  let data = {
-    'uptime': formatTime(process.uptime()),
-    'ram': (process.memoryUsage().rss / 1024 / 1024).toFixed(2),
-    'requests': stats.requests,
-    'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>')
-  }
-  res.status(200).send(source(data))
+  process.send({dataRequest: cluster.worker.id});
+  process.once('message', (message) => {
+    if(message.data) {
+      res.status(200).send(source(message.data))
+    }
+  })
 })
 
 function launchServer () {
   app.listen(port)
-  console.log('Server started on port: ' + port)
+  console.log(`Server started on port: ${port} pid: ${process.pid}`)
 }
 
 if (cluster.isMaster) {
-  const workerNumber = cpusLength
+  const workerNumber = cpusLength - 1
+  let memoryUsageCounter = 0
   console.log(`Starting ${workerNumber} workers`)
   for (let i = 0; i < workerNumber; i++) {
     cluster.fork()
   }
+ async function masterHandleMessage(message) {
+  if(message === 'request')
+  {
+    stats.requests++
+  }
+  else if(message.endpoint) {
+    stats.cmds[message.endpoint]++
+  }
+  else if(message.dataRequest)
+  {
+    let data = {
+      'uptime': formatTime(process.uptime()),
+      'ram': (process.memoryUsage().rss / 1024 / 1024).toFixed(2),
+      'requests': stats.requests,
+      'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>')
+    }
+    cluster.workers[message.dataRequest].send({data: data})
+  }
+ }
+ for(const id in cluster.workers) {
+   cluster.workers[id].on('message', masterHandleMessage)
+ }
+
 } else {
+  //worker
   launchServer()
 }
 
