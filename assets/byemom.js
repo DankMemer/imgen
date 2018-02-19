@@ -22,9 +22,9 @@ exports.run = (URL) => {
       let font = await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK)
       blank.resize(275, 200)
       let search = await blank.print(font, 0, 0, text, 275)
-      search.rotate(337)
+      search.rotate(335)
   
-      mom.composite(search, 385, 440)
+      mom.composite(search, 390, 460)
       mom.getBuffer(Jimp.MIME_PNG, async(err, buffer) => {
         if (err) { return console.error(err.stack) }
         resolve(buffer)
