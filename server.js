@@ -1,12 +1,12 @@
 const cluster = require('cluster')
 const express = require('express')
 const app = express()
-const hb = require('handlebars')
 const fs = require('fs')
 
 const cpusLength = require('os').cpus().length
 
-const source = hb.compile(fs.readFileSync('./index.html').toString())
+app.use('/', express.static('./static'))
+
 const port = 80
 const endpoints = {}
 const stats = {
@@ -37,7 +37,7 @@ app.get('/api/*', async (req, res) => {
   const endpoint = req.originalUrl.slice(req.originalUrl.lastIndexOf('/') + 1)
   if (!endpoints[endpoint]) { return res.status(404).send('<h1>404 - Not Found</h1><br>Endpoint not found.') }
 
-  process.send({endpoint: endpoint});
+  process.send({endpoint: endpoint})
   try {
     const data = await endpoints[endpoint](req.headers['data-src'])
     res.status(200).send(data)
@@ -45,15 +45,6 @@ app.get('/api/*', async (req, res) => {
     console.warn(`There was an error: ${err.message} | ${err.stack}`)
     return res.status(400).send(`${err.message} | ${err.stack}`)
   }
-})
-
-app.get('/', (req, res) => {
-  process.send({dataRequest: cluster.worker.id});
-  process.once('message', (message) => {
-    if(message.data) {
-      res.status(200).send(source(message.data))
-    }
-  })
 })
 
 function launchServer () {
