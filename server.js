@@ -26,6 +26,8 @@ fs.readdir(`${__dirname}/assets/`, async (err, files) => {
   })
 })
 
+app.use(express.static('images'))
+
 app.get('/api/*', async (req, res) => {
   process.send('request')
 
