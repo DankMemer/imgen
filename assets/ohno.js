@@ -1,9 +1,7 @@
-const tryParse = require('./utils.js').tryParse
 const Jimp = require('jimp')
 exports.run = (URL) => {
-  return new Promise(async(resolve, reject) => {
-    URL = await tryParse(URL)
-    let args = URL[0]
+  return new Promise(async (resolve, reject) => {
+    let args = URL
     let fontSetting
     if (args.join(' ').length < 38) {
       fontSetting = Jimp.FONT_SANS_32_BLACK
@@ -21,9 +19,9 @@ exports.run = (URL) => {
       let font = await Jimp.loadFont(fontSetting)
       blank.resize(250, 250)
       const search = blank.print(font, 0, 0, text, 260)
-  
+
       mom.composite(search, 262, 8)
-      mom.getBuffer(Jimp.MIME_PNG, async(err, buffer) => {
+      mom.getBuffer(Jimp.MIME_PNG, async (err, buffer) => {
         if (err) { return reject(err.stack) }
         resolve(buffer)
       })

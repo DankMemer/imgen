@@ -1,22 +1,21 @@
-const Jimp = require('jimp')
+const { MIME_PNG } = require('jimp')
 
-async function getBuffer (avatar, resolve, reject) {
-  avatar.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
+function getBuffer (avatar, resolve, reject) {
+  avatar.getBuffer(MIME_PNG, (err, buffer) => {
     if (err) { return reject(err) }
     resolve(buffer)
   })
 }
 
-async function tryParse (URL) {
+function tryParse (URL) {
   try {
-    URL = JSON.parse(URL)
+    return JSON.parse(URL)
   } catch (err) {
-    return Promise.reject(new Error('Unable to parse data-src: ' + err.message))
+    return null
   }
-  return URL;
 }
 
 module.exports = {
   tryParse: tryParse,
   getBuffer: getBuffer
-};
+}

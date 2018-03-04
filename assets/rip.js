@@ -12,7 +12,7 @@ exports.run = async (URL) => {
       banner.composite(avatar, 175, 385)
       banner.getBuffer(Jimp.MIME_PNG, async (err, buffer) => {
         if (err) {
-          return console.error(err.stack)
+          return reject(err)
         }
         resolve(buffer)
       })

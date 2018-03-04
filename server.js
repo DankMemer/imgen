@@ -15,13 +15,17 @@ const stats = {
 }
 
 fs.readdir(`${__dirname}/assets/`, async (err, files) => {
+  if (err) {
+    return console.error(err)
+  }
+
   files.forEach(file => {
     file = file.replace('.js', '')
     try {
       endpoints[file] = require(`./assets/${file}`).run
       stats.cmds[file] = 0
-    } catch (err) {
-      console.warn(`There was an error with '${file}': ${err.message} | ${err.stack}`)
+    } catch (e) {
+      console.warn(`There was an error with '${file}': ${e.message} | ${e.stack}`)
     }
   })
 })
@@ -31,25 +35,32 @@ app.use(express.static('images'))
 app.get('/api/*', async (req, res) => {
   process.send('request')
 
-  let keys = require('./keys.json')
+  const endsWithSlash = req.originalUrl[req.originalUrl.length - 1] === '/'
+  const trimmedUrl = endsWithSlash ? req.originalUrl.slice(0, -1) : req.originalUrl
+  const endpoint = trimmedUrl.slice(trimmedUrl.lastIndexOf('/') + 1)
+
+  if (!endpoints[endpoint]) {
+    return res.send({ status: 404, error: `Invalid Endpoint: The requested endpoint "${endpoint}" was not found` })
+  }
+
+  const keys = require('./keys.json')
   delete require.cache[require.resolve('./keys.json')]
 
   if (!req.headers['api-key'] || !keys.includes(req.headers['api-key'])) {
     return res.send({ status: 401, error: 'Unauthorized: You are not authorized to access this endpoint' })
   }
 
-  const endpoint = req.originalUrl.slice(req.originalUrl.lastIndexOf('/') + 1)
-  if (!endpoints[endpoint]) {
-    return res.send({ status: 404, error: 'Invalid Endpoint: The requested endpoint was not found' })
+  if (!req.headers['data-src']) {
+    return res.send({ status: 400, error: 'Missing data-src: The required header "data-src" is missing' })
   }
 
-  process.send({endpoint: endpoint})
+  process.send({ endpoint: endpoint })
   try {
     const data = await endpoints[endpoint](req.headers['data-src'])
-    res.send(data)
+    res.send({ status: 200, data }) // Access image buffer with data.data, status is always present. Check for 200
   } catch (err) {
-    console.warn(`There was an error: ${err.message} | ${err.stack}`)
-    return res.send({ status: 500, error: `${err.message}: ${err.stack}` })
+    console.error(err)
+    return res.send({ status: 500, error: `${err.message}` })
   }
 })
 
@@ -65,37 +76,32 @@ if (cluster.isMaster) {
   for (let i = 0; i < workerNumber; i++) {
     cluster.fork()
   }
- async function masterHandleMessage(message) {
-  if(message === 'request')
-  {
-    stats.requests++
-  }
-  else if(message.endpoint) {
-    stats.cmds[message.endpoint]++
-  }
-  else if(message.dataRequest)
-  {
-    let data = {
-      'uptime': formatTime(process.uptime()),
-      'ram': (process.memoryUsage().rss / 1024 / 1024).toFixed(2),
-      'requests': stats.requests,
-      'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>')
+  async function masterHandleMessage (message) {
+    if (message === 'request') {
+      stats.requests++
+    } else if (message.endpoint) {
+      stats.cmds[message.endpoint]++
+    } else if (message.dataRequest) {
+      let data = {
+        'uptime': formatTime(process.uptime()),
+        'ram': (process.memoryUsage().rss / 1024 / 1024).toFixed(2),
+        'requests': stats.requests,
+        'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>')
+      }
+      cluster.workers[message.dataRequest].send({data: data})
     }
-    cluster.workers[message.dataRequest].send({data: data})
   }
- }
- for(const id in cluster.workers) {
-   cluster.workers[id].on('message', masterHandleMessage)
- }
-
+  for (const id in cluster.workers) {
+    cluster.workers[id].on('message', masterHandleMessage)
+  }
 } else {
-  //worker
+  // worker
   launchServer()
 }
 
 cluster.on('online', (worker) => {
   console.log(`Worker ${worker.id} started`)
-});
+})
 
 function formatTime (time) {
   let days = Math.floor(time % 31536000 / 86400)

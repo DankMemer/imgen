@@ -5,12 +5,12 @@ const frameCount = 8
 
 exports.run = async (URL) => {
   return new Promise(async (resolve, reject) => {
-    const avatarPromise =  Jimp.read(URL)
-    const hornPromise =  Jimp.read('./resources/dank/horn.png')
-    const overlayPromise =  Jimp.read('./resources/dank/red.png')
-    const hitPromise =  Jimp.read('./resources/dank/hit.png')
-    const gunPromise =  Jimp.read('./resources/dank/gun.png')
-    const fazePromise =  Jimp.read('./resources/dank/faze.png')
+    const avatarPromise = Jimp.read(URL)
+    const hornPromise = Jimp.read('./resources/dank/horn.png')
+    const overlayPromise = Jimp.read('./resources/dank/red.png')
+    const hitPromise = Jimp.read('./resources/dank/hit.png')
+    const gunPromise = Jimp.read('./resources/dank/gun.png')
+    const fazePromise = Jimp.read('./resources/dank/faze.png')
 
     Promise.all([avatarPromise, hornPromise, overlayPromise, hitPromise, gunPromise, fazePromise]).then((promises) => {
       const [avatar, horn, overlay, hit, gun, faze] = promises
@@ -27,17 +27,17 @@ exports.run = async (URL) => {
       hit.resize(40, 40)
       gun.resize(250, Jimp.AUTO)
       faze.resize(Jimp.AUTO, 40)
-  
+
       let buffers = []
       let frames = []
       const encoder = new GIFEncoder(256, 256)
       let stream = encoder.createReadStream()
-  
+
       stream.on('data', buffer => buffers.push(buffer))
       stream.on('end', () => resolve(Buffer.concat(buffers)))
-  
+
       let base = new Jimp(256, 256)
-  
+
       let temp, x, y
       for (let i = 0; i < frameCount; i++) {
         temp = base.clone()

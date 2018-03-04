@@ -3,8 +3,8 @@ const Jimp = require('jimp')
 
 exports.run = async (URL) => {
   return new Promise(async (resolve, reject) => {
-    URL = await tryParse(URL)
-    if (URL.length < 2) { return Promise.reject(new Error('data-src must be an array of 2 strings (URLs)')) }
+    URL = tryParse(URL)
+    if (!URL || URL.length < 2) { return reject(new Error('data-src must be an array of 2 strings (URLs)')) }
 
     const [avatar, author] = await Promise.all([
       Jimp.read(URL[0]),
