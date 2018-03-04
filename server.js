@@ -34,18 +34,22 @@ app.get('/api/*', async (req, res) => {
   let keys = require('./keys.json')
   delete require.cache[require.resolve('./keys.json')]
 
-  if (!req.headers['api-key'] || !keys.includes(req.headers['api-key'])) { return res.status(401).send('<h1>401 - Unauthorized</h1><br>You are not authorized to access this endpoint, dummy.') }
+  if (!req.headers['api-key'] || !keys.includes(req.headers['api-key'])) {
+    return res.send({ status: 401, error: 'Unauthorized: You are not authorized to access this endpoint' })
+  }
 
   const endpoint = req.originalUrl.slice(req.originalUrl.lastIndexOf('/') + 1)
-  if (!endpoints[endpoint]) { return res.status(404).send('<h1>404 - Not Found</h1><br>Endpoint not found.') }
+  if (!endpoints[endpoint]) {
+    return res.send({ status: 404, error: 'Invalid Endpoint: The requested endpoint was not found' })
+  }
 
   process.send({endpoint: endpoint})
   try {
     const data = await endpoints[endpoint](req.headers['data-src'])
-    res.status(200).send(data)
+    res.send(data)
   } catch (err) {
     console.warn(`There was an error: ${err.message} | ${err.stack}`)
-    return res.status(400).send(`${err.message} | ${err.stack}`)
+    return res.send({ status: 500, error: `${err.message}: ${err.stack}` })
   }
 })
 
