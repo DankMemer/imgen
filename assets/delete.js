@@ -3,8 +3,6 @@ const Jimp = require('jimp')
 
 exports.run = async (URL) => {
   return new Promise(async (resolve, reject) => {
-    console.log(URL)
-
     const avatarPromise = Jimp.read(URL)
     const bannerPromise = Jimp.read('./resources/delete/delete.png')
 
