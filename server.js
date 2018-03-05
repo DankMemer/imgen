@@ -54,7 +54,7 @@ app.get('/api/*', async (req, res) => {
     return res.send({ status: 400, error: 'Missing data-src: The required header "data-src" is missing' })
   }
 
-  process.send({ endpoint: endpoint })
+  process.send({ endpoint })
   try {
     const file = await endpoints[endpoint](req.headers['data-src'])
     res.send({ status: 200, file }) // Status is always present. Check for 200
