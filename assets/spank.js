@@ -6,13 +6,11 @@ exports.run = (URL) => {
     URL = tryParse(URL)
     if (!URL || URL.length < 2) { return reject(new Error('data-src must be an array of 2 strings (URLs)')) }
 
-    const [avatar, author] = await Promise.all([
+    const [avatar, author, spank] = await Promise.all([
       Jimp.read(URL[0]),
-      Jimp.read(URL[1])
+      Jimp.read(URL[1]),
+      Jimp.read('./resources/spank/spank.jpg')
     ]).catch(reject)
-    const spank = await Jimp.read('./resources/spank/spank.jpg').catch(err => {
-      reject(err)
-    })
 
     avatar.resize(120, 120)
     author.resize(140, 140)

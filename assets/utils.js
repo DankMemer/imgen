@@ -1,7 +1,7 @@
 const { MIME_PNG } = require('jimp')
 
-function getBuffer (avatar, resolve, reject) {
-  avatar.getBuffer(MIME_PNG, (err, buffer) => {
+function getBuffer (image, resolve, reject) {
+  image.getBuffer(MIME_PNG, (err, buffer) => {
     if (err) { return reject(err) }
     resolve(buffer)
   })

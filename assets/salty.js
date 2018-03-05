@@ -8,9 +8,9 @@ const options = {
 
 exports.run = (dataURL) => {
   return new Promise(async (resolve, reject) => {
-    let base = new Jimp(options.size, options.size)
-    let avatarPromise = Jimp.read(dataURL)
-    let saltPromise = Jimp.read('./resources/salty/salt.png')
+    const base = new Jimp(options.size, options.size)
+    const avatarPromise = Jimp.read(dataURL)
+    const saltPromise = Jimp.read('./resources/salty/salt.png')
 
     Promise.all([avatarPromise, saltPromise]).then((promises) => {
       const [avatar, salt] = promises

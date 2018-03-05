@@ -59,7 +59,7 @@ app.get('/api/*', async (req, res) => {
     const data = await endpoints[endpoint](req.headers['data-src'])
     res.send({ status: 200, data }) // Access image buffer with data.data, status is always present. Check for 200
   } catch (err) {
-    console.error(err)
+    console.error(`Error in endpoint '${endpoint}`, err)
     return res.send({ status: 500, error: `${err.message}` })
   }
 })
