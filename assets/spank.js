@@ -1,22 +1,16 @@
-const getBuffer = require('./utils.js').getBuffer
+const { getBuffer, tryParse } = require('./utils.js')
 const Jimp = require('jimp')
 
 exports.run = (URL) => {
   return new Promise(async (resolve, reject) => {
-    try {
-      URL = JSON.parse(URL)
-    } catch (e) {
-      return Promise.reject(new Error('Unable to parse data-src'))
-    }
-    if (URL.length < 2) { return Promise.reject(new Error('data-src must be an array of 2 strings (URLs)')) }
+    URL = tryParse(URL)
+    if (!URL || URL.length < 2) { return reject(new Error('data-src must be an array of 2 strings (URLs)')) }
 
-    const [avatar, author] = await Promise.all([
+    const [avatar, author, spank] = await Promise.all([
       Jimp.read(URL[0]),
-      Jimp.read(URL[1])
+      Jimp.read(URL[1]),
+      Jimp.read('./resources/spank/spank.jpg')
     ]).catch(reject)
-    const spank = await Jimp.read('./resources/spank/spank.jpg').catch(err => {
-      reject(err)
-    })
 
     avatar.resize(120, 120)
     author.resize(140, 140)
