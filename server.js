@@ -1,15 +1,13 @@
 const cluster = require('cluster')
 const express = require('express')
-const https = require('https')
 const app = express()
 const fs = require('fs')
 
 const cpusLength = require('os').cpus().length
-let privateKey = fs.readFileSync(__dirname + '/privkey1.pem')
-let certificate = fs.readFileSync(__dirname + '/fullchain1.pem')
 
 app.use('/', express.static('./static'))
 
+const port = 80
 const endpoints = {}
 const stats = {
   requests: 0,
@@ -67,17 +65,8 @@ app.get('/api/*', async (req, res) => {
 })
 
 function launchServer () {
-  https.createServer({
-	key: privateKey,
-	cert: certificate
-	}, app).listen(443);
-	// Redirect from http port 80 to https
-  const http = require('http');
-  http.createServer(function (req, res) {
-	res.writeHead(301, { 'Location': 'https://' + req.headers['host'] + req.url })
-	res.end()
-  }).listen(80)
-  console.log(`Server started on ports: 80 & 443  pid: ${process.pid}`)
+  app.listen(port)
+  console.log(`Server started on port: ${port} pid: ${process.pid}`)
 }
 
 if (cluster.isMaster) {
