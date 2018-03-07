@@ -3,7 +3,7 @@ const Jimp = require('jimp')
 
 exports.run = (URL) => {
   return new Promise(async (resolve, reject) => {
-    const text = URL[1].replace(/\n/g, '\r\n')
+    const text = URL.replace(/\n/g, '\r\n')
     const font = await Jimp.loadFont(Jimp.FONT_SANS_16_WHITE)
     const message = await Jimp.read('./resources/b1nzy/b1nzy.png').catch(err => reject(err))
 
