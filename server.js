@@ -67,14 +67,11 @@ app.get('/api/*', async (req, res) => {
 })
 
 function launchServer () {
- /* https.createServer({
+  https.createServer({
 	key: privateKey,
 	cert: certificate
-	}, app).listen(443);
-*/
-  const http = require('http');
-  http.createServer(app).listen(80);
-  console.log(`Server started on port 443 pid: ${process.pid}`)
+	}, app).listen(80);
+  console.log(`Server started on port 80  pid: ${process.pid}`)
 }
 
 if (cluster.isMaster) {
