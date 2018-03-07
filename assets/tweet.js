@@ -3,7 +3,7 @@ const Jimp = require('jimp')
 
 exports.run = (URL) => {
   return new Promise(async (resolve, reject) => {
-    const text = URL.replace(/\n/g, '\r\n')
+    const text = URL[1].replace(/\n/g, '\r\n')
     const fontPromise = Jimp.loadFont(Jimp.FONT_SANS_64_BLACK)
     const tweetPromise = Jimp.read('./resources/tweet/trump2.jpg')
 
