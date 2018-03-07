@@ -5,8 +5,8 @@ const app = express()
 const fs = require('fs')
 
 const cpusLength = require('os').cpus().length
-let privateKey = fs.readFileSync(__dirname + '/privkey1.pem')
-let certificate = fs.readFileSync(__dirname + '/fullchain1.pem')
+let privateKey = fs.readFileSync('/home/dank-memer/key.pem')
+let certificate = fs.readFileSync('/home/dank-memer/cert.pem')
 
 app.use('/', express.static('./static'))
 
@@ -71,13 +71,7 @@ function launchServer () {
 	key: privateKey,
 	cert: certificate
 	}, app).listen(443);
-	// Redirect from http port 80 to https
-  const http = require('http');
-  http.createServer(function (req, res) {
-	res.writeHead(301, { 'Location': 'https://' + req.headers['host'] + req.url })
-	res.end()
-  }).listen(80)
-  console.log(`Server started on ports: 80 & 443  pid: ${process.pid}`)
+  console.log(`Server started on port 443  pid: ${process.pid}`)
 }
 
 if (cluster.isMaster) {
