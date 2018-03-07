@@ -4,13 +4,12 @@ const Jimp = require('jimp')
 exports.run = async (URL) => {
   return new Promise(async (resolve, reject) => {
     const avatarPromise = Jimp.read(URL)
-    const eggPromise = Jimp.read('./resources/egg/egg.png')
+    const eggPromise = Jimp.read('./resources/failure/failure.jpg')
 
     Promise.all([avatarPromise, eggPromise]).then((promises) => {
       const [avatar, egg] = promises
-      egg.resize(350, 350)
-      avatar.resize(Jimp.AUTO, 50)
-      egg.composite(avatar, 143, 188)
+      avatar.resize(215, 215)
+      egg.composite(avatar, 143, 525)
       getBuffer(egg, resolve, reject)
     }).catch(reject)
   })
