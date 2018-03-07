@@ -59,7 +59,7 @@ app.get('/api/*', async (req, res) => {
     const file = await endpoints[endpoint](req.headers['data-src'])
     res.send({ status: 200, file }) // Status is always present. Check for 200
   } catch (err) {
-    console.error(`Error in endpoint '${endpoint}`, err)
+    console.error(`Error in endpoint '${endpoint}'`, err)
     return res.send({ status: 500, error: `${err.message}` })
   }
 })
