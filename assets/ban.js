@@ -1,3 +1,4 @@
+const { getBuffer } = require('./utils.js')
 const Jimp = require('jimp')
 
 exports.run = async (URL) => {
@@ -9,12 +10,7 @@ exports.run = async (URL) => {
       const [avatar, banner] = promises
       avatar.resize(350, 350)
       banner.composite(avatar, 93, 365)
-      banner.getBuffer(Jimp.MIME_PNG, async (err, buffer) => {
-        if (err) {
-          return console.error(err.stack)
-        }
-        resolve(buffer)
-      })
+      getBuffer(banner, resolve, reject)
     }).catch(reject)
   })
 }
