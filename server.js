@@ -3,7 +3,8 @@ const express = require('express')
 const https = require('https')
 const app = express()
 const fs = require('fs')
-
+const r = require('rethinkdbdash')()
+const config = require('config.json')
 
 const cpusLength = require('os').cpus().length
 app.use('/', express.static('./static'))
@@ -64,6 +65,19 @@ app.get('/api/*', async (req, res) => {
   }
 })
 
+//DBL webhooks
+app.post('/dblwebhook', async (req, res) => {
+  if(req.headers.Authorization) {
+    if(req.headers.Authorization === config.webhook_secret) {
+      req.body.type === 'upvote' ? await addCoins(req.body.user, 500)
+      : await removeCoins(req.body.user, 500);
+    }
+  } 
+  else {
+    res.send({status: 403, error: 'Pls stop.'})
+  }
+})
+
 function launchServer () {
   const http = require('http');
   http.createServer(app).listen(80);
@@ -114,4 +128,26 @@ function formatTime (time) {
   minutes = minutes > 9 ? minutes : '0' + minutes
   seconds = seconds > 9 ? seconds : '0' + seconds
   return `${days > 0 ? `${days}:` : ``}${(hours || days) > 0 ? `${hours}:` : ``}${minutes}:${seconds}`
+}
+
+async function addCoins (id, amount) {
+  let coins = await this.getCoins(id)
+  // if (coins.changes) coins = coins.changes[0].new_val
+  coins.coin += amount
+
+  return r.table('coins')
+    .insert(coins, { conflict: 'update' })
+}
+
+async function removeCoins (id, amount) {
+  let coins = await this.getCoins(id)
+  // if (coins.changes) coins = coins.changes[0].new_val
+  if (coins.coin - amount <= 0) {
+    coins.coin = 0
+  } else {
+    coins.coin -= amount
+  }
+
+  return r.table('coins')
+    .insert(coins, { conflict: 'update' })
 }
