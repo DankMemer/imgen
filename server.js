@@ -4,7 +4,7 @@ const https = require('https')
 const app = express()
 const fs = require('fs')
 const r = require('rethinkdbdash')()
-const config = require('config.json')
+const config = require('./config.json')
 
 const cpusLength = require('os').cpus().length
 app.use('/', express.static('./static'))
@@ -70,8 +70,13 @@ app.post('/dblwebhook', async (req, res) => {
   if(req.headers.Authorization) {
     if(req.headers.Authorization === config.webhook_secret) {
       req.body.type === 'upvote' ? await addCoins(req.body.user, 500)
-      : await removeCoins(req.body.user, 500);
+      : await removeCoins(req.body.user, 500)
+      res.send({status: 200})
     }
+    else {
+      res.send({status: 401, error: 'You done gone goofed up auth.'})
+    }
+
   } 
   else {
     res.send({status: 403, error: 'Pls stop.'})
