@@ -1,5 +1,6 @@
 const cluster = require('cluster')
 const express = require('express')
+const bodyParser = require('body-parser')
 const https = require('https')
 const app = express()
 const fs = require('fs')
@@ -8,6 +9,7 @@ const config = require('./config.json')
 
 const cpusLength = require('os').cpus().length
 app.use('/', express.static('./static'))
+app.use(bodyParser.json())
 
 const endpoints = {}
 const stats = {
