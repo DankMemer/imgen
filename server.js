@@ -138,23 +138,59 @@ function formatTime (time) {
 }
 
 async function addCoins (id, amount) {
-  let coins = await this.getCoins(id)
-  // if (coins.changes) coins = coins.changes[0].new_val
+  let coins = await getCoins(id)
+  addVote(id)
   coins.coin += amount
 
-  return r.table('coins')
+  return r.table('users')
     .insert(coins, { conflict: 'update' })
 }
 
+async function addVote (id) {
+  return r.table('users')
+      .insert({
+        id: id,
+        upvoted: true
+      }, { conflict: 'update'})
+      .run()
+}
+
+async function removeVote (id) {
+  return r.table('users')
+      .insert({
+        id: id,
+        upvoted: false
+      }, { conflict: 'update'})
+      .run()
+}
+
+async function grabCoin (id) {
+  let coins = await r.table('users')
+    .get(id)
+    .run()
+  if (!coins) {
+    return r.table('users')
+      .insert({ id, coin: 0 }, { returnChanges: true })
+      .run()
+  }
+  return coins
+}
+
+async function getCoins (id) {
+  let coins = await grabCoin(id)
+  if (coins.changes) (coins = coins.changes[0].new_val)
+  return coins
+}
+
 async function removeCoins (id, amount) {
-  let coins = await this.getCoins(id)
-  // if (coins.changes) coins = coins.changes[0].new_val
+  let coins = await getCoins(id)
+  removeVote(id)
   if (coins.coin - amount <= 0) {
     coins.coin = 0
   } else {
     coins.coin -= amount
   }
 
-  return r.table('coins')
+  return r.table('users')
     .insert(coins, { conflict: 'update' })
 }
