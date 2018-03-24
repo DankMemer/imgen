@@ -69,8 +69,8 @@ app.get('/api/*', async (req, res) => {
 
 //DBL webhooks
 app.post('/dblwebhook', async (req, res) => {
-  if(req.headers.Authorization) {
-    if(req.headers.Authorization === config.webhook_secret) {
+  if(req.headers.authorization) {
+    if(req.headers.authorization === config.webhook_secret) {
       req.body.type === 'upvote' ? await addCoins(req.body.user, 500)
       : await removeCoins(req.body.user, 500)
       res.send({status: 200})
