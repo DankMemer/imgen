@@ -139,30 +139,13 @@ function formatTime (time) {
 
 async function addCoins (id, amount) {
   let coins = await getCoins(id)
-  addVote(id)
   coins.coin += amount
+  coins.upvoted = true
 
   return r.table('users')
     .insert(coins, { conflict: 'update' })
 }
 
-async function addVote (id) {
-  return r.table('users')
-      .insert({
-        id: id,
-        upvoted: true
-      }, { conflict: 'update'})
-      .run()
-}
-
-async function removeVote (id) {
-  return r.table('users')
-      .insert({
-        id: id,
-        upvoted: false
-      }, { conflict: 'update'})
-      .run()
-}
 
 async function grabCoin (id) {
   let coins = await r.table('users')
@@ -170,7 +153,7 @@ async function grabCoin (id) {
     .run()
   if (!coins) {
     return r.table('users')
-      .insert({ id, coin: 0 }, { returnChanges: true })
+      .insert({ id, coin: 0, upvoted: false }, { returnChanges: true })
       .run()
   }
   return coins
@@ -184,12 +167,12 @@ async function getCoins (id) {
 
 async function removeCoins (id, amount) {
   let coins = await getCoins(id)
-  removeVote(id)
   if (coins.coin - amount <= 0) {
     coins.coin = 0
   } else {
     coins.coin -= amount
   }
+  coins.upvoted = false
 
   return r.table('users')
     .insert(coins, { conflict: 'update' })
