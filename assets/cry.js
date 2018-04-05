@@ -1,13 +1,15 @@
-const { getBuffer } = require('./utils.js')
-const Jimp = require('jimp')
+const { Canvas } = require('canvas-constructor')
+const fsn = require('fs-nextra')
 
-exports.run = (URL) => {
+exports.run = async (URL) => {
   return new Promise(async (resolve, reject) => {
     const text = URL.replace(/\n/g, '\r\n')
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK)
-    const cry = await Jimp.read('./resources/cry/cry.jpg')
-
-    cry.print(font, 377, 83, text, 210)
-    getBuffer(cry, resolve, reject)
+    const template = await fsn.readFile('./resources/cry/cry.jpg')
+      let halp = new Canvas(626, 768)
+        .addImage(template, 0, 0, 626, 768)
+        .setTextFont('20px Tahoma')
+        .addMultilineText(text, 382, 100, 180, 21)
+        .toBuffer()
+      resolve(halp)
   })
 }

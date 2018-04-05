@@ -1,10 +1,13 @@
-const { getBuffer } = require('./utils.js')
-const Jimp = require('jimp')
+const { Canvas, invert } = require('canvas-constructor')
+const request = require('snekfetch')
 
-exports.run = (URL) => {
+exports.run = async (URL) => {
   return new Promise(async (resolve, reject) => {
-    const avatar = await Jimp.read(URL).catch(err => reject(err))
-    avatar.invert()
-    getBuffer(avatar, resolve, reject)
+    const user = await request.get(URL)
+      let halp = new Canvas(500, 500)
+        .addImage(user.raw, 0, 0, 500, 500)
+        .process(invert)
+        .toBuffer()
+      resolve(halp)
   })
 }

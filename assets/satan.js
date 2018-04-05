@@ -5,12 +5,13 @@ const request = require('snekfetch')
 exports.run = async (URL) => {
   return new Promise(async (resolve, reject) => {
     const userPromise = await request.get(URL)
-    const templatePromise = await fsn.readFile('./resources/ban/ban.png')
+    const templatePromise = await fsn.readFile('./resources/satan/satan.png')
     Promise.all([userPromise, templatePromise]).then((promises) => {
       const [user, template] = promises
-      let halp = new Canvas(536, 751)
-        .addImage(template, 0, 0, 536, 751)
-        .addImage(user.raw, 70, 344, 400, 400)
+      let halp = new Canvas(600, 450)
+        .addImage(user.raw, 200, 90, 195, 195)
+        .addImage(template, 0, 0, 600, 450)
+        //.addImage(user.raw, 200, 90, 195, 195)
         .toBuffer()
       resolve(halp)
     }).catch(reject)

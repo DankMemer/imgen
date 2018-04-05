@@ -35,13 +35,17 @@ fs.readdir(`${__dirname}/assets/`, async (err, files) => {
 
 app.use(express.static('images'))
 
+app.get('/stats', async (req, res) => {
+  return res.send(stats)
+})
+
 app.get('/api/*', async (req, res) => {
   process.send('request')
 
   const endsWithSlash = req.originalUrl[req.originalUrl.length - 1] === '/'
   const trimmedUrl = endsWithSlash ? req.originalUrl.slice(0, -1) : req.originalUrl
   const endpoint = trimmedUrl.slice(trimmedUrl.lastIndexOf('/') + 1)
-
+  
   if (!endpoints[endpoint]) {
     return res.send({ status: 404, error: `Invalid Endpoint: The requested endpoint "${endpoint}" was not found` })
   }

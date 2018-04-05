@@ -10,7 +10,10 @@
 	"license": "GNU",
 	"dependencies": {
 		"body-parser": "^1.18.2",
+		"canvas": "^2.0.0-alpha.12",
+		"canvas-constructor": "github:kyranet/canvasConstructor",
 		"express": "^4.16.2",
+		"fs-nextra": "^0.3.2",
 		"gifencoder": "^1.1.0",
 		"gm": "^1.23.1",
 		"jimp": "^0.2.28",
