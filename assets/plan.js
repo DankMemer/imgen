@@ -8,7 +8,7 @@ exports.run = (text) => {
 
     Promise.all([fontPromise, messagePromise]).then(resolved => {
       const [font, message] = resolved
-      
+
       let words = text.split(', ')
       let a, b, c
       if (words.length < 3) {

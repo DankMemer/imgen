@@ -11,7 +11,6 @@ exports.run = async (URL) => {
       let halp = new Canvas(600, 450)
         .addImage(user.raw, 200, 90, 195, 195)
         .addImage(template, 0, 0, 600, 450)
-        //.addImage(user.raw, 200, 90, 195, 195)
         .toBuffer()
       resolve(halp)
     }).catch(reject)

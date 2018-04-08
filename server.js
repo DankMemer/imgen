@@ -1,7 +1,6 @@
 const cluster = require('cluster')
 const express = require('express')
 const bodyParser = require('body-parser')
-const https = require('https')
 const app = express()
 const fs = require('fs')
 const r = require('rethinkdbdash')()
@@ -12,9 +11,9 @@ app.use('/', express.static('./static'))
 app.use(bodyParser.json())
 
 const endpoints = {}
-const stats = {
-  requests: 0,
-  cmds: {}
+let stats = {
+  apiRequests: 0,
+  apiCmds: {}
 }
 
 fs.readdir(`${__dirname}/assets/`, async (err, files) => {
@@ -26,7 +25,7 @@ fs.readdir(`${__dirname}/assets/`, async (err, files) => {
     file = file.replace('.js', '')
     try {
       endpoints[file] = require(`./assets/${file}`).run
-      stats.cmds[file] = 0
+      stats.apiCmds[file] = 0
     } catch (e) {
       console.warn(`There was an error with '${file}': ${e.message} | ${e.stack}`)
     }
@@ -36,7 +35,7 @@ fs.readdir(`${__dirname}/assets/`, async (err, files) => {
 app.use(express.static('images'))
 
 app.get('/stats', async (req, res) => {
-  return res.send(stats)
+  return res.status(200).json(stats)
 })
 
 app.get('/api/*', async (req, res) => {
@@ -45,7 +44,7 @@ app.get('/api/*', async (req, res) => {
   const endsWithSlash = req.originalUrl[req.originalUrl.length - 1] === '/'
   const trimmedUrl = endsWithSlash ? req.originalUrl.slice(0, -1) : req.originalUrl
   const endpoint = trimmedUrl.slice(trimmedUrl.lastIndexOf('/') + 1)
-  
+
   if (!endpoints[endpoint]) {
     return res.send({ status: 404, error: `Invalid Endpoint: The requested endpoint "${endpoint}" was not found` })
   }
@@ -61,6 +60,9 @@ app.get('/api/*', async (req, res) => {
     return res.send({ status: 400, error: 'Missing data-src: The required header "data-src" is missing' })
   }
 
+  stats.apiCmds[endpoint]++
+  stats.apiRequests++
+  console.log(stats.cmds[endpoint])
   process.send({ endpoint })
   try {
     const file = await endpoints[endpoint](req.headers['data-src'])
@@ -71,51 +73,32 @@ app.get('/api/*', async (req, res) => {
   }
 })
 
-//DBL webhooks
+// DBL webhooks
 app.post('/dblwebhook', async (req, res) => {
-  if(req.headers.authorization) {
-    if(req.headers.authorization === config.webhook_secret) {
+  if (req.headers.authorization) {
+    if (req.headers.authorization === config.webhook_secret) {
       req.body.type === 'upvote' ? await addCoins(req.body.user, 500)
-      : await removeCoins(req.body.user, 500)
+        : await removeCoins(req.body.user, 500)
       res.send({status: 200})
-    }
-    else {
+    } else {
       res.send({status: 401, error: 'You done gone goofed up auth.'})
     }
-
-  } 
-  else {
+  } else {
     res.send({status: 403, error: 'Pls stop.'})
   }
 })
 
 function launchServer () {
-  const http = require('http');
-  http.createServer(app).listen(80);
+  const http = require('http')
+  http.createServer(app).listen(80)
   console.log(`Server started on port 80 pid: ${process.pid}`)
 }
 
 if (cluster.isMaster) {
   const workerNumber = cpusLength - 1
-  let memoryUsageCounter = 0
   console.log(`Starting ${workerNumber} workers`)
   for (let i = 0; i < workerNumber; i++) {
     cluster.fork()
-  }
-  async function masterHandleMessage (message) {
-    if (message === 'request') {
-      stats.requests++
-    } else if (message.endpoint) {
-      stats.cmds[message.endpoint]++
-    } else if (message.dataRequest) {
-      let data = {
-        'uptime': formatTime(process.uptime()),
-        'ram': (process.memoryUsage().rss / 1024 / 1024).toFixed(2),
-        'requests': stats.requests,
-        'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>')
-      }
-      cluster.workers[message.dataRequest].send({data: data})
-    }
   }
   for (const id in cluster.workers) {
     cluster.workers[id].on('message', masterHandleMessage)
@@ -128,6 +111,22 @@ if (cluster.isMaster) {
 cluster.on('online', (worker) => {
   console.log(`Worker ${worker.id} started`)
 })
+
+async function masterHandleMessage (message) {
+  if (message === 'request') {
+    stats.requests++
+  } else if (message.endpoint) {
+    stats.cmds[message.endpoint]++
+  } else if (message.dataRequest) {
+    let data = {
+      'uptime': formatTime(process.uptime()),
+      'ram': (process.memoryUsage().rss / 1024 / 1024).toFixed(2),
+      'requests': stats.requests,
+      'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>')
+    }
+    cluster.workers[message.dataRequest].send({data: data})
+  }
+}
 
 function formatTime (time) {
   let days = Math.floor(time % 31536000 / 86400)
@@ -149,7 +148,6 @@ async function addCoins (id, amount) {
   return r.table('users')
     .insert(coins, { conflict: 'update' })
 }
-
 
 async function grabCoin (id) {
   let coins = await r.table('users')

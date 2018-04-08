@@ -4,7 +4,7 @@ const request = require('snekfetch')
 
 exports.run = async (URL) => {
   return new Promise(async (resolve, reject) => {
-    //URL = URL.replace('.png', '.jpg')
+    // URL = URL.replace('.png', '.jpg')
     const userPromise = await request.get(URL)
     const templatePromise = await fsn.readFile('./resources/fedora/fedora.png')
     Promise.all([userPromise, templatePromise]).then((promises) => {

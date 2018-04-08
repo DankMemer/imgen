@@ -19,7 +19,6 @@ exports.run = async (URL) => {
         .addImage(author.raw, 350, 70, 200, 200)
         .toBuffer()
       resolve(halp)
-      
     } catch (err) {
       console.log(err)
     }
