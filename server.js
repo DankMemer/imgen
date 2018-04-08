@@ -62,7 +62,7 @@ app.get('/api/*', async (req, res) => {
 
   stats.apiCmds[endpoint]++
   stats.apiRequests++
-  console.log(stats.cmds[endpoint])
+  console.log(stats.apiCmds[endpoint])
   process.send({ endpoint })
   try {
     const file = await endpoints[endpoint](req.headers['data-src'])
@@ -114,15 +114,15 @@ cluster.on('online', (worker) => {
 
 async function masterHandleMessage (message) {
   if (message === 'request') {
-    stats.requests++
+    stats.apiRequests++
   } else if (message.endpoint) {
-    stats.cmds[message.endpoint]++
+    stats.apiCmds[message.endpoint]++
   } else if (message.dataRequest) {
     let data = {
       'uptime': formatTime(process.uptime()),
       'ram': (process.memoryUsage().rss / 1024 / 1024).toFixed(2),
       'requests': stats.requests,
-      'usage': Object.keys(stats.cmds).sort((a, b) => stats.cmds[b] - stats.cmds[a]).map(c => `${c} - ${stats.cmds[c]} hits`).join('<br>')
+      'usage': Object.keys(stats.apiCmds).sort((a, b) => stats.apiCmds[b] - stats.apiCmds[a]).map(c => `${c} - ${stats.apiCmds[c]} hits`).join('<br>')
     }
     cluster.workers[message.dataRequest].send({data: data})
   }
