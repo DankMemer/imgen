@@ -1,9 +1,12 @@
 const cluster = require('cluster')
 const express = require('express')
 const app = express()
+const hb = require('handlebars')
 const fs = require('fs')
 
 const cpusLength = require('os').cpus().length
+
+const source = hb.compile(fs.readFileSync('./index.html').toString())
 
 const endpoints = {}
 let stats = {
@@ -33,6 +36,15 @@ app.get('/stats', async (req, res) => {
   return res.status(200).json(stats)
 })
 
+app.get('/', (req, res) => {
+  process.send({dataRequest: cluster.worker.id})
+  process.once('message', (message) => {
+    if (message.data) {
+      res.status(200).send(source(message.data))
+    }
+  })
+})
+
 app.get('/api/*', async (req, res) => {
   process.send('request')
 
@@ -57,7 +69,6 @@ app.get('/api/*', async (req, res) => {
 
   stats.apiCmds[endpoint]++
   stats.apiRequests++
-  console.log(stats.apiCmds[endpoint])
   process.send({ endpoint })
   try {
     const file = await endpoints[endpoint](req.headers['data-src'])
@@ -69,8 +80,8 @@ app.get('/api/*', async (req, res) => {
 })
 
 app.use(function (req, res, next) {
-  res.status(404).send({error: "404: You in the wrong part of town, boi."});
-});
+  res.status(404).send({error: '404: You in the wrong part of town, boi.'})
+})
 
 function launchServer () {
   const http = require('http')
