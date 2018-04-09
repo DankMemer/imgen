@@ -116,7 +116,7 @@ async function masterHandleMessage (message) {
     let data = {
       'uptime': formatTime(process.uptime()),
       'ram': (process.memoryUsage().rss / 1024 / 1024).toFixed(2),
-      'requests': stats.requests,
+      'requests': stats.apiRequests,
       'usage': Object.keys(stats.apiCmds).sort((a, b) => stats.apiCmds[b] - stats.apiCmds[a]).map(c => `${c} - ${stats.apiCmds[c]} hits`).join('<br>')
     }
     cluster.workers[message.dataRequest].send({data: data})
