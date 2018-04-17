@@ -3,6 +3,8 @@ const express = require('express')
 const app = express()
 const hb = require('handlebars')
 const fs = require('fs')
+const os = require('os')
+const totalMem = os.totalmem()
 
 const cpusLength = require('os').cpus().length
 
@@ -11,6 +13,9 @@ const source = hb.compile(fs.readFileSync('./index.html').toString())
 const endpoints = {}
 let stats = {
   apiRequests: 0,
+  memUsage: 0,
+  uptime: formatTime(process.uptime()),
+  loadAverage: [],
   apiCmds: {}
 }
 
@@ -33,7 +38,8 @@ fs.readdir(`${__dirname}/assets/`, async (err, files) => {
 app.use(express.static('images'))
 
 app.get('/stats', async (req, res) => {
-  return res.status(200).json(stats)
+  await fetchStats()
+  return res.status(200).send(stats)
 })
 
 app.get('/', (req, res) => {
@@ -133,4 +139,11 @@ function formatTime (time) {
   minutes = minutes > 9 ? minutes : '0' + minutes
   seconds = seconds > 9 ? seconds : '0' + seconds
   return `${days > 0 ? `${days}:` : ``}${(hours || days) > 0 ? `${hours}:` : ``}${minutes}:${seconds}`
+}
+
+async function fetchStats () {
+  stats.uptime = formatTime(process.uptime())
+  stats.loadAverage = os.loadavg()
+  let freeMem = os.freemem()
+  stats.memUsage = (totalMem / 1024 / 1024) - (freeMem / 1024 / 1024)
 }
