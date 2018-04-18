@@ -76,7 +76,7 @@ app.get('/api/*', async (req, res) => {
   stats.apiRequests++
   process.send({ endpoint })
   try {
-    const file = await endpoints[endpoint](req.headers['data-src'])
+    const file = await endpoints[endpoint](decodeURIComponent(req.headers['data-src']))
     res.send({ status: 200, file }) // Status is always present. Check for 200
   } catch (err) {
     console.error(`Error in endpoint '${endpoint}'`, err)
