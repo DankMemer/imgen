@@ -9,7 +9,6 @@
 	"author": "",
 	"license": "GNU",
 	"dependencies": {
-		"body-parser": "^1.18.2",
 		"canvas": "^2.0.0-alpha.12",
 		"canvas-constructor": "github:kyranet/canvasConstructor",
 		"eslint": "^4.19.1",

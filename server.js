@@ -5,8 +5,7 @@ const hb = require('handlebars')
 const fs = require('fs')
 const os = require('os')
 const totalMem = os.totalmem()
-
-const cpusLength = require('os').cpus().length
+const cpusLength = os.cpus().length
 
 const source = hb.compile(fs.readFileSync('./index.html').toString())
 
@@ -39,7 +38,7 @@ app.use(express.static('images'))
 
 app.get('/stats', async (req, res) => {
   await fetchStats()
-  return res.status(200).send(stats)
+  return res.json(stats)
 })
 
 app.get('/', (req, res) => {
