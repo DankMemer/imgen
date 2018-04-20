@@ -1,4 +1,4 @@
 # meme-server
 API server for image manipulation, focused on Dank Memer (discord bot)
 
-Will be giving out keys and instructions on how to use this in the near future.
+[![forthebadge](https://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg)](https://forthebadge.com)
