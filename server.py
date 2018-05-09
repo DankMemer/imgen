@@ -20,7 +20,8 @@ def api(endpoint):
         return jsonify({'status': 404, 'error': f'Endpoint {endpoint} not found!'})
 
     try:
-        result = endpoints[endpoint].generate(request.headers.get('data-src'))
+        result = endpoints[endpoint].generate(text=request.args.get('text', ''),
+                                              avatars=[request.args.get('avatar1', ''), request.args.get('avatar2', '')])
     except Exception as e:
         result = jsonify({'status': 500, 'error': str(e)})
     return result
