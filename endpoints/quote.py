@@ -34,7 +34,7 @@ class Quote(Endpoint):
         canvas = ImageDraw.Draw(words)
 
         canvas.text((230, 70), usernames[0], font=font_med, fill='White')
-        canvas.text((230, 140), text, font=font_sb, fill=(160, 160, 160))
+        canvas.text((230, 150), text, font=font_sb, fill=(160, 160, 160))
 
         timestamp_left = 230 + canvas.textsize(usernames[0], font=font_med)[0] + 20
         canvas.text((timestamp_left, 90), f'Today at {datetime.utcnow().strftime("%H:%M")}', font=font_time, fill=(125, 125, 125))
