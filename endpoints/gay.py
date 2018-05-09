@@ -17,7 +17,7 @@ class Gay(Endpoint):
         b = BytesIO()
         img1.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/png', attachment_filename=f'{self.name}.png')
+        return send_file(b, mimetype='image/png')
 
 
 def setup():
