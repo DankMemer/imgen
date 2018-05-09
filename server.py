@@ -2,7 +2,7 @@ import sys
 
 from flask import Flask, jsonify, request
 
-from endpoints import gay, trigger  # noqa: F401 F403
+from endpoints import gay, trigger  # noqa: F401
 from utils.endpoint import Endpoint
 
 app = Flask(__name__)
