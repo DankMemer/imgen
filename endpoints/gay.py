@@ -4,8 +4,7 @@ from flask import send_file
 from PIL import Image
 
 from utils import http
-
-from .endpoint import Endpoint
+from utils.endpoint import Endpoint
 
 
 class Gay(Endpoint):

@@ -2,7 +2,8 @@ import sys
 
 from flask import Flask, jsonify, request
 
-from endpoints import *  # noqa: F401 F403
+from endpoints import gay, trigger  # noqa: F401 F403
+from utils.endpoint import Endpoint
 
 app = Flask(__name__)
 endpoints = {}
@@ -26,8 +27,13 @@ def api(endpoint):
 
 
 if __name__ == "__main__":
-    for e in filter(lambda module: str(module).startswith('endpoints.') and not str(module).endswith('endpoint'), sys.modules):
+    for e in filter(lambda module: str(module).startswith('endpoints.'), sys.modules):
         endpoint = sys.modules[e].setup()
+
+        if not isinstance(endpoint, Endpoint):
+            print(f'{endpoint} is not a valid endpoint!')
+            continue
+
         endpoints.update({endpoint.name: endpoint})
 
     app.run(host='127.0.0.1', debug=True)
