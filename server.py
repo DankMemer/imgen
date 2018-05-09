@@ -1,8 +1,8 @@
 import sys
-
+import traceback
 from flask import Flask, jsonify, request
 
-from endpoints import gay, trigger, trash, disability  # noqa: F401
+from endpoints import gay, trigger, trash, disability, quote  # noqa: F401
 from utils.endpoint import Endpoint
 
 app = Flask(__name__)
@@ -20,9 +20,13 @@ def api(endpoint):
         return jsonify({'status': 404, 'error': f'Endpoint {endpoint} not found!'})
 
     try:
+        print(request.args.get('username1'))
+        print(request.args.get('text'))
         result = endpoints[endpoint].generate(text=request.args.get('text', ''),
-                                              avatars=[request.args.get('avatar1', ''), request.args.get('avatar2', '')])
+                                              avatars=[request.args.get('avatar1', ''), request.args.get('avatar2', '')],
+                                              usernames=[request.args.get('username1', ''), request.args.get('username2', '')])
     except Exception as e:
+        print(e, ''.join(traceback.format_tb(e.__traceback__)))
         result = jsonify({'status': 500, 'error': str(e)})
     return result
 

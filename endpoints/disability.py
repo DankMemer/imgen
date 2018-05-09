@@ -8,7 +8,7 @@ from utils.endpoint import Endpoint
 
 
 class Disability(Endpoint):
-    def generate(self, avatars, **kwargs):
+    def generate(self, avatars, text, usernames):
         avatar = Image.open(http.get_image(avatars[0])).resize((175, 175))
         base = Image.open('assets/disability/disability.jpg')
 
