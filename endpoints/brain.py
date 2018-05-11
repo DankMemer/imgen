@@ -17,13 +17,13 @@ class Brain(Endpoint):
         else:
             a, b, c, d = text.split(',')
 
-        a, b, c, d = [wrap(font, i, 225) for i in [a, b, c, d]]
+        a, b, c, d = [wrap(font, i, 225).strip() for i in [a, b, c, d]]
 
         canvas = ImageDraw.Draw(base)
-        canvas.text((15, 40), a.strip(), font=font, fill='Black')
-        canvas.text((15, 230), b.strip(), font=font, fill='Black')
-        canvas.text((15, 420), c.strip(), font=font, fill='Black')
-        canvas.text((15, 610), d.strip(), font=font, fill='Black')
+        canvas.text((15, 40), a, font=font, fill='Black')
+        canvas.text((15, 230), b, font=font, fill='Black')
+        canvas.text((15, 420), c, font=font, fill='Black')
+        canvas.text((15, 610), d, font=font, fill='Black')
 
         b = BytesIO()
         base.save(b, format='png')
