@@ -1,24 +1,21 @@
 def wrap(font, text, line_width):
-    characters = list(text)
+    words = text.split()
 
     lines = []
-    line = ''
+    line = []
 
-    while characters:
-        char = characters.pop(0)
-        newline = line + char
+    for word in words:
+        newline = ' '.join(line + [word])
 
         w, h = font.getsize(newline)
 
         if w > line_width:
-            lines.append(line)
-            line = char
+            lines.append(' '.join(line))
+            line = [word]
         else:
-            line = newline
+            line.append(word)
 
     if line:
-        lines.append(line)
+        lines.append(' '.join(line))
 
     return '\n'.join(lines)
-
-# TODO: Fix words having characters newlined if overfill
