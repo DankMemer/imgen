@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 from utils.endpoint import Endpoint
 from utils.textutils import wrap
 
+
 class Brain(Endpoint):
     def generate(self, avatars, text, usernames):
         base = Image.open('assets/brain/brain.jpg')

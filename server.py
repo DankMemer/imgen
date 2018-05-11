@@ -2,7 +2,8 @@ import sys
 import traceback
 from flask import Flask, jsonify, request
 
-from endpoints import gay, trigger, trash, disability, quote, abandon, ban, slap, bed, brain, tweet  # noqa: F401
+from endpoints import (gay, trigger, trash, disability, quote, abandon, ban, slap, bed, brain, tweet,  # noqa: F401
+    ugly)  # noqa: F401
 from utils.endpoint import Endpoint
 
 app = Flask(__name__)
