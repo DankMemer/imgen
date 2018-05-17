@@ -15,7 +15,7 @@ class Brain(Endpoint):
         if len(text.split(',')) < 4:
             a, b, c, d = 'you need, four items, for this, command (split by commas)'.split(',')
         else:
-            a, b, c, d = text.split(',')
+            a, b, c, d = text.split(',')[:4]
 
         a, b, c, d = [wrap(font, i, 225).strip() for i in [a, b, c, d]]
 

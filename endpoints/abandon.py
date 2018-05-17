@@ -10,10 +10,10 @@ from utils.endpoint import Endpoint
 class Abandon(Endpoint):
     def generate(self, avatars, text, usernames):
         base = Image.open('assets/abandon/abandon.png')
-        font = ImageFont.truetype(font='assets/fonts/verdana.ttf', size=25)
+        font = ImageFont.truetype(font='assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)
         text = wrap(font, text, 320)
-        canv.text((25, 415), text, font=font, fill='Black')
+        canv.text((25, 413), text, font=font, fill='Black')
 
         b = BytesIO()
         base.save(b, format='png')
