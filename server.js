@@ -3,9 +3,8 @@ const express = require('express')
 const app = express()
 const hb = require('handlebars')
 const fs = require('fs')
-const os = require('os')
-const totalMem = os.totalmem()
-const cpusLength = os.cpus().length
+const totalMem = require('os')
+const freeMem = os.totalmem()
 
 const source = hb.compile(fs.readFileSync('./index.html').toString())
 
@@ -13,8 +12,6 @@ const endpoints = {}
 let stats = {
   apiRequests: 0,
   memUsage: 0,
-  uptime: formatTime(process.uptime()),
-  loadAverage: [],
   apiCmds: {}
 }
 
@@ -141,8 +138,6 @@ function formatTime (time) {
 }
 
 async function fetchStats () {
-  stats.uptime = formatTime(process.uptime())
-  stats.loadAverage = os.loadavg()
   let freeMem = os.freemem()
   stats.memUsage = (totalMem / 1024 / 1024) - (freeMem / 1024 / 1024)
 }
