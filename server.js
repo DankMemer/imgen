@@ -3,8 +3,8 @@ const express = require('express')
 const app = express()
 const hb = require('handlebars')
 const fs = require('fs')
-const totalMem = require('os')
-const freeMem = os.totalmem()
+const os = require('os')
+const totalMem = os.totalmem()
 
 const source = hb.compile(fs.readFileSync('./index.html').toString())
 
