@@ -4,6 +4,7 @@ const app = express()
 const hb = require('handlebars')
 const fs = require('fs')
 const os = require('os')
+const cpusLength = os.cpus().length
 const totalMem = os.totalmem()
 
 const source = hb.compile(fs.readFileSync('./index.html').toString())
