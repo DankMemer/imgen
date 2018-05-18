@@ -19,3 +19,5 @@ def wrap(font, text, line_width):
         lines.append(' '.join(line))
 
     return '\n'.join(lines)
+
+# TODO: Chop long single-words
