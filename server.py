@@ -3,7 +3,7 @@ import traceback
 from flask import Flask, jsonify, request, render_template  # Render template will be used later for displaying stats page
 
 from endpoints import (gay, trigger, trash, disability, quote, abandon, ban, slap, bed, brain, tweet,  # noqa: F401
-    ugly, spank, shit, hitler, jail, whodidthis, facts, invert)  # noqa: F401
+    ugly, spank, shit, hitler, jail, whodidthis, facts, invert, byemom)  # noqa: F401
 from utils.endpoint import Endpoint
 
 app = Flask(__name__)
