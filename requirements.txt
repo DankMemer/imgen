@@ -1,3 +1,2 @@
-uswgi
 flask
 pillow
