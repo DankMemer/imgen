@@ -37,7 +37,7 @@ class Quote(Endpoint):
         canvas.text((230, 150), text, font=font_sb, fill=(160, 160, 160))
 
         timestamp_left = 230 + canvas.textsize(usernames[0], font=font_med)[0] + 20
-        canvas.text((timestamp_left, 90), f'Today at {datetime.utcnow().strftime("%H:%M")}', font=font_time, fill=(125, 125, 125))
+        canvas.text((timestamp_left, 90), 'Today at {}'.format(datetime.utcnow().strftime("%H:%M")), font=font_time, fill=(125, 125, 125))
 
         final = Image.alpha_composite(base, words)
         downscaled = final.resize((500, 100), Image.ANTIALIAS)

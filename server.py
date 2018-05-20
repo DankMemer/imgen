@@ -53,7 +53,7 @@ def index():
 @require_authorization
 def api(endpoint):
     if endpoint not in endpoints:
-        return jsonify({'status': 404, 'error': f'Endpoint {endpoint} not found!'})
+        return jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)})
 
     try:
         result = endpoints[endpoint].run(text=request.args.get('text', ''),
@@ -70,7 +70,7 @@ if __name__ == "__main__":
         endpoint = sys.modules[e].setup()
 
         if not isinstance(endpoint, Endpoint):
-            print(f'{endpoint} is not a valid endpoint!')
+            print('{} is not a valid endpoint!'.format(endpoint))
             continue
 
         endpoints.update({endpoint.name: endpoint})

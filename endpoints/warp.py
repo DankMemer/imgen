@@ -9,9 +9,9 @@ from utils.endpoint import Endpoint
 
 class Warp(Endpoint):
     def generate(self, avatars, text, usernames):
-        implode = f'-{str(randint(3, 15))}'
-        roll = f'+{randint(0, 256)}+{randint(0, 256)}'
-        swirl = f'{choice(["+", "-"])}{randint(120, 180)}'
+        implode = '-{}'.format(str(randint(3, 15)))
+        roll = '+{}+{}'.format(randint(0, 256), randint(0, 256))
+        swirl = '{}{}'.format(choice(["+", "-"]), randint(120, 180))
         concat = ['-implode', implode, '-roll', roll, '-swirl', swirl]
 
         output = gm.convert(avatars[0], concat, 'png')

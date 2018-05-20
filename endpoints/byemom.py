@@ -20,7 +20,7 @@ class Byemom(Endpoint):
         canv = ImageDraw.Draw(text_layer)
         bye = ImageDraw.Draw(bye_layer)
         username = usernames[0] or 'Tommy'
-        msg = f'Alright {username} im leaving the house to run some errands'
+        msg = 'Alright {} im leaving the house to run some errands'.format(username)
 
         text = wrap(font, text, 500)
         msg = wrap(font, msg, 200)
