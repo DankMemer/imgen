@@ -1,18 +1,11 @@
 import json
-import sys
 import traceback
 
 from flask import Flask, abort, jsonify, render_template, request
 
-from utils.endpoint import Endpoint
-
-from endpoints import (abandon, ban, bed, brain,  # noqa: F401; noqa: F401
-                       byemom, disability, facts, gay, hitler, invert, jail,
-                       quote, shit, slap, spank, trash, trigger, tweet, ugly,
-                       warp, whodidthis)
+import endpoints
 
 app = Flask(__name__, template_folder='views')
-endpoints = {}
 
 
 def get_auth_keys():
@@ -63,16 +56,3 @@ def api(endpoint):
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
         result = jsonify({'status': 500, 'error': str(e)})
     return result
-
-
-if __name__ == "__main__":
-    for e in filter(lambda module: str(module).startswith('endpoints.'), sys.modules):
-        endpoint = sys.modules[e].setup()
-
-        if not isinstance(endpoint, Endpoint):
-            print('{} is not a valid endpoint!'.format(endpoint))
-            continue
-
-        endpoints.update({endpoint.name: endpoint})
-
-    app.run(host='127.0.0.1', debug=True)

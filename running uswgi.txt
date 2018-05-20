@@ -1,1 +1,0 @@
-uwsgi --socket 0.0.0.0:8885 --protocol=http -w wsgi --enable-threads --processes 8 --listen 4096 --gevent 4000 --thunder-lock --master
