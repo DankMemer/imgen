@@ -11,8 +11,9 @@ from endpoints import (abandon, ban, bed, brain,  # noqa: F401; noqa: F401
                        quote, shit, slap, spank, trash, trigger, tweet, ugly,
                        warp, whodidthis)
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='views')
 endpoints = {}
+hits = {}
 
 
 def get_auth_keys():
@@ -31,7 +32,6 @@ def get_auth_keys():
 
 def require_authorization(func):
     def wrapper(*args, **kwargs):
-        print('running')
         if request.headers.get('authorization', None) in get_auth_keys():
             return func(*args, **kwargs)
         else:
@@ -42,7 +42,8 @@ def require_authorization(func):
 
 @app.route('/', methods=['GET'])
 def index():
-    return 'hi'
+    print(hits)
+    return render_template('index.html', hits=hits)
 
 
 @app.route('/api/<endpoint>', methods=['GET'])
@@ -51,6 +52,7 @@ def api(endpoint):
     if endpoint not in endpoints:
         return jsonify({'status': 404, 'error': f'Endpoint {endpoint} not found!'})
 
+    hits[endpoint] = hits.get(endpoint, 0) + 1
     try:
         result = endpoints[endpoint].generate(text=request.args.get('text', ''),
                                               avatars=[request.args.get('avatar1', ''), request.args.get('avatar2', '')],
