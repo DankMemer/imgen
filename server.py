@@ -36,8 +36,8 @@ def require_authorization(func):
 def index():
     data = {}
 
-    for endpoint in endpoints:
-        data[endpoint] = {'hits': endpoints[endpoint].hits, 'avg_gen_time': endpoints[endpoint].get_avg_gen_time()}
+    for endpoint in endpoints.endpoints:
+        data[endpoint] = {'hits': endpoints.endpoints[endpoint].hits, 'avg_gen_time': endpoints.endpoints[endpoint].get_avg_gen_time()}
 
     return render_template('index.html', data=data)
 
@@ -45,13 +45,13 @@ def index():
 @app.route('/api/<endpoint>', methods=['GET'])
 @require_authorization
 def api(endpoint):
-    if endpoint not in endpoints:
+    if endpoint not in endpoints.endpoints:
         return jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)})
 
     try:
-        result = endpoints[endpoint].run(text=request.args.get('text', ''),
-                                         avatars=[request.args.get('avatar1', ''), request.args.get('avatar2', '')],
-                                         usernames=[request.args.get('username1', ''), request.args.get('username2', '')])
+        result = endpoints.endpoints[endpoint].run(text=request.args.get('text', ''),
+                                                   avatars=[request.args.get('avatar1', ''), request.args.get('avatar2', '')],
+                                                   usernames=[request.args.get('username1', ''), request.args.get('username2', '')])
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
         result = jsonify({'status': 500, 'error': str(e)})
