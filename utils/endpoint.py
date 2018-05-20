@@ -29,4 +29,4 @@ class Endpoint(ABC):
 
     @abstractmethod
     def generate(self):
-        raise NotImplementedError(f'generate has not been implemented on endpoint {self.name}')
+        raise NotImplementedError('generate has not been implemented on endpoint {}'.format(self.name))
