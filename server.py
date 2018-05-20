@@ -1,13 +1,43 @@
+import json
 import sys
 import traceback
-from flask import Flask, jsonify, request, render_template  # Render template will be used later for displaying stats page
 
-from endpoints import (gay, trigger, trash, disability, quote, abandon, ban, slap, bed, brain, tweet,  # noqa: F401
-    ugly, spank, shit, hitler, jail, whodidthis, facts, invert, byemom, warp)  # noqa: F401
+from flask import Flask, abort, jsonify, render_template, request
+
 from utils.endpoint import Endpoint
+
+from endpoints import (abandon, ban, bed, brain,  # noqa: F401; noqa: F401
+                       byemom, disability, facts, gay, hitler, invert, jail,
+                       quote, shit, slap, spank, trash, trigger, tweet, ugly,
+                       warp, whodidthis)
 
 app = Flask(__name__)
 endpoints = {}
+
+
+def get_auth_keys():
+    try:
+        with open('keys.json') as keys:
+            data = json.load(keys)
+            if not isinstance(data, list):
+                print('keys.json must only contain an array of valid auth tokens')
+                return []
+            else:
+                return data
+    except FileNotFoundError:
+        print('keys.json wasn\'t found in the current directory')
+        return []
+
+
+def require_authorization(func):
+    def wrapper(*args, **kwargs):
+        print('running')
+        if request.headers.get('authorization', None) in get_auth_keys():
+            return func(*args, **kwargs)
+        else:
+            abort(jsonify({'status': 401, 'error': 'You are not authorized to access this endpoint'}))
+
+    return wrapper
 
 
 @app.route('/', methods=['GET'])
@@ -16,6 +46,7 @@ def index():
 
 
 @app.route('/api/<endpoint>', methods=['GET'])
+@require_authorization
 def api(endpoint):
     if endpoint not in endpoints:
         return jsonify({'status': 404, 'error': f'Endpoint {endpoint} not found!'})
