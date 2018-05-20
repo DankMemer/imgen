@@ -13,7 +13,6 @@ from endpoints import (abandon, ban, bed, brain,  # noqa: F401; noqa: F401
 
 app = Flask(__name__, template_folder='views')
 endpoints = {}
-hits = {}
 
 
 def get_auth_keys():
@@ -42,8 +41,12 @@ def require_authorization(func):
 
 @app.route('/', methods=['GET'])
 def index():
-    print(hits)
-    return render_template('index.html', hits=hits)
+    data = {}
+
+    for endpoint in endpoints:
+        data[endpoint] = {'hits': endpoints[endpoint].hits, 'avg_gen_time': endpoints[endpoint].get_avg_gen_time()}
+
+    return render_template('index.html', data=data)
 
 
 @app.route('/api/<endpoint>', methods=['GET'])
@@ -52,11 +55,10 @@ def api(endpoint):
     if endpoint not in endpoints:
         return jsonify({'status': 404, 'error': f'Endpoint {endpoint} not found!'})
 
-    hits[endpoint] = hits.get(endpoint, 0) + 1
     try:
-        result = endpoints[endpoint].generate(text=request.args.get('text', ''),
-                                              avatars=[request.args.get('avatar1', ''), request.args.get('avatar2', '')],
-                                              usernames=[request.args.get('username1', ''), request.args.get('username2', '')])
+        result = endpoints[endpoint].run(text=request.args.get('text', ''),
+                                         avatars=[request.args.get('avatar1', ''), request.args.get('avatar2', '')],
+                                         usernames=[request.args.get('username1', ''), request.args.get('username2', '')])
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
         result = jsonify({'status': 500, 'error': str(e)})
