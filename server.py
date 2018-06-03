@@ -56,3 +56,7 @@ def api(endpoint):
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
         result = jsonify({'status': 500, 'error': str(e)})
     return result
+
+
+if __name__ == '__main__':
+    app.run()
