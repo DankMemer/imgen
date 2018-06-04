@@ -9,8 +9,8 @@ from utils.endpoint import Endpoint
 
 class Ugly(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/ugly/ugly.png')
-        avatar = Image.open(http.get_image(avatars[0])).resize((175, 175))
+        base = Image.open('assets/ugly/ugly.png').convert('RGBA')
+        avatar = Image.open(http.get_image(avatars[0])).resize((175, 175)).convert('RGBA')
         base.paste(avatar, (120, 55), avatar)
 
         b = BytesIO()
