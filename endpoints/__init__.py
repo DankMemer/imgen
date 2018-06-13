@@ -9,8 +9,5 @@ endpoints = {}
 
 
 for e in filter(lambda module: str(module).startswith('endpoints.'), sys.modules):
-    try:
-        endpoint = sys.modules[e].setup()
-        endpoints.update({endpoint.name: endpoint})
-    except Exception:
-        print('Failed to load ' + endpoint)
+    endpoint = sys.modules[e].setup()
+    endpoints.update({endpoint.name: endpoint})
