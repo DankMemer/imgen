@@ -18,7 +18,7 @@ class Note(Endpoint):
         text = wrap(font, text, 150)
         canv.text((455, 420), text, font=font, fill='Black')
 
-        text_layer = text_layer.rotate(-23)
+        text_layer = text_layer.rotate(-23, resample=Image.BICUBIC)
 
         base.paste(text_layer, (0, 0), text_layer)
 

@@ -15,10 +15,10 @@ class SaveHumanity(Endpoint):
         font = ImageFont.truetype(font='assets/fonts/sans.ttf', size=16)
         canv = ImageDraw.Draw(text_layer)
 
-        text = wrap(font, text, 210)
-        canv.text((475, 400), text, font=font, fill='Black')
+        text = wrap(font, text, 180)
+        canv.text((490, 410), text, font=font, fill='Black')
 
-        text_layer = text_layer.rotate(-10)
+        text_layer = text_layer.rotate(-7, resample=Image.BICUBIC)
 
         base.paste(text_layer, (0, 0), text_layer)
 
