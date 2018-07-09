@@ -10,6 +10,7 @@ from utils.textutils import wrap
 class Note(Endpoint):
     def generate(self, avatars, text, usernames):
         base = Image.open('assets/note/note.png').convert('RGBA')
+        # We need a text layer here for the rotation
         text_layer = Image.new('RGBA', base.size)
         font = ImageFont.truetype(font='assets/fonts/sans.ttf', size=16)
         canv = ImageDraw.Draw(text_layer)

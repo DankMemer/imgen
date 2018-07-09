@@ -10,6 +10,7 @@ from utils.textutils import wrap
 class Facts(Endpoint):
     def generate(self, avatars, text, usernames):
         base = Image.open('assets/facts/facts.jpg')
+        # We need to create an image layer here for the rotation
         text_layer = Image.new('RGBA', base.size)
         font = ImageFont.truetype(font='assets/fonts/verdana.ttf', size=25)
         canv = ImageDraw.Draw(text_layer)

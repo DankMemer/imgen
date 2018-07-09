@@ -10,9 +10,8 @@ from utils.textutils import wrap
 class Plan(Endpoint):
     def generate(self, avatars, text, usernames):
         base = Image.open('assets/plan/plan.png').convert('RGBA')
-        text_layer = Image.new('RGBA', base.size)
         font = ImageFont.truetype(font='assets/fonts/sans.ttf', size=16)
-        canv = ImageDraw.Draw(text_layer)
+        canv = ImageDraw.Draw(base)
 
         words = text.split(', ')
 
@@ -29,8 +28,6 @@ class Plan(Endpoint):
         canv.text((510, 60), b, font=font, fill='Black')
         canv.text((190, 280), c, font=font, fill='Black')
         canv.text((510, 280), c, font=font, fill='Black')
-
-        base.paste(text_layer, (0, 0), text_layer)
 
         b = BytesIO()
         base.save(b, format='png')
