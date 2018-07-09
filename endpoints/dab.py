@@ -7,19 +7,21 @@ from utils import http
 from utils.endpoint import Endpoint
 
 
-class Brazzers(Endpoint):
+class Dab(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/brazzers/brazzers.png').resize((300, 150)).convert('RGBA')
+        base = Image.open('assets/dab/dab.png').convert('RGBA')
         avatar = Image.open(http.get_image(avatars[0])).resize((500, 500)).convert('RGBA')
+        final_image = Image.new('RGBA', base.size)
 
-        # avatar is technically the base
-        avatar.paste(base, (200, 390), base)
+        # Put the base over the avatar
+        final_image.paste(avatar, (300, 0), avatar)
+        final_image.paste(base, (0, 0), base)
 
         b = BytesIO()
-        avatar.save(b, format='png')
+        final_image.save(b, format='png')
         b.seek(0)
         return send_file(b, mimetype='image/png')
 
 
 def setup():
-    return Brazzers()
+    return Dab()

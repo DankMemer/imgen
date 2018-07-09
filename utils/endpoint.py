@@ -30,19 +30,6 @@ class Endpoint(ABC):
         self.avg_generation_times.append(t)
         return res
 
-    @staticmethod
-    def setup(avatars, resizes, base, file_format="png"):
-        # Sorry for bad formatting
-        return (
-            [
-                Image.open(http.get_image(avatar)).resize(resizes[i]).convert("RGBA")
-                for i, avatar in enumerate(avatars)
-                if avatar != ''
-            ],
-            Image.open(f"assets/{base}/{base}.{file_format}").resize(
-                resizes[-1]).convert('RGBA'),
-        )
-
     @abstractmethod
     def generate(self, avatars, text, usernames):
         raise NotImplementedError(
