@@ -1,6 +1,19 @@
 # Starting meme-server
+git clone
+
 `cd` to meme-server
 
-run `gunicorn -w 32 -b 127.0.0.1:65535 server:app`
+./start.sh
 
-Change 127.0.0.1:65535 to reflect desired host and port. Run on 0.0.0.0:port to expose it to the internet
+
+Make sure you're in a tmux session to ensure that it remains running upon disconnecting from SSH
+
+## Tmux stuffs
+`tmux new -s <session name>` - Starts a new session with the given name
+`tmux attach -t <session name>` - Attaches to the session with the given name, if any
+`tmux ls` - Lists all active tmux sessions
+`tmux kill-session -t <session name>` - Kills the session with the given name, if any
+
+-> Shortcuts
+
+`Ctrl^b+d` to detach from an active session, if attached.
