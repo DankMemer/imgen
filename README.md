@@ -3,7 +3,7 @@ git clone
 
 `cd` to meme-server
 
-./start.sh
+`./start.sh`
 
 
 Make sure you're in a tmux session to ensure that it remains running upon disconnecting from SSH
