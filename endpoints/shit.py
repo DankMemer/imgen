@@ -12,6 +12,7 @@ class Shit(Endpoint):
         base = Image.open('assets/shit/shit.jpg')
         font = ImageFont.truetype(font='assets/fonts/segoeuireg.ttf', size=30)
 
+        # We need a text layer here for the rotation
         text_layer = Image.new('RGBA', base.size)
         canv = ImageDraw.Draw(text_layer)
 

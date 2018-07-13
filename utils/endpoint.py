@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from time import time
 
-from utils import fixedlist
+from PIL import Image
+
+from utils import fixedlist, http
 
 
 class Endpoint(ABC):
@@ -17,7 +19,8 @@ class Endpoint(ABC):
         if len(self.avg_generation_times) == 0:
             return 0
 
-        return round(sum(self.avg_generation_times) / len(self.avg_generation_times), 2)
+        return round(
+            sum(self.avg_generation_times) / len(self.avg_generation_times), 2)
 
     def run(self, **kwargs):
         self.hits += 1
@@ -28,5 +31,7 @@ class Endpoint(ABC):
         return res
 
     @abstractmethod
-    def generate(self):
-        raise NotImplementedError('generate has not been implemented on endpoint {}'.format(self.name))
+    def generate(self, avatars, text, usernames):
+        raise NotImplementedError(
+            f"generate has not been implemented on endpoint {self.name}"
+        )
