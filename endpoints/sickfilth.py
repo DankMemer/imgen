@@ -7,7 +7,7 @@ from utils import http
 from utils.endpoint import Endpoint
 
 
-class SickFilth(Endpoint):
+class SickBan(Endpoint):
     def generate(self, avatars, text, usernames):
         base = Image.open('assets/ban/ban.png').convert('RGBA')
         avatar = Image.open(http.get_image(avatars[0])).resize((400, 400)).convert('RGBA')
@@ -20,4 +20,4 @@ class SickFilth(Endpoint):
 
 
 def setup():
-    return SickFilth()
+    return SickBan()
