@@ -5,7 +5,7 @@ from . import (abandon, ban, bed, brain,  # noqa: F401
                quote, shit, sickfilth, slap, spank, trash, trigger, tweet, ugly,
                warp, whodidthis, magik, deepfry, brazzers, cancer, cry, dab,
                delete, door, egg, failure, fakenews, fedora, floor, laid, note,
-               ohno, plan, rip, satan, savehumanity, thesearch)
+               ohno, plan, rip, satan, savehumanity, thesearch, dank)
 
 endpoints = {}
 
