@@ -11,10 +11,11 @@ from utils.endpoint import Endpoint
 class DeepFry(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = Image.open(http.get_image(avatars[0])).resize((400, 400)).convert('RGBA')
-        joy = Image.open('assets/deepfry/joy.png').resize((100, 100)).rotate(randint(-30, 30)).convert('RGBA')
-        hand = Image.open('assets/deepfry/ok-hand.png').resize((100, 100)).rotate(randint(-30, 30)).convert('RGBA')
-        hundred = Image.open('assets/deepfry/100.png').resize((100, 100)).rotate(randint(-30, 30)).convert('RGBA')
-        fire = Image.open('assets/deepfry/fire.png').resize((100, 100)).rotate(randint(-30, 30)).convert('RGBA')
+
+        joy, hand, hundred, fire = [
+            Image.open(f'assets/deepfry/{asset}.png').resize((100, 100)).rotate(randint(-30, 30)).convert('RGBA')
+            for asset in ['joy', 'ok-hand', '100', 'fire']
+        ]
 
         avatar.paste(joy, (randint(20, 75), randint(20, 45)), joy)
         avatar.paste(hand, (randint(20, 75), randint(150, 300)), hand)
