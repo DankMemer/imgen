@@ -13,10 +13,8 @@ class Dank(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = Image.open(http.get_image(avatars[0])).resize((320, 320)).convert('RGBA')
 
-        horn = Image.open('assets/dank/horn.png').convert('RGBA').resize((100, 100)).rotate(315)
-        # horn = Image.open('assets/dank/horn.png').convert('RGBA').resize((100, 100)).rotate(315)
-        horn2 = ImageOps.mirror(horn.copy().resize((130, 130)).rotate(350))
-        overlay = Image.open('assets/dank/red.png').convert('RGBA').putalpha(51)
+        horn = Image.open('assets/dank/horn.png').convert('RGBA').resize((100, 100)).rotate(315, resample=Image.BICUBIC)
+        horn2 = ImageOps.mirror(horn.copy().resize((130, 130)).rotate(350, resample=Image.BICUBIC))
         hit = Image.open('assets/dank/hit.png').convert('RGBA').resize((40, 40))
         gun = Image.open('assets/dank/gun.png').convert('RGBA').resize((250, 205))
         faze = Image.open('assets/dank/faze.png').convert('RGBA').resize((60, 40))
@@ -44,7 +42,7 @@ class Dank(Endpoint):
             frames.append(base)
 
         b = BytesIO()
-        frames[0].save(b, save_all=True, append_images=frames[1:], format='gif', loop=0, duration=20, disposal=2,
+        frames[0].save(b, save_all=True, append_images=frames[1:], format='gif', loop=0, duration=20,
                        optimize=True)
         b.seek(0)
         return send_file(b, mimetype='image/gif')
