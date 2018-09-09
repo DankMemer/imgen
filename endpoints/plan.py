@@ -22,7 +22,7 @@ class Plan(Endpoint):
 
         words = [wrap(font, w, 120) for w in words]
 
-        [a, b, c] = words
+        a, b, c = words
 
         canv.text((190, 60), a, font=font, fill='Black')
         canv.text((510, 60), b, font=font, fill='Black')
