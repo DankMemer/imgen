@@ -13,10 +13,10 @@ class Balloon(Endpoint):
         font = ImageFont.truetype(font='assets/fonts/sans.ttf')
         canv = ImageDraw.Draw(base)
 
-        text = text.split(' | ')
+        text = text.split(', ')
 
         if len(text) != 2:
-            text = ["Separate the items", "with the | character"]
+            text = ["Separate the items with a", "comma followed by a space"]
 
         balloon, label = text
 
