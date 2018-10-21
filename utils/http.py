@@ -4,7 +4,7 @@ import requests
 from PIL import Image
 
 
-def get_image(url) -> Image.Image:
+def get_image(url):
     try:
         return Image.open(BytesIO(requests.get(url, stream=True).content))
     except OSError:
