@@ -10,7 +10,7 @@ from utils.endpoint import Endpoint
 
 class Trigger(Endpoint):
     def generate(self, avatars, text, usernames):
-        avatar = Image.open(http.get_image(avatars[0])).resize((320, 320)).convert('RGBA')
+        avatar = http.get_image(avatars[0]).resize((320, 320)).convert('RGBA')
         triggered = Image.open('assets/triggered/triggered.jpg')
         tint = Image.open('assets/triggered/red.png').convert('RGBA')
         blank = Image.new('RGBA', (256, 256), color=(231, 19, 29))

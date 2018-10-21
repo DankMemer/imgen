@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint
 
 class Dank(Endpoint):
     def generate(self, avatars, text, usernames):
-        avatar = Image.open(http.get_image(avatars[0])).resize((320, 320)).convert('RGBA')
+        avatar = http.get_image(avatars[0]).resize((320, 320)).convert('RGBA')
 
         horn = Image.open('assets/dank/horn.png').convert('RGBA').resize((100, 100)).rotate(315, resample=Image.BICUBIC)
         horn2 = ImageOps.mirror(horn.copy().resize((130, 130)).rotate(350, resample=Image.BICUBIC))

@@ -2,7 +2,7 @@ from math import floor
 
 
 # TODO: Chop long single-words
-from PIL import ImageFont
+# from PIL import ImageFont
 
 
 def wrap(font, text, line_width):

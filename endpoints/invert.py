@@ -9,7 +9,7 @@ from utils.endpoint import Endpoint
 
 class Invert(Endpoint):
     def generate(self, avatars, text, usernames):
-        img = Image.open(http.get_image(avatars[0]))
+        img = http.get_image(avatars[0])
         if img.mode == 'RGBA':
             r, g, b, a = img.split()
             rgb_image = Image.merge('RGB', (r, g, b))

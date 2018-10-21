@@ -1,9 +1,7 @@
 from abc import ABC, abstractmethod
 from time import time
 
-from PIL import Image
-
-from utils import fixedlist, http
+from utils import fixedlist
 
 
 class Endpoint(ABC):

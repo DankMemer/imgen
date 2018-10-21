@@ -11,7 +11,7 @@ from utils.textutils import wrap
 class Floor(Endpoint):
     def generate(self, avatars, text, usernames):
         base = Image.open('assets/floor/floor.jpg').convert('RGBA')
-        avatar = Image.open(http.get_image(avatars[0])).resize((45, 45)).convert('RGBA')
+        avatar = http.get_image(avatars[0]).resize((45, 45)).convert('RGBA')
         avatar2 = avatar.copy().resize((23, 23))
         font = ImageFont.truetype(font='assets/fonts/sans.ttf', size=22)
         canv = ImageDraw.Draw(base)

@@ -10,7 +10,7 @@ from utils.endpoint import Endpoint
 
 class DeepFry(Endpoint):
     def generate(self, avatars, text, usernames):
-        avatar = Image.open(http.get_image(avatars[0])).resize((400, 400)).convert('RGBA')
+        avatar = http.get_image(avatars[0]).resize((400, 400)).convert('RGBA')
 
         joy, hand, hundred, fire = [
             Image.open(f'assets/deepfry/{asset}.png').resize((100, 100)).rotate(randint(-30, 30)).convert('RGBA')

@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw, ImageFont
 from flask import send_file
 
 from utils.endpoint import Endpoint
-from utils.textutils import *
+from utils.textutils import auto_text_size
 
 
 class KnowYourLocation(Endpoint):

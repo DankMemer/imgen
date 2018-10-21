@@ -10,7 +10,7 @@ from utils.endpoint import Endpoint
 class Satan(Endpoint):
     def generate(self, avatars, text, usernames):
         base = Image.open('assets/satan/satan.png').convert('RGBA')
-        avatar = Image.open(http.get_image(avatars[0])).resize((195, 195)).convert('RGBA')
+        avatar = http.get_image(avatars[0]).resize((195, 195)).convert('RGBA')
         final_image = Image.new('RGBA', base.size)
 
         # Put the base over the avatar

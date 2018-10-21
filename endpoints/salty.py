@@ -10,7 +10,7 @@ from utils.endpoint import Endpoint
 
 class Salty(Endpoint):
     def generate(self, avatars, text, usernames):
-        avatar = Image.open(http.get_image(avatars[0])).convert('RGBA').resize((256, 256))
+        avatar = http.get_image(avatars[0]).convert('RGBA').resize((256, 256))
 
         salt = (
             Image.open('assets/salty/salt.png')

@@ -10,8 +10,8 @@ from utils.endpoint import Endpoint
 class Bed(Endpoint):
     def generate(self, avatars, text, usernames):
         base = Image.open('assets/bed/bed.png').convert('RGBA')
-        avatar = Image.open(http.get_image(avatars[0])).resize((100, 100)).convert('RGBA')
-        avatar2 = Image.open(http.get_image(avatars[1])).resize((70, 70)).convert('RGBA')
+        avatar = http.get_image(avatars[0]).resize((100, 100)).convert('RGBA')
+        avatar2 = http.get_image(avatars[1]).resize((70, 70)).convert('RGBA')
         avatar_small = avatar.copy().resize((70, 70))
         base.paste(avatar, (25, 100), avatar)
         base.paste(avatar, (25, 300), avatar)

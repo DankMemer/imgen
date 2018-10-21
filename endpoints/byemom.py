@@ -11,7 +11,7 @@ from utils.textutils import wrap
 class Byemom(Endpoint):
     def generate(self, avatars, text, usernames):
         base = Image.open('assets/byemom/mom.png')
-        avatar = Image.open(http.get_image(avatars[0])).convert('RGBA').resize((70, 70), resample=Image.BICUBIC)
+        avatar = http.get_image(avatars[0]).convert('RGBA').resize((70, 70), resample=Image.BICUBIC)
         avatar2 = avatar.copy().resize((125, 125), resample=Image.BICUBIC)
         text_layer = Image.new('RGBA', (350, 25))
         bye_layer = Image.new('RGBA', (180, 51), (255, 255, 255))
