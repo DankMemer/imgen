@@ -4,8 +4,11 @@ import requests
 from PIL import Image
 
 
-def get_image(url):
-    return Image.open(BytesIO(requests.get(url, stream=True).content))
+def get_image(url) -> Image.Image:
+    try:
+        return Image.open(BytesIO(requests.get(url, stream=True).content))
+    except OSError:
+        raise TypeError('An invalid image was provided! Check the URL and try again.')
 
 
 def get_image_raw(url):
