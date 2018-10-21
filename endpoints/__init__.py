@@ -1,6 +1,6 @@
 import sys
 
-from . import (abandon, ban, bed, brain,  # noqa: F401
+from . import (abandon, bed, brain,  # noqa: F401
                byemom, disability, facts, gay, hitler, invert, jail,
                quote, shit, sickfilth, slap, spank, trash, trigger, tweet, ugly,
                warp, whodidthis, magik, deepfry, brazzers, cancer, cry, dab,

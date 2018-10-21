@@ -1,8 +1,18 @@
-<h1 style="font-size: 60px">Dank Memer Imgen</h1>
-{% for ep in data %}
-<div style="display: flex; flex-direction: row;">
+<head>
+  <style>
+    .titlebar {
+      height: 30px;
+      background-color: #23272A;
+    }
+  </style>
+</head>
+<div class="titlebar">
+  <h1 style="font-size: 60px">Dank Memer Imgen</h1>
+  {% for ep in data %}
+  <div style="display: flex; flex-direction: row;">
     <h1 style="margin-left: 20px;">{{ep}}</h1>
     <h1 style="margin-left: 20px;">{{data[ep]["hits"]}} hits</h1>
     <h1 style="margin-left: 20px;">{{data[ep]["avg_gen_time"]}} ms</h1>
+  </div>
+  {% endfor %}
 </div>
-{% endfor %}
