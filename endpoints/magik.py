@@ -9,7 +9,7 @@ from utils.endpoint import Endpoint
 
 class Magik(Endpoint):
     def generate(self, avatars, text, usernames):
-        avatar = http.get_image(avatars[0])
+        avatar = BytesIO(http.get_image_raw(avatars[0]))
         with image.Image(file=avatar) as img:
             img.transform(resize='400x400')
             img.liquid_rescale(width=int(img.width * 0.5),
