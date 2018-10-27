@@ -31,7 +31,9 @@ class Youtube(Endpoint):
         op = wrap(font, name, 1150)
         size = canv.textsize(name, font=font)
         comment = wrap(font3, text, 550)
-        time = f'{randint(1,60)} minutes ago'
+        num = randint(1, 60)
+        plural = '' if num == 1 else 's'
+        time = f'{num} minute{plural} ago'
         canv.text((92, 34), op, font=font, fill='Black')
         canv.text((100 + size[0], 34), time, font=font2, fill='Grey')
         canv.text((92, 59), comment, font=font3, fill='Black')
