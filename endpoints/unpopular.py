@@ -15,8 +15,8 @@ class Unpopular(Endpoint):
         font = ImageFont.truetype(font='assets/fonts/semibold.woff', size=100)
         reticle = Image.open('assets/unpopular/reticle.png').convert('RGBA')
         temp = Image.new('RGBA', (1200, 800), color=(0, 0, 0, 0))
-        avatar_square = Image.new(mode='RGBA', size=(340, 260), color=(0, 0, 0, 0))
-        avatar_mono = avatar.resize((300, 300)).rotate(16, expand=1).convert('1')
+        avatar_square = Image.new(mode='RGBA', size=(360, 270), color=(0, 0, 0, 0))
+        avatar_mono = avatar.resize((300, 310)).rotate(16, expand=1).convert('1')
         avatar_darkened = ImageEnhance.Brightness(avatar_mono.convert('RGB')).enhance(0.5)
         avatar_square.paste(avatar_darkened, (0, 0), avatar_mono)
 
