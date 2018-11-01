@@ -4,6 +4,7 @@ import traceback
 from flask import Flask, abort, jsonify, render_template, request
 
 import endpoints
+from .utils import ratelimits
 
 app = Flask(__name__, template_folder='views', static_folder='views/assets')
 
@@ -54,6 +55,7 @@ def dashboard():
 
 @app.route('/api/<endpoint>', methods=['GET'])
 @require_authorization
+@ratelimits.ratelimit
 def api(endpoint):
     if endpoint not in endpoints.endpoints:
         return jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)})
