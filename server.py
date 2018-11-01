@@ -47,6 +47,11 @@ def api_endpoints():
     return render_template('endpoints.html', data=sorted(endpoints.endpoints.keys()))
 
 
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+
 @app.route('/api/<endpoint>', methods=['GET'])
 @require_authorization
 def api(endpoint):
