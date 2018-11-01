@@ -4,7 +4,7 @@ import traceback
 from flask import Flask, abort, jsonify, render_template, request
 
 import endpoints
-from .utils import ratelimits
+from utils import ratelimits
 
 app = Flask(__name__, template_folder='views', static_folder='views/assets')
 
