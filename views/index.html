@@ -1,145 +1,24 @@
 <head>
-  <title>Dank Memer Imgen</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
-  <style>
-    body {
-      margin: 0px;
-      background-color: #2C2F33;
-      font-family: 'Montserrat';
-    }
-
-    .content {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      color: white;
-    }
-
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 100px;
-      background-color: #23272A;
-      padding-left: 5px;
-      padding-right: 5px;
-    }
-
-    .nav-title {
-      font-weight: bold;
-      font-size: 2em;
-      margin-left: 40px;
-    }
-
-    .nav-links {
-      list-style-type: none;
-      margin-right: 40px;
-    }
-
-    .nav-item {
-      float: left;
-    }
-
-    .nav-link {
-      display: block;
-      text-align: center;
-      margin-left: 10px;
-      margin-right: 10px;
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .nav-link:hover {
-      color: #e6e6e6;
-    }
-
-    .stats {
-      width: 90%;
-      margin-top: 20px;
-      padding-bottom: 10px;
-      color: white;
-      margin-left: auto;
-      margin-right: auto;
-      border-spacing: 5px;
-    }
-
-    th {
-      font-size: 1.5em;
-      border-bottom: 1px solid white;
-      cursor: hand;
-      user-select: none;
-    }
-
-    td {
-      text-align: center;
-      font-size: 1.25em;
-    }
-  </style>
-  <script>
-    // Shamelessly stolen from https://www.w3schools.com/howto/howto_js_sort_table.asp :^)
-    function sortTable(n) {
-      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-      table = document.getElementById("gen-stats");
-      switching = true;
-      dir = "asc"; 
-      while (switching) {
-        switching = false;
-        rows = table.rows;
-        for (i = 1; i < (rows.length - 1); i++) {
-          shouldSwitch = false;
-          x = rows[i].getElementsByTagName("TD")[n];
-          y = rows[i + 1].getElementsByTagName("TD")[n];
-          const xCtn = (n === 1 || n === 2) ? parseFloat(x.innerHTML) : x.innerHTML.toLowerCase();
-          const yCtn = (n === 1 || n === 2) ? parseFloat(y.innerHTML) : y.innerHTML.toLowerCase();
-          if (dir == "asc") {
-            if (xCtn > yCtn) {
-              shouldSwitch = true;
-              break;
-            }
-          } else if (dir == "desc") {
-            if (xCtn < yCtn) {
-              shouldSwitch = true;
-              break;
-            }
-          }
-        }
-        if (shouldSwitch) {
-          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-          switching = true;
-          switchcount ++; 
-        } else {
-          if (switchcount == 0 && dir == "asc") {
-            dir = "desc";
-            switching = true;
-          }
-        }
-      }
-    }
-  </script>
+  {% include "partials/header.html" %}
+  <script src="/assets/tablesort.js"></script>
 </head>
-<div class="content">
-  <div class="nav">
-    <span class="nav-title">DANK MEMER IMGEN</span>
-    <ul class="nav-links">
-      <li class="nav-item">
-        <a class="nav-link" href="/endpoints">ENDPOINTS</a>
-      </li>
-    </ul>
+
+<body>
+  <div class="content">
+    {% include "partials/navbar.html" %}
+    <table class="stats" id="gen-stats">
+      <tr>
+        <th onclick="sortTable(0)">Endpoint</th>
+        <th onclick="sortTable(1)">Hits</th>
+        <th onclick="sortTable(2)">Avg. Gen Time</th>
+      </tr>
+      {% for ep in data %}
+      <tr>
+        <td>{{ep}}</td>
+        <td>{{data[ep]["hits"]}} hits</td>
+        <td>{{data[ep]["avg_gen_time"]}} ms</td>
+      </tr>
+      {% endfor %}
+    </table>
   </div>
-  <table class="stats" id="gen-stats">
-    <tr>
-      <th onclick="sortTable(0)">Endpoint</th>
-      <th onclick="sortTable(1)">Hits</th>
-      <th onclick="sortTable(2)">Avg. Gen Time</th>
-    </tr>
-    {% for ep in data %}
-    <tr>
-      <td>{{ep}}</td>
-      <td>{{data[ep]["hits"]}} hits</td>
-      <td>{{data[ep]["avg_gen_time"]}} ms</td>
-    </tr>
-    {% endfor %}
-  </table>
-</div>
+</body>

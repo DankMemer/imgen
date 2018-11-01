@@ -5,7 +5,7 @@ from flask import Flask, abort, jsonify, render_template, request
 
 import endpoints
 
-app = Flask(__name__, template_folder='views')
+app = Flask(__name__, template_folder='views', static_folder='views/assets')
 
 
 def get_auth_keys():

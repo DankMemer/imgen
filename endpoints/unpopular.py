@@ -12,7 +12,7 @@ class Unpopular(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((666, 666)).convert('RGBA')
         base = Image.open('assets/unpopular/unpopular.png').convert('RGBA')
-        font = ImageFont.truetype(font='assets/fonts/semibold.woff', size=100, )
+        font = ImageFont.truetype(font='assets/fonts/semibold.woff', size=100)
         reticle = Image.open('assets/unpopular/reticle.png').convert('RGBA')
         temp = Image.new('RGBA', (1200, 800), color=(0, 0, 0, 0))
         avatar_square = Image.new(mode='RGBA', size=(340, 260), color=(0, 0, 0, 0))
@@ -29,7 +29,7 @@ class Unpopular(Endpoint):
 
         base.paste(avatar, (1169, 1169), avatar)
         face = avatar.resize((368, 368))
-        base.paste(face, (140,250), face)
+        base.paste(face, (140, 250), face)
         base.paste(reticle, (1086, 1086), reticle)
         base.paste(avatar_square, (-20, 1670), avatar_square)
         canv = ImageDraw.Draw(temp)
