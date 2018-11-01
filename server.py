@@ -28,8 +28,8 @@ def require_authorization(func):
         if request.headers.get('authorization', None) in get_auth_keys():
             return func(*args, **kwargs)
         else:
-            return make_response((jsonify({"status": 401,
-                                           "error": "You are not authorized to access this endpoint"}),
+            return make_response((jsonify({'status': 401,
+                                           'error': 'You are not authorized to access this endpoint'}),
                                   401))
 
     return wrapper
@@ -40,7 +40,8 @@ def index():
     data = {}
 
     for endpoint in endpoints.endpoints:
-        data[endpoint] = {'hits': endpoints.endpoints[endpoint].hits, 'avg_gen_time': endpoints.endpoints[endpoint].get_avg_gen_time()}
+        data[endpoint] = {'hits': endpoints.endpoints[endpoint].hits,
+                          'avg_gen_time': endpoints.endpoints[endpoint].get_avg_gen_time()}
 
     return render_template('index.html', data=data)
 
@@ -62,14 +63,19 @@ def api(endpoint):
     if endpoint not in endpoints.endpoints:
         return make_response((
             jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)}), 404))
+        # TODO: Figure out why setting status code here does not work and always returns 200
 
     try:
         result = endpoints.endpoints[endpoint].run(text=request.args.get('text', ''),
-                                                   avatars=[request.args.get('avatar1', ''), request.args.get('avatar2', '')],
-                                                   usernames=[request.args.get('username1', ''), request.args.get('username2', '')])
+                                                   avatars=[request.args.get('avatar1', ''),
+                                                            request.args.get('avatar2', '')],
+                                                   usernames=[request.args.get('username1', ''),
+                                                              request.args.get('username2', '')])
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
-        result = make_response((jsonify({"status": 500, "error": str(e)}), 500))
+        result = make_response((jsonify({'status': 500,
+                                         'error': str(e)}), 500))
+        # TODO: Figure out why setting status code here does not work and always returns 200
     return result
 
 
