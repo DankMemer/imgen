@@ -1,11 +1,6 @@
 from datetime import datetime, timedelta
-import json
 
-from flask import abort, request
-
-
-class KeyExpired(KeyError):
-    pass
+from flask import request, make_response, jsonify
 
 
 class RatelimitCache(object):
@@ -21,24 +16,12 @@ class RatelimitCache(object):
             return c['data']
 
         del self.cache[item]
-        raise KeyExpired(item)
 
     def get(self, item):
-        c = self.cache[item]
-
-        now = datetime.now()
-        if now - c['timestamp'] < c['expire_time']:
-            return c['data']
-
-        del self.cache[item]
-        raise KeyExpired(item)
+        return self.__getitem__(item)
 
     def __contains__(self, item):
-        try:
-            self[item]
-            return True
-        except KeyError:
-            return False
+        return item in self.cache
 
     def __setitem__(self, key, value):
         self.cache[key] = {
@@ -47,55 +30,44 @@ class RatelimitCache(object):
             'expire_time': self.expire_time
         }
 
+    def expires_on(self, item):
+        c = self.cache[item]
+
+        return c['timestamp'] + c['expire_time']
+
     def set(self, key, value):
-        self.cache[key] = {
-            'data': value,
-            'timestamp': datetime.now(),
-            'expire_time': self.expire_time
-        }
+        return self.__setitem__(key, value)
 
 
 cache = RatelimitCache()
 
 
-def get_config():
-    try:
-        with open('config.json') as config:
-            data = json.load(config)
-            if not isinstance(data, dict):
-                print('config.json must have a dict as base')
-                return {}
-            else:
-                return data
-    except FileNotFoundError:
-        print('config.json wasn\'t found in the current directory')
-        return {}
-
-
 def ratelimit(func, max_usage=5):
     def wrapper(*args, **kwargs):
         key = request.headers.get('authorization', None)
-        try:
-            if get_config().get('memer_key') == key:
-                is_memer = True
-            else:
-                is_memer = False
-        except KeyError:
-            print('memer-key must exist in the config')
-            raise KeyError
-        if key in cache:
+        if key.endswith('-unlimited'):
+            unlimited = True
+        else:
+            unlimited = False
+        if unlimited:
+            return make_response((func(*args, **kwargs), 200, {"X-RateLimit-Limit": 'Unlimited',
+                                                               "X-RateLimit-Remaining": "Unlimited",
+                                                               "X-RateLimit-Reset": 2147483647}))
+        if key in cache and cache[key]:
             usage = cache.get(key)
-            if usage < max_usage and not is_memer:
+            if usage < max_usage:
                 cache.set(key, usage + 1)
-                return func(*args, **kwargs)
-            elif usage >= max_usage and is_memer:
-                return func(*args, **kwargs)
+                return make_response((func(*args, **kwargs), 200, {"X-RateLimit-Limit": max_usage,
+                                                                   "X-RateLimit-Remaining": max_usage - usage - 1,
+                                                                   "X-RateLimit-Reset": cache.expires_on(key)}))
             else:
-                abort(status=429)
-        elif key not in cache and is_memer:
-            return func(*args, **kwargs)
+                return make_response((jsonify({"status": 429, "error": "You are being ratelimited"}), 429, {"X-RateLimit-Limit": max_usage,
+                                                                   "X-RateLimit-Remaining": 0,
+                                                                   "X-RateLimit-Reset": cache.expires_on(key)}))
         else:
             cache.set(key, 1)
-            return func(*args, **kwargs)
+            return make_response((func(*args, **kwargs), 200, {"X-RateLimit-Limit": max_usage,
+                                                                   "X-RateLimit-Remaining": max_usage - 1,
+                                                                   "X-RateLimit-Reset": cache.expires_on(key)}))
 
     return wrapper

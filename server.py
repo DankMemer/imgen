@@ -1,10 +1,10 @@
 import json
 import traceback
 
-from flask import Flask, abort, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, make_response
 
 import endpoints
-from utils import ratelimits
+from utils.ratelimits import ratelimit
 
 app = Flask(__name__, template_folder='views', static_folder='views/assets')
 
@@ -28,7 +28,9 @@ def require_authorization(func):
         if request.headers.get('authorization', None) in get_auth_keys():
             return func(*args, **kwargs)
         else:
-            abort(jsonify({'status': 401, 'error': 'You are not authorized to access this endpoint'}))
+            return make_response((jsonify({"status": 401,
+                                           "error": "You are not authorized to access this endpoint"}),
+                                  401))
 
     return wrapper
 
@@ -55,10 +57,11 @@ def dashboard():
 
 @app.route('/api/<endpoint>', methods=['GET'])
 @require_authorization
-@ratelimits.ratelimit
+@ratelimit
 def api(endpoint):
     if endpoint not in endpoints.endpoints:
-        return jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)})
+        return make_response((
+            jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)}), 404))
 
     try:
         result = endpoints.endpoints[endpoint].run(text=request.args.get('text', ''),
@@ -66,7 +69,7 @@ def api(endpoint):
                                                    usernames=[request.args.get('username1', ''), request.args.get('username2', '')])
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
-        result = jsonify({'status': 500, 'error': str(e)})
+        result = make_response((jsonify({"status": 500, "error": str(e)}), 500))
     return result
 
 
