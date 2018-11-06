@@ -15,7 +15,8 @@ class RatelimitCache(object):
         if now - c['timestamp'] < c['expire_time']:
             return c['data']
 
-        del self.cache[item]
+        self.cache.pop(item)
+        return 0
 
     def get(self, item):
         return self.__getitem__(item)
@@ -45,16 +46,13 @@ cache = RatelimitCache()
 def ratelimit(func, max_usage=5):
     def wrapper(*args, **kwargs):
         key = request.headers.get('authorization', None)
-        if key.endswith('-unlimited'):
-            unlimited = True
-        else:
-            unlimited = False
+        unlimited = key.endswith('-unlimited')
         if unlimited:
             return make_response(
                 (func(*args, **kwargs), 200, {'X-RateLimit-Limit': 'Unlimited',
                                               'X-RateLimit-Remaining': 'Unlimited',
                                               'X-RateLimit-Reset': 2147483647}))
-        if key in cache and cache[key]:
+        if key in cache:
             # TODO: Check out why cache[key] has NoneType sometimes, does not seem to cause issues
             usage = cache.get(key)
             if usage < max_usage:
