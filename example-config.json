@@ -1,0 +1,8 @@
+{
+  "client_id": "id",
+  "client_secret": "secret",
+  "admins": ["66166172835385344"],
+  "rdb_address": "localhost",
+  "rdb_port": 28015,
+  "rdb_db": "test"
+}

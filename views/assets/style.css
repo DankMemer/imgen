@@ -89,3 +89,133 @@ td {
   margin-top: 7.5px;
   font-size: 1.15em;
 }
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.welcome {
+  padding: 2px 20px 2px 20px;
+  width: auto;
+}
+
+.button {
+  padding: 2px 20px 2px 20px;
+  margin-left: 10px;
+  background-color: dodgerblue;
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  border-radius: 20px;
+}
+
+.button:hover {
+  opacity: 0.7;
+}
+
+hr {
+  width: 90%
+}
+
+.block {
+  background-color: black;
+  padding: 2px 20px 2px 20px;
+}
+
+.key-info {
+  background-color: #23272A;
+  padding: 2px 20px 2px 20px;
+}
+
+.form {
+  padding: 20px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 25%;
+  margin: 0 auto 0 auto;
+}
+
+.form label {
+  padding: 10px 0 10px 0;
+  font-weight: bold;
+}
+
+.form input {
+  background-color: #23272A;
+  padding: 10px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 3px;
+  border-width: 1px;
+  color: white;
+  margin-top: 10px;
+}
+
+.form textarea {
+  background-color: #23272A;
+  padding: 10px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 3px;
+  border-width: 1px;
+  color: white;
+  font-family: sans-serif;
+  resize: vertical;
+}
+
+.app-card {
+  background-color: #23272A;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: 20px 20px 2px 20px;
+}
+
+.app-approve {
+  align-self: self-start;
+  background-color: #27ae60;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 50%;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  margin-right: 2px;
+}
+
+.app-decline {
+  align-self: self-end;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: #e74c3c;
+  width: 50%;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  margin-left: 2px;
+}
+
+.unlimited {
+  align-self: self-start;
+  background-color: #2980b9;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 50%;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  margin-right: 2px;
+}
+

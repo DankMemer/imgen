@@ -1,10 +1,39 @@
 <head>
   {% include "partials/header.html" %}
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 </head>
 
 <body>
   <div class="content">
     {% include "partials/navbar.html" %}
-    <span>Coming soon...</span>
+    <div class="flex">
+      <h1 class="welcome">Welcome {{ name }}</h1>
+    </div>
+    <div class="flex flex-row">
+      <h3 style="display: inline;">Applications</h3><a class="button" href="/request">Request New</a>
+    </div>
+    <hr>
+    <div class="flex flex-column">
+    {% for key in keys %}
+      <div class="flex flex-column">
+        <h3 style="cursor: pointer" onclick="expand('{{ key['id'] }}')">{{ key['name'] }} <i class="fas fa-arrow-down"></i></h3>
+        <div id="{{ key['id'] }}-info" style="display: none;" class="flex flex-column key-info">
+          <p>Token:</p>
+          <div class="flex flex-row">
+              <code id="{{ key['id'] }}-token" class="block">{{ key['id'] }}</code>
+              <a class="button" onclick="copy('{{ key['id'] }}')" href="javascript:void(0);">Copy Token</a>
+          </div>
+          <div class="flex flex-column">
+          <h4>Usage:</h4>
+          <p>Total: {{ key['total_usage'] }}</p>
+          {% for  endpoint in key['usages'] %}
+          <p>{{ endpoint }}: {{ key['usages'][endpoint] }}</p>
+          {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
   </div>
+  </div>
+<script src="assets/dashboard.js"></script>
 </body>

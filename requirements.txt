@@ -2,3 +2,5 @@ flask
 pillow
 requests
 wand
+rethinkdb
+requests_oauthlib
