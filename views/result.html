@@ -1,0 +1,15 @@
+<head>
+  {% include "partials/header.html" %}
+</head>
+
+<body>
+  <div class="content">
+    {% include "partials/navbar.html" %}
+     <div class="flex">
+      <h1 class="welcome">{{ result }}</h1>
+    </div>
+    {% if not success %}
+    <a style="width: 25%; margin-right: auto; margin-left: auto;" class="button" href="/request">Go Back</a>
+    {% endif %}
+  </div>
+</body>

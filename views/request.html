@@ -1,0 +1,18 @@
+<head>
+  {% include "partials/header.html" %}
+</head>
+
+<body>
+  <div class="content">
+    {% include "partials/navbar.html" %}
+      <form action="?" method="POST">
+        <div class="form">
+          <label for="name">Application Name:</label>
+          <input type="text" id="name" name="name" placeholder="Your stupid bot">
+          <label for="reason">Why do you want access to Dank Memer Imgen</label>
+          <textarea  type="text" id="reason" name="reason" placeholder="Note: Please put some actual effort into your application. Low effort applications will be declined."></textarea>
+          <input style="cursor: pointer" type="submit" value="Request API Key">
+        </div>
+      </form>
+  </div>
+</body>

@@ -1,0 +1,64 @@
+<head>
+  {% include "partials/header.html" %}
+</head>
+
+<body>
+  <div class="content">
+    {% include "partials/navbar.html" %}
+    <div class="flex">
+      <h1 class="welcome">Welcome back {{ name }}!</h1>
+    </div>
+    <hr>
+    <div class="flex flex-row">
+    <h2>Applications</h2>
+    </div>
+    <div style="flex-wrap: wrap;" class="flex flex-row">
+      {% for app in apps %}
+        <div class="app-card">
+        <header class="flex flex-column">
+          <h1>{{ app['name'] }}</h1>
+          <h5>Owner: {{ app['owner_name'] }} ({{ app['owner'] }})</h5>
+          <h5>E-Mail: {{ app['email'] }}</h5>
+        </header>
+        <p style="text-align: center;">{{ app['reason'] }}</p>
+        <footer style="justify-content: left;" class="flex flex-row">
+            <a class="app-approve" href="approve/{{ app['id'] }}">Approve</a>
+            <a class="app-decline" href="decline/{{ app['id'] }}">Decline</a>
+        </footer>
+        </div>
+      {% endfor %}
+    </div>
+    <hr>
+    <div class="flex flex-row">
+        <h2>Active Keys</h2>
+    </div>
+    <div style="flex-wrap: wrap;" class="flex flex-row">
+      {% for key in keys %}
+        <div class="app-card">
+        <header class="flex flex-column">
+          <h1>{{ key['name'] }}</h1>
+          <h5>Owner: {{ key['owner_name'] }} ({{ key['owner'] }})</h5>
+          <h5>E-Mail: {{ key['email'] }}</h5>
+          <p>Token:</p>
+          <code class="block">{{ key['id'] }}</code>
+        </header>
+        <div class="flex flex-column">
+          <h4>Usage:</h4>
+          <p>Total: {{ key['total_usage'] }}</p>
+          {% for endpoint in key['usages'] %}
+          <p>{{ endpoint }}: {{ key['usages'][endpoint] }}</p>
+          {% endfor %}
+          </div>
+        <div class="flex" >
+        {% if not key['unlimited'] %}
+        <a class="unlimited" href="unlimited/{{ key['id'] }}">Make Unlimited</a>
+        {% else %}
+        <a class="unlimited" href="unlimited/{{ key['id'] }}">Make Limited</a>
+        {% endif %}
+        <a class="app-decline" href="delete/{{ key['id'] }}">Delete</a>
+        </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
