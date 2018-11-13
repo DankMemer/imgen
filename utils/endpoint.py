@@ -40,7 +40,7 @@ class Endpoint(ABC):
         except KeyError:
             usage = 0
         r.db(self.RDB_DB).table('keys').get(key).update({"total_usage": k['total_usage'] + 1,
-                                                           "usages": {self.name: usage + 1}}).run(self.rdb)
+                                                         "usages": {self.name: usage + 1}}).run(self.rdb)
         return res
 
     @abstractmethod
