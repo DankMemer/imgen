@@ -15,7 +15,7 @@ class Endpoint(ABC):
         self.RDB_ADDRESS = self.config['rdb_address']
         self.RDB_PORT = self.config['rdb_port']
         self.RDB_DB = self.config['rdb_db']
-        self.rdb = r.connect(self.RDB_ADDRESS, self.RDB_PORT)
+        self.rdb = r.connect(self.RDB_ADDRESS, self.RDB_PORT, db=self.RDB_DB)
 
     @property
     def name(self):
@@ -34,12 +34,12 @@ class Endpoint(ABC):
         res = self.generate(**kwargs)
         t = round((time() - start) * 1000, 2)  # Time in ms, formatted to 2dp
         self.avg_generation_times.append(t)
-        k = list(r.table('keys').filter(r.row['id'] == key).run(self.rdb))[0]
+        k = r.table('keys').get(key).run(self.rdb)
         try:
             usage = k['usages'][self.name]
         except KeyError:
             usage = 0
-        r.db(self.RDB_DB).table('keys').filter(r.row['id'] == key).update({"total_usage": k['total_usage'] + 1,
+        r.db(self.RDB_DB).table('keys').get(key).update({"total_usage": k['total_usage'] + 1,
                                                            "usages": {self.name: usage + 1}}).run(self.rdb)
         return res
 

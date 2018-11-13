@@ -1,4 +1,4 @@
-from flask import jsonify, render_template, request, make_response, Blueprint, url_for, session, redirect
+from flask import render_template, request, Blueprint, url_for, session, redirect
 import json
 from utils.make_session import make_session
 import rethinkdb as r
@@ -16,7 +16,7 @@ RDB_ADDRESS = config['rdb_address']
 RDB_PORT = config['rdb_port']
 RDB_DB = config['rdb_db']
 
-rdb = r.connect(RDB_ADDRESS, RDB_PORT)
+rdb = r.connect(RDB_ADDRESS, RDB_PORT, db=RDB_DB)
 
 
 @dash.route('/login')
@@ -34,7 +34,6 @@ def logout():
 
 @dash.route('/callback')
 def callback():
-    print(url_for('.callback'))
     if request.values.get('error'):
         return request.values['error']
     discord = make_session(state=session.get('oauth2_state'), redirect_uri=request.host_url + 'callback')
@@ -50,11 +49,9 @@ def callback():
 def dashboard():
     discord = make_session(token=session.get('oauth2_token'))
     user = discord.get(API_BASE_URL + '/users/@me').json()
-    try:
-        user['id']
-    except KeyError:
+    if 'id' not in user:
         return redirect(url_for('.login'))
-    keys = r.db(RDB_DB).table('keys').filter(r.row['owner'] == user['id']).run(rdb)
+    keys = r.table('keys').filter(r.row['owner'] == user['id']).run(rdb)
     return render_template('dashboard.html', name=user['username'], keys=keys)
 
 
@@ -62,9 +59,7 @@ def dashboard():
 def request_key():
     discord = make_session(token=session.get('oauth2_token'))
     user = discord.get(API_BASE_URL + '/users/@me').json()
-    try:
-        user['id']
-    except KeyError:
+    if 'id' not in user:
         return redirect(url_for('.login'))
     if request.method == 'GET':
         return render_template('request.html')
@@ -74,7 +69,7 @@ def request_key():
         if not reason or not name:
             result = 'Please enter a name and reason for your application'
             return render_template('result.html', result=result, success=False)
-        r.db(RDB_DB).table('applications').insert({
+        r.table('applications').insert({
             "owner": user['id'],
             "email": user['email'],
             "name": name,
@@ -89,14 +84,12 @@ def request_key():
 def admin():
     discord = make_session(token=session.get('oauth2_token'))
     user = discord.get(API_BASE_URL + '/users/@me').json()
-    try:
-        user['id']
-    except KeyError:
+    if 'id' not in user:
         return redirect(url_for('.login'))
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
-    apps = r.db(RDB_DB).table('applications').run(rdb)
-    keys = r.db(RDB_DB).table('keys').run(rdb)
+    apps = r.table('applications').run(rdb)
+    keys = r.table('keys').run(rdb)
     return render_template('admin.html', name=user['username'],  apps=apps, keys=keys)
 
 
@@ -104,19 +97,16 @@ def admin():
 def approve(key_id):
     discord = make_session(token=session.get('oauth2_token'))
     user = discord.get(API_BASE_URL + '/users/@me').json()
-    try:
-        user['id']
-    except KeyError:
+    if 'id' not in user:
         return redirect(url_for('.login'))
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
-    key = r.db(RDB_DB).table('applications').filter(r.row['id'] == key_id).run(rdb)
-    key = list(key)[0]
+    key = r.table('applications').get(key_id).run(rdb)
     m = hashlib.sha256()
     m.update(key['id'].encode())
     m.update(str(randint(10000, 99999)).encode())
     token = m.hexdigest()
-    r.db(RDB_DB).table('keys').insert({
+    r.table('keys').insert({
         "id": token,
         "name": key['name'],
         "owner": key['owner'],
@@ -126,7 +116,7 @@ def approve(key_id):
         "usages": {},
         "unlimited": False
     }).run(rdb)
-    r.db(RDB_DB).table('applications').filter(r.row['id'] == key_id).delete().run(rdb)
+    r.table('applications').get(key_id).delete().run(rdb)
     return redirect(url_for('.admin'))
 
 
@@ -134,13 +124,11 @@ def approve(key_id):
 def decline(key_id):
     discord = make_session(token=session.get('oauth2_token'))
     user = discord.get(API_BASE_URL + '/users/@me').json()
-    try:
-        user['id']
-    except KeyError:
+    if 'id' not in user:
         return redirect(url_for('.login'))
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
-    r.db(RDB_DB).table('applications').filter(r.row['id'] == key_id).delete().run(rdb)
+    r.table('applications').get(key_id).delete().run(rdb)
     return redirect(url_for('.admin'))
 
 
@@ -148,13 +136,11 @@ def decline(key_id):
 def delete(key_id):
     discord = make_session(token=session.get('oauth2_token'))
     user = discord.get(API_BASE_URL + '/users/@me').json()
-    try:
-        user['id']
-    except KeyError:
+    if 'id' not in user:
         return redirect(url_for('.login'))
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
-    r.db(RDB_DB).table('keys').filter(r.row['id'] == key_id).delete().run(rdb)
+    r.table('keys').get(key_id).delete().run(rdb)
     return redirect(url_for('.admin'))
 
 
@@ -162,16 +148,13 @@ def delete(key_id):
 def unlimited(key_id):
     discord = make_session(token=session.get('oauth2_token'))
     user = discord.get(API_BASE_URL + '/users/@me').json()
-    try:
-        user['id']
-    except KeyError:
+    if 'id' not in user:
         return redirect(url_for('.login'))
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
-    key = r.db(RDB_DB).table('keys').filter(r.row['id'] == key_id).run(rdb)
-    key = list(key)[0]
+    key = r.table('keys').get(key_id).run(rdb)
     if key['unlimited']:
-        r.db(RDB_DB).table('keys').filter(r.row['id'] == key_id).update({"unlimited": False}).run(rdb)
+        r.table('keys').get(key_id).update({"unlimited": False}).run(rdb)
     else:
-        r.db(RDB_DB).table('keys').filter(r.row['id'] == key_id).update({"unlimited": True}).run(rdb)
+        r.table('keys').get(key_id).update({"unlimited": True}).run(rdb)
     return redirect(url_for('.admin'))

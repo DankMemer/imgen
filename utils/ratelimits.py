@@ -11,11 +11,11 @@ RDB_ADDRESS = config['rdb_address']
 RDB_PORT = config['rdb_port']
 RDB_DB = config['rdb_db']
 
-rdb = r.connect(RDB_ADDRESS, RDB_PORT)
+rdb = r.connect(RDB_ADDRESS, RDB_PORT, db=RDB_DB)
 
 
 class RatelimitCache(object):
-    def __init__(self, expire_time=timedelta(1, 1, 0)):
+    def __init__(self, expire_time=timedelta(0, 1, 0)):
         self.expire_time = expire_time
         self.cache = {}
 
@@ -57,10 +57,7 @@ cache = RatelimitCache()
 def ratelimit(func, max_usage=5):
     def wrapper(*args, **kwargs):
         auth = request.headers.get('authorization', None)
-        try:
-            key = list(r.db(RDB_DB).table('keys').filter(r.row['id'] == auth).run(rdb))[0]
-        except IndexError:
-            return
+        key = r.table('keys').get(auth).run(rdb)
         if key['unlimited']:
             return make_response(
                 (func(*args, **kwargs), 200, {'X-RateLimit-Limit': 'Unlimited',

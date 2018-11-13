@@ -16,7 +16,7 @@ RDB_ADDRESS = config['rdb_address']
 RDB_PORT = config['rdb_port']
 RDB_DB = config['rdb_db']
 
-rdb = r.connect(RDB_ADDRESS, RDB_PORT)
+rdb = r.connect(RDB_ADDRESS, RDB_PORT, db=RDB_DB)
 
 app = Flask(__name__, template_folder='views', static_folder='views/assets')
 app.register_blueprint(dash)
@@ -27,10 +27,9 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
 
 def require_authorization(func):
     def wrapper(*args, **kwargs):
-        try:
-            list(r.db(RDB_DB).table('keys').filter(r.row['id'] == request.headers.get('authorization', None)).run(rdb))[0]
+        if r.table('keys').get(request.headers.get('authorization', '')).coerce_to('bool').default(False).run(rdb):
             return func(*args, **kwargs)
-        except IndexError:
+        else:
             return make_response((jsonify({'status': 401,
                                            'error': 'You are not authorized to access this endpoint'}),
                                   401))
