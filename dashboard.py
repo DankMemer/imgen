@@ -51,8 +51,12 @@ def dashboard():
     user = discord.get(API_BASE_URL + '/users/@me').json()
     if 'id' not in user:
         return redirect(url_for('.login'))
+    if user['id'] in config['admins']:
+        admin = True
+    else:
+        admin = False
     keys = r.table('keys').filter(r.row['owner'] == user['id']).run(rdb)
-    return render_template('dashboard.html', name=user['username'], keys=keys)
+    return render_template('dashboard.html', name=user['username'], keys=keys, admin=admin)
 
 
 @dash.route('/request', methods=['GET', 'POST'])
@@ -77,6 +81,39 @@ def request_key():
             "reason": reason
         }).run(rdb)
         result = 'Application Submitted 👌'
+        return render_template('result.html', result=result, success=True)
+
+
+@dash.route('/createkey', methods=['GET', 'POST'])
+def create_key():
+    discord = make_session(token=session.get('oauth2_token'))
+    user = discord.get(API_BASE_URL + '/users/@me').json()
+    if 'id' not in user:
+        return redirect(url_for('.login'))
+    if user['id'] not in config['admins']:
+        return render_template('gitout.html')
+    if request.method == 'GET':
+        return render_template('create.html')
+    elif request.method == 'POST':
+        name = request.form.get('name', None)
+        token = request.form.get('token', None)
+        owner = request.form.get('owner', None)
+        owner_name = request.form.get('owner_name', None)
+        email = request.form.get('email', None)
+        if not token or not name or not owner or not owner_name or not email:
+            result = 'Please fill in all required inputs'
+            return render_template('result.html', result=result, success=False)
+        r.table('keys').insert({
+            "id": token,
+            "name": name,
+            "owner": owner,
+            "owner_name": owner_name,
+            "email": email,
+            "total_usage": 0,
+            "usages": {},
+            "unlimited": False
+        }).run(rdb)
+        result = 'Key Created 👌'
         return render_template('result.html', result=result, success=True)
 
 

@@ -1,0 +1,24 @@
+<head>
+  {% include "partials/header.html" %}
+</head>
+
+<body>
+  <div class="content">
+    {% include "partials/navbar.html" %}
+      <form action="?" method="POST">
+        <div class="form">
+          <label for="name">Application Name:</label>
+          <input type="text" id="name" name="name" placeholder="Your stupid bot">
+          <label for="token">Token:</label>
+          <input type="text" id="token" name="token" placeholder="blabla">
+          <label for="owner">Owner ID:</label>
+          <input type="text" id="owner" name="owner" placeholder="172571295077105664">
+          <label for="owner_name">Owner Name:</label>
+          <input type="text" id="owner_name" name="owner_name" placeholder="Melmsie#0002">
+          <label for="email">Owner E-Mail:</label>
+          <input type="text" id="email" name="email" placeholder="je-moeder@is-een-plopkoek.be">
+          <input style="cursor: pointer" type="submit" value="Create API Key">
+        </div>
+      </form>
+  </div>
+</body>
