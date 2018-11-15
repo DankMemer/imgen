@@ -11,8 +11,8 @@ from utils.endpoint import Endpoint
 class Trigger(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((320, 320)).convert('RGBA')
-        triggered = Image.open('assets/triggered/triggered.jpg')
-        tint = Image.open('assets/triggered/red.png').convert('RGBA')
+        triggered = Image.open(self.assets.get('assets/triggered/triggered.bmp'))
+        tint = Image.open(self.assets.get('assets/triggered/red.bmp')).convert('RGBA')
         blank = Image.new('RGBA', (256, 256), color=(231, 19, 29))
         frames = []
 
@@ -34,10 +34,11 @@ class Trigger(Endpoint):
             frames.append(base)
 
         b = BytesIO()
-        frames[0].save(b, save_all=True, append_images=frames[1:], format='gif', loop=0, duration=20, disposal=2, optimize=True)
+        frames[0].save(b, save_all=True, append_images=frames[1:], format='gif', loop=0, duration=20, disposal=2,
+                       optimize=True)
         b.seek(0)
         return send_file(b, mimetype='image/gif')
 
 
-def setup():
-    return Trigger()
+def setup(cache):
+    return Trigger(cache)

@@ -27,5 +27,5 @@ class Magik(Endpoint):
             return send_file(b, mimetype='image/png')
 
 
-def setup():
-    return Magik()
+def setup(cache):
+    return Magik(cache)

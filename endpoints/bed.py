@@ -9,7 +9,7 @@ from utils.endpoint import Endpoint
 
 class Bed(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/bed/bed.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/bed/bed.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((100, 100)).convert('RGBA')
         avatar2 = http.get_image(avatars[1]).resize((70, 70)).convert('RGBA')
         avatar_small = avatar.copy().resize((70, 70))
@@ -17,12 +17,13 @@ class Bed(Endpoint):
         base.paste(avatar, (25, 300), avatar)
         base.paste(avatar_small, (53, 450), avatar_small)
         base.paste(avatar2, (53, 575), avatar2)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Bed()
+def setup(cache):
+    return Bed(cache)

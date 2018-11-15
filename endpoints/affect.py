@@ -1,26 +1,25 @@
 from io import BytesIO
 
-from flask import send_file
 from PIL import Image
+from flask import send_file
 
 from utils import http
 from utils.endpoint import Endpoint
 
-from math import pi, cos, sin
 
 class Affect(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((200, 157)).convert('RGBA')
-        base = Image.open('assets/affect/affect.png').convert('RGBA')
-
+        base = Image.open(self.assets.get('assets/affect/affect.bmp')).convert('RGBA')
 
         base.paste(avatar, (180, 383, 380, 540), avatar)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Affect()
+def setup(cache):
+    return Affect(cache)

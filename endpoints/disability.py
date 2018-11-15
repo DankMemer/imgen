@@ -10,15 +10,16 @@ from utils.endpoint import Endpoint
 class Disability(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((175, 175)).convert('RGBA')
-        base = Image.open('assets/disability/disability.jpg').convert('RGBA')
+        base = Image.open(self.assets.get('assets/disability/disability.bmp')).convert('RGBA')
 
         base.paste(avatar, (450, 325), avatar)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Disability()
+def setup(cache):
+    return Disability(cache)

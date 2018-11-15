@@ -9,17 +9,18 @@ from utils.endpoint import Endpoint
 
 class Slap(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/batslap/batslap.jpg').resize((1000, 500)).convert('RGBA')
+        base = Image.open(self.assets.get('assets/batslap/batslap.bmp')).resize((1000, 500)).convert('RGBA')
         avatar = http.get_image(avatars[1]).resize((220, 220)).convert('RGBA')
         avatar2 = http.get_image(avatars[0]).resize((200, 200)).convert('RGBA')
         base.paste(avatar, (580, 260), avatar)
         base.paste(avatar2, (350, 70), avatar2)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Slap()
+def setup(cache):
+    return Slap(cache)

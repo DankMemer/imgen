@@ -13,7 +13,10 @@ class DeepFry(Endpoint):
         avatar = http.get_image(avatars[0]).resize((400, 400)).convert('RGBA')
 
         joy, hand, hundred, fire = [
-            Image.open(f'assets/deepfry/{asset}.png').resize((100, 100)).rotate(randint(-30, 30)).convert('RGBA')
+            Image.open(self.assets.get(f'assets/deepfry/{asset}.bmp'))
+                .resize((100, 100))
+                .rotate(randint(-30, 30))
+                .convert('RGBA')
             for asset in ['joy', 'ok-hand', '100', 'fire']
         ]
 
@@ -29,10 +32,10 @@ class DeepFry(Endpoint):
         noise = ImageEnhance.Color(noise).enhance(randint(-15, 15))
 
         b = BytesIO()
-        noise.save(b, format='png')
+        noise.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return DeepFry()
+def setup(cache):
+    return DeepFry(cache)

@@ -1,5 +1,7 @@
 import sys
 
+from utils.asset_cache import AssetCache
+
 from . import (abandon, bed, brain,  # noqa: F401
                byemom, disability, facts, gay, hitler, invert, jail,
                quote, shit, sickfilth, slap, spank, trash, trigger, tweet, ugly,
@@ -10,8 +12,8 @@ from . import (abandon, bed, brain,  # noqa: F401
                wanted, boo, armor, slapsroof, youtube, bongocat, unpopular, vr, affect, surprised)
 
 endpoints = {}
-
+asset_cache = AssetCache()
 
 for e in filter(lambda module: str(module).startswith('endpoints.'), sys.modules):
-    endpoint = sys.modules[e].setup()
+    endpoint = sys.modules[e].setup(asset_cache)
     endpoints.update({endpoint.name: endpoint})

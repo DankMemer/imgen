@@ -10,16 +10,17 @@ from utils.endpoint import Endpoint
 class Trash(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((483, 483)).convert('RGBA')
-        base = Image.open('assets/trash/trash.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/trash/trash.bmp')).convert('RGBA')
 
         avatar = avatar.filter(ImageFilter.GaussianBlur(radius=6))
         base.paste(avatar, (480, 0), avatar)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Trash()
+def setup(cache):
+    return Trash(cache)

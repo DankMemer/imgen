@@ -9,17 +9,18 @@ from utils.endpoint import Endpoint
 
 class Brazzers(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/brazzers/brazzers.png').resize((300, 150)).convert('RGBA')
+        base = Image.open(self.assets.get('assets/brazzers/brazzers.bmp')).resize((300, 150)).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((500, 500)).convert('RGBA')
 
         # avatar is technically the base
         avatar.paste(base, (200, 390), base)
+        avatar = avatar.convert('RGB')
 
         b = BytesIO()
-        avatar.save(b, format='png')
+        avatar.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Brazzers()
+def setup(cache):
+    return Brazzers(cache)

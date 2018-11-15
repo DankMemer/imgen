@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils import http
@@ -10,10 +10,10 @@ from utils.textutils import wrap
 
 class Floor(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/floor/floor.jpg').convert('RGBA')
+        base = Image.open(self.assets.get('assets/floor/floor.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((45, 45)).convert('RGBA')
         avatar2 = avatar.copy().resize((23, 23))
-        font = ImageFont.truetype(font='assets/fonts/sans.ttf', size=22)
+        font = self.assets.get_font('assets/fonts/sans.ttf', size=22)
         canv = ImageDraw.Draw(base)
 
         text = wrap(font, text, 300)
@@ -21,12 +21,13 @@ class Floor(Endpoint):
 
         base.paste(avatar, (100, 90), avatar)
         base.paste(avatar2, (330, 90), avatar2)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Floor()
+def setup(cache):
+    return Floor(cache)

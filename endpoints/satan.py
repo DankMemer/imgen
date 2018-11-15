@@ -9,19 +9,20 @@ from utils.endpoint import Endpoint
 
 class Satan(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/satan/satan.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/satan/satan.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((195, 195)).convert('RGBA')
         final_image = Image.new('RGBA', base.size)
 
         # Put the base over the avatar
         final_image.paste(avatar, (200, 90), avatar)
         final_image.paste(base, (0, 0), base)
+        final_image = final_image.convert('RGB')
 
         b = BytesIO()
-        final_image.save(b, format='png')
+        final_image.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Satan()
+def setup(cache):
+    return Satan(cache)

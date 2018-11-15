@@ -1,23 +1,22 @@
 from io import BytesIO
+from random import randint
 
+from PIL import Image, ImageDraw
 from flask import send_file
-from PIL import Image, ImageDraw, ImageFont
 
 from utils import http
 from utils.endpoint import Endpoint
 from utils.textutils import wrap
-
-from random import randint
 
 
 class Youtube(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((52, 52)).convert('RGBA')
         name = usernames[0]
-        base = Image.open('assets/youtube/youtube.png').convert('RGBA')
-        font = ImageFont.truetype(font='assets/fonts/robotomedium.ttf', size=17, )
-        font2 = ImageFont.truetype(font='assets/fonts/robotoregular.ttf', size=17, )
-        font3 = ImageFont.truetype(font='assets/fonts/robotoregular.ttf', size=19, )
+        base = Image.open(self.assets.get('assets/youtube/youtube.bmp')).convert('RGBA')
+        font = self.assets.get_font('assets/fonts/robotomedium.ttf', size=17, )
+        font2 = self.assets.get_font('assets/fonts/robotoregular.ttf', size=17, )
+        font3 = self.assets.get_font('assets/fonts/robotoregular.ttf', size=19, )
 
         bigsize = (avatar.size[0] * 3, avatar.size[1] * 3)
         mask = Image.new('L', bigsize, 0)
@@ -37,12 +36,13 @@ class Youtube(Endpoint):
         canv.text((92, 34), op, font=font, fill='Black')
         canv.text((100 + size[0], 34), time, font=font2, fill='Grey')
         canv.text((92, 59), comment, font=font3, fill='Black')
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Youtube()
+def setup(cache):
+    return Youtube(cache)

@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint
@@ -9,7 +9,7 @@ from utils.textutils import auto_text_size
 
 class Boo(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/boo/boo.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/boo/boo.bmp')).convert('RGBA')
         # We need a text layer here for the rotation
         canv = ImageDraw.Draw(base)
 
@@ -20,19 +20,23 @@ class Boo(Endpoint):
 
         first, second = text
 
-        first_font, first_text = auto_text_size(first, ImageFont.truetype(font='assets/fonts/sans.ttf'), 144,
+        first_font, first_text = auto_text_size(first,
+                                                self.assets.get_font('assets/fonts/sans.ttf'), 144,
                                                 font_scalar=0.7)
-        second_font, second_text = auto_text_size(second, ImageFont.truetype(font='assets/fonts/sans.ttf'), 144,
+        second_font, second_text = auto_text_size(second,
+                                                  self.assets.get_font('assets/fonts/sans.ttf'),
+                                                  144,
                                                   font_scalar=0.7)
 
         canv.text((35, 54), first_text, font=first_font, fill='Black')
         canv.text((267, 57), second_text, font=second_font, fill='Black')
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Boo()
+def setup(cache):
+    return Boo(cache)

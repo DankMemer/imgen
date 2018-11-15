@@ -21,5 +21,5 @@ class Warp(Endpoint):
         return send_file(b, mimetype='image/png')
 
 
-def setup():
-    return Warp()
+def setup(cache):
+    return Warp(cache)

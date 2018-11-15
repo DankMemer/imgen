@@ -9,16 +9,17 @@ from utils.endpoint import Endpoint
 
 class Failure(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/failure/failure.jpg').convert('RGBA')
+        base = Image.open(self.assets.get('assets/failure/failure.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((215, 215)).convert('RGBA')
 
         base.paste(avatar, (143, 525), avatar)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Failure()
+def setup(cache):
+    return Failure(cache)
