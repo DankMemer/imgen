@@ -3,7 +3,7 @@ import traceback
 import os
 import rethinkdb as r
 
-from flask import Flask, jsonify, render_template, request, make_response
+from flask import Flask, jsonify, render_template, request, make_response, g
 
 import endpoints
 from utils.ratelimits import ratelimit
@@ -16,7 +16,6 @@ RDB_ADDRESS = config['rdb_address']
 RDB_PORT = config['rdb_port']
 RDB_DB = config['rdb_db']
 
-rdb = r.connect(RDB_ADDRESS, RDB_PORT, db=RDB_DB)
 
 app = Flask(__name__, template_folder='views', static_folder='views/assets')
 app.register_blueprint(dash)
@@ -27,13 +26,26 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
 
 def require_authorization(func):
     def wrapper(*args, **kwargs):
-        if r.table('keys').get(request.headers.get('authorization', '')).coerce_to('bool').default(False).run(rdb):
+        if r.table('keys').get(request.headers.get('authorization', '')).coerce_to('bool').default(False).run(g.rdb):
             return func(*args, **kwargs)
         else:
             return make_response((jsonify({'status': 401,
                                            'error': 'You are not authorized to access this endpoint'}),
                                   401))
     return wrapper
+
+
+@app.before_request
+def before_req():
+    if not hasattr(g, 'rdb'):
+        g.rdb = r.connect(RDB_ADDRESS, RDB_PORT, db=RDB_DB)
+
+
+@app.teardown_appcontext
+def close_db(error):
+    """Closes the database again at the end of the request."""
+    if hasattr(g, 'rdb'):
+        g.rdb.close()
 
 
 @app.route('/', methods=['GET'])
