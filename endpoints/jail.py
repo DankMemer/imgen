@@ -13,6 +13,7 @@ class Jail(Endpoint):
         base = http.get_image(avatars[0]).convert('LA').resize((350, 350))
         base.paste(overlay, (0, 0), overlay)
 
+        base = base.convert('RGB')
         b = BytesIO()
         base.save(b, format='jpeg')
         b.seek(0)

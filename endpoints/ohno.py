@@ -9,7 +9,7 @@ from utils.textutils import wrap
 
 class Ohno(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open(self.assets.get('assets/ohno/ohno.bmp')).convert('RGBA')
+        base = Image.open(self.assets.get('assets/ohno/ohno.png')).convert('RGBA')
         font = self.assets.get_font('assets/fonts/sans.ttf', size=16 if len(text) > 38 else 32)
         canv = ImageDraw.Draw(base)
 

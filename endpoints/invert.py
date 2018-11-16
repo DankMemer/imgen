@@ -19,6 +19,7 @@ class Invert(Endpoint):
         else:
             img = ImageOps.invert(img)
 
+        img = img.convert('RGB')
         b = BytesIO()
         img.save(b, format='jpeg')
         b.seek(0)

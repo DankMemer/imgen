@@ -29,7 +29,6 @@ class Endpoint(ABC):
         start = perf_counter()
         res = self.generate(**kwargs)
         t = round((perf_counter() - start) * 1000, 2)  # Time in ms, formatted to 2dp
-        print(t)
         self.avg_generation_times.append(t)
         k = r.table('keys').get(key).run(get_db())
         try:

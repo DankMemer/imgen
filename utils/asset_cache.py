@@ -19,12 +19,13 @@ class AssetCache(object):
             value = cache_obj._cache[key]
             if value['expiry'] < time():
                 obj = cache_obj._cache.pop(key)
-                obj['data'].close()
-                print("Cleared:", key)
+                try:
+                    obj['data'].close()
+                except Exception:
+                    pass
 
     def __getitem__(self, item):
         now = time()
-        print(self._cache)
         if self._last_gc + self._gc_interval < now:
             self._gc_loop.call_soon_threadsafe(self._run_gc, self)
             self._last_gc = now

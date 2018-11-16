@@ -88,7 +88,7 @@ def api(endpoint):
                                                    )
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
-        result = jsonify({'status': 500, 'error': str(e)}), 500
+        return jsonify({'status': 500, 'error': str(e)}), 500
     return result, 200
 
 
