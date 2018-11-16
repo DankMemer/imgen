@@ -7,11 +7,17 @@ import rethinkdb as r
 
 from flask import current_app, g
 
+import json
+
 
 class Endpoint(ABC):
     def __init__(self):
         self.avg_generation_times = fixedlist.FixedList(20)
         self.hits = 0
+        self.config = json.load(open('config.json'))
+        self.RDB_ADDRESS = self.config['rdb_address']
+        self.RDB_PORT = self.config['rdb_port']
+        self.RDB_DB = self.config['rdb_db']
 
     @property
     def name(self):
@@ -25,20 +31,21 @@ class Endpoint(ABC):
             sum(self.avg_generation_times) / len(self.avg_generation_times), 2)
 
     def run(self, key, **kwargs):
-        with current_app.app_context():
-            rdb = g.rdb
         self.hits += 1
         start = time()
         res = self.generate(**kwargs)
         t = round((time() - start) * 1000, 2)  # Time in ms, formatted to 2dp
         self.avg_generation_times.append(t)
-        k = r.table('keys').get(key).run(self.rdb)
-        try:
-            usage = k['usages'][self.name]
-        except KeyError:
-            usage = 0
-        r.db(self.RDB_DB).table('keys').get(key).update({"total_usage": k['total_usage'] + 1,
-                                                         "usages": {self.name: usage + 1}}).run(rdb)
+        with current_app.app_context():
+            if not hasattr(g, 'rdb'):
+                g.rdb = r.connect(self.RDB_ADDRESS, self.RDB_PORT, db=self.RDB_DB)
+            k = r.table('keys').get(key).run(g.rdb)
+            try:
+                usage = k['usages'][self.name]
+            except KeyError:
+                usage = 0
+            r.table('keys').get(key).update({"total_usage": k['total_usage'] + 1,
+                                             "usages": {self.name: usage + 1}}).run(g.rdb)
         return res
 
     @abstractmethod
