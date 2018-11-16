@@ -1,20 +1,16 @@
-import json
 from abc import ABC, abstractmethod
 from time import perf_counter
 
 import rethinkdb as r
-from flask import g
 
 from utils import fixedlist
+from utils.db import get_db
 
 
 class Endpoint(ABC):
     def __init__(self, cache):
         self.avg_generation_times = fixedlist.FixedList(20)
         self.hits = 0
-        self.config = json.load(open('config.json'))
-        self.RDB_DB = self.config['rdb_db']
-        self.rdb = g.rdb
         self.assets = cache
 
     @property
@@ -35,13 +31,13 @@ class Endpoint(ABC):
         t = round((perf_counter() - start) * 1000, 2)  # Time in ms, formatted to 2dp
         print(t)
         self.avg_generation_times.append(t)
-        k = r.table('keys').get(key).run(self.rdb)
+        k = r.table('keys').get(key).run(get_db())
         try:
             usage = k['usages'][self.name]
         except KeyError:
             usage = 0
-        r.db(self.RDB_DB).table('keys').get(key).update({"total_usage": k['total_usage'] + 1,
-                                                         "usages": {self.name: usage + 1}}).run(self.rdb)
+        r.table('keys').get(key).update({"total_usage": k['total_usage'] + 1,
+                                         "usages": {self.name: usage + 1}}).run(get_db())
         return res
 
     @abstractmethod

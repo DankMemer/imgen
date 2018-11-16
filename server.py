@@ -9,26 +9,12 @@ from flask import Flask, render_template, request, g, jsonify
 
 from dashboard import dash
 from utils.ratelimits import ratelimit
+from utils.db import get_db
 
 config = json.load(open('config.json'))
 
-RDB_ADDRESS = config['rdb_address']
-RDB_PORT = config['rdb_port']
-RDB_DB = config['rdb_db']
-rdb = r.connect(RDB_ADDRESS, RDB_PORT, db=RDB_DB)
-
 app = Flask(__name__, template_folder='views', static_folder='views/assets')
 app.register_blueprint(dash)
-
-
-def run_gc_forever(loop):
-    asyncio.set_event_loop(loop)
-    loop.run_forever()
-
-
-gc_loop = asyncio.new_event_loop()
-gc_thread = threading.Thread(target=run_gc_forever, args=(gc_loop,))
-gc_thread.start()
 
 app.config['SECRET_KEY'] = config['client_secret']
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
@@ -37,11 +23,19 @@ endpoints = None
 
 
 @app.before_first_request
-def init_global():
-    if 'rdb' not in g:
-        g.rdb = rdb
-    if 'gc_loop' not in g:
-        g.gc_loop = gc_loop
+def init_app():
+    def run_gc_forever(loop):
+        asyncio.set_event_loop(loop)
+        try:
+            loop.run_forever()
+        except (SystemExit, KeyboardInterrupt):
+            loop.close()
+
+    gc_loop = asyncio.new_event_loop()
+    gc_thread = threading.Thread(target=run_gc_forever, args=(gc_loop,))
+    gc_thread.start()
+    g.gc_loop = gc_loop
+
     import endpoints as endpnts
     global endpoints
     endpoints = endpnts
@@ -49,7 +43,7 @@ def init_global():
 
 def require_authorization(func):
     def wrapper(*args, **kwargs):
-        if r.table('keys').get(request.headers.get('authorization', '')).coerce_to('bool').default(False).run(rdb):
+        if r.table('keys').get(request.headers.get('authorization', '')).coerce_to('bool').default(False).run(get_db()):
             return func(*args, **kwargs)
         else:
             return jsonify({'status': 401, 'error': 'You are not authorized to access this endpoint'}), 401
@@ -99,4 +93,4 @@ def api(endpoint):
 
 
 if __name__ == '__main__':
-    app.run(ssl_context='adhoc')
+    app.run()

@@ -1,16 +1,9 @@
-import json
 from datetime import datetime, timedelta
 
 import rethinkdb as r
 from flask import request, make_response, jsonify
 
-config = json.load(open('config.json'))
-
-RDB_ADDRESS = config['rdb_address']
-RDB_PORT = config['rdb_port']
-RDB_DB = config['rdb_db']
-
-rdb = r.connect(RDB_ADDRESS, RDB_PORT, db=RDB_DB)
+from utils.db import get_db
 
 
 class RatelimitCache(object):
@@ -56,7 +49,7 @@ cache = RatelimitCache()
 def ratelimit(func, max_usage=5):
     def wrapper(*args, **kwargs):
         auth = request.headers.get('authorization', None)
-        key = r.table('keys').get(auth).run(rdb)
+        key = r.table('keys').get(auth).run(get_db())
         if key['unlimited']:
             return make_response(
                 (*func(*args, **kwargs), {'X-RateLimit-Limit': 'Unlimited',
