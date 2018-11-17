@@ -3,7 +3,7 @@ import json
 from random import randint
 
 import rethinkdb as r
-from flask import render_template, request, Blueprint, url_for, session, redirect, g
+from flask import render_template, request, Blueprint, url_for, session, redirect
 
 from utils.db import get_db
 from utils.make_session import make_session
@@ -107,7 +107,7 @@ def create_key():
             "total_usage": 0,
             "usages": {},
             "unlimited": False
-        }).run(g.rdb)
+        }).run(get_db())
         result = 'Key Created 👌'
         return render_template('result.html', result=result, success=True)
 
