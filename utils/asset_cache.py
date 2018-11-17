@@ -19,6 +19,7 @@ class AssetCache(object):
             value = cache_obj._cache[key]
             if value['expiry'] < time():
                 obj = cache_obj._cache.pop(key)
+                # noinspection PyBroadException
                 try:
                     obj['data'].close()
                 except Exception:

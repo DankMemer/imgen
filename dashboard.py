@@ -1,13 +1,9 @@
-from flask import render_template, request, Blueprint, url_for, session, redirect, g
-import json
-from utils.make_session import make_session
-import rethinkdb as r
 import hashlib
 import json
 from random import randint
 
 import rethinkdb as r
-from flask import render_template, request, Blueprint, url_for, session, redirect
+from flask import render_template, request, Blueprint, url_for, session, redirect, g
 
 from utils.db import get_db
 from utils.make_session import make_session
@@ -53,9 +49,9 @@ def dashboard():
     user = discord.get(API_BASE_URL + '/users/@me').json()
     if 'id' not in user:
         return redirect(url_for('.login'))
-    admin =  user['id'] in config['admins']
-    keys = r.table('keys').filter(r.row['owner'] == user['id']).run(get_db()
-    return render_template('dashboard.html', name=user['username'], keys=keys, admin=admin)
+    is_admin = user['id'] in config['admins']
+    keys = r.table('keys').filter(r.row['owner'] == user['id']).run(get_db())
+    return render_template('dashboard.html', name=user['username'], keys=keys, admin=is_admin)
 
 
 @dash.route('/request', methods=['GET', 'POST'])
@@ -126,7 +122,7 @@ def admin():
         return render_template('gitout.html')
     apps = r.table('applications').run(get_db())
     keys = r.table('keys').run(get_db())
-    return render_template('admin.html', name=user['username'],  apps=apps, keys=keys)
+    return render_template('admin.html', name=user['username'], apps=apps, keys=keys)
 
 
 @dash.route('/approve/<key_id>')

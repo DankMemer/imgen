@@ -51,12 +51,6 @@ def require_authorization(func):
     return wrapper
 
 
-@app.before_request
-def before_req():
-    if not hasattr(g, 'rdb'):
-        g.rdb = r.connect(RDB_ADDRESS, RDB_PORT, db=RDB_DB)
-
-
 @app.teardown_appcontext
 def close_db(error):
     """Closes the database again at the end of the request."""
