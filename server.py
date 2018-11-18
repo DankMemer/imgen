@@ -8,8 +8,8 @@ import rethinkdb as r
 from flask import Flask, render_template, request, g, jsonify
 
 from dashboard import dash
-from utils.ratelimits import ratelimit
 from utils.db import get_db
+from utils.ratelimits import ratelimit
 
 config = json.load(open('config.json'))
 

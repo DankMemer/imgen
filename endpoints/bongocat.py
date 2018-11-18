@@ -1,10 +1,10 @@
 from io import BytesIO
 
-from flask import send_file
 from PIL import Image
+from flask import send_file
 
-from utils.endpoint import Endpoint
 from utils import http
+from utils.endpoint import Endpoint
 
 
 class BongoCat(Endpoint):

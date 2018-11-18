@@ -1,8 +1,8 @@
 from io import BytesIO
 from time import time
 
-from flask import g
 from PIL import ImageFont
+from flask import g
 
 
 class AssetCache(object):

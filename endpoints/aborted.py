@@ -7,11 +7,11 @@ from utils import http
 from utils.endpoint import Endpoint
 
 
-class SickBan(Endpoint):
+class Aborted(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open(self.assets.get('assets/ban/ban.bmp')).convert('RGBA')
-        avatar = http.get_image(avatars[0]).resize((400, 400)).convert('RGBA')
-        base.paste(avatar, (70, 344), avatar)
+        base = Image.open(self.assets.get('assets/aborted/aborted.bmp'))
+        img1 = http.get_image(avatars[0]).convert('RGBA').resize((90, 90))
+        base.paste(img1, (390, 130), img1)
         base = base.convert('RGB')
 
         b = BytesIO()
@@ -21,4 +21,4 @@ class SickBan(Endpoint):
 
 
 def setup(cache):
-    return SickBan(cache)
+    return Aborted(cache)
