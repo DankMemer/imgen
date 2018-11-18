@@ -9,7 +9,7 @@ from utils.endpoint import Endpoint
 
 class Wanted(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/wanted/wanted.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/wanted/wanted.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((447, 447)).convert('RGBA')
         base.paste(avatar, (145, 282), avatar)
 
@@ -19,5 +19,5 @@ class Wanted(Endpoint):
         return send_file(b, mimetype='image/png')
 
 
-def setup():
-    return Wanted()
+def setup(cache):
+    return Wanted(cache)

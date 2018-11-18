@@ -1,7 +1,7 @@
 from io import BytesIO
 
+from PIL import Image, ImageDraw
 from flask import send_file
-from PIL import Image, ImageDraw, ImageFont
 
 from utils import http
 from utils.endpoint import Endpoint
@@ -10,13 +10,13 @@ from utils.textutils import wrap
 
 class Byemom(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/byemom/mom.png')
+        base = Image.open(self.assets.get('assets/byemom/mom.bmp'))
         avatar = http.get_image(avatars[0]).convert('RGBA').resize((70, 70), resample=Image.BICUBIC)
         avatar2 = avatar.copy().resize((125, 125), resample=Image.BICUBIC)
         text_layer = Image.new('RGBA', (350, 25))
         bye_layer = Image.new('RGBA', (180, 51), (255, 255, 255))
-        font = ImageFont.truetype(font='assets/fonts/arial.ttf', size=20)
-        bye_font = ImageFont.truetype(font='assets/fonts/arimobold.ttf', size=14)
+        font = self.assets.get_font('assets/fonts/arial.ttf', size=20)
+        bye_font = self.assets.get_font('assets/fonts/arimobold.ttf', size=14)
         canv = ImageDraw.Draw(text_layer)
         bye = ImageDraw.Draw(bye_layer)
         username = usernames[0] or 'Tommy'
@@ -33,12 +33,13 @@ class Byemom(Endpoint):
         base.paste(bye_layer, (150, 7))
         base.paste(avatar, (530, 15), avatar)
         base.paste(avatar2, (70, 340), avatar2)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Byemom()
+def setup(cache):
+    return Byemom(cache)

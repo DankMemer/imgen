@@ -1,25 +1,26 @@
 from io import BytesIO
-from utils.textutils import wrap
 
+from PIL import Image, ImageDraw
 from flask import send_file
-from PIL import Image, ImageDraw, ImageFont
 
 from utils.endpoint import Endpoint
+from utils.textutils import wrap
 
 
 class Abandon(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/abandon/abandon.png')
-        font = ImageFont.truetype(font='assets/fonts/verdana.ttf', size=24)
+        base = Image.open(self.assets.get('assets/abandon/abandon.bmp'))
+        font = self.assets.get_font('assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)
         text = wrap(font, text, 320)
         canv.text((25, 413), text, font=font, fill='Black')
 
+        base = base.convert('RGB')
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Abandon()
+def setup(cache):
+    return Abandon(cache)

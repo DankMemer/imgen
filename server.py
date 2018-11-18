@@ -1,22 +1,17 @@
+import asyncio
 import json
-import traceback
 import os
+import threading
+import traceback
+
 import rethinkdb as r
-
-from flask import Flask, jsonify, render_template, request, make_response
-
-import endpoints
-from utils.ratelimits import ratelimit
+from flask import Flask, render_template, request, g, jsonify
 
 from dashboard import dash
+from utils.ratelimits import ratelimit
+from utils.db import get_db
 
 config = json.load(open('config.json'))
-
-RDB_ADDRESS = config['rdb_address']
-RDB_PORT = config['rdb_port']
-RDB_DB = config['rdb_db']
-
-rdb = r.connect(RDB_ADDRESS, RDB_PORT, db=RDB_DB)
 
 app = Flask(__name__, template_folder='views', static_folder='views/assets')
 app.register_blueprint(dash)
@@ -24,16 +19,43 @@ app.register_blueprint(dash)
 app.config['SECRET_KEY'] = config['client_secret']
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
 
+endpoints = None
+
+
+@app.before_first_request
+def init_app():
+    def run_gc_forever(loop):
+        asyncio.set_event_loop(loop)
+        try:
+            loop.run_forever()
+        except (SystemExit, KeyboardInterrupt):
+            loop.close()
+
+    gc_loop = asyncio.new_event_loop()
+    gc_thread = threading.Thread(target=run_gc_forever, args=(gc_loop,))
+    gc_thread.start()
+    g.gc_loop = gc_loop
+
+    import endpoints as endpnts
+    global endpoints
+    endpoints = endpnts
+
 
 def require_authorization(func):
     def wrapper(*args, **kwargs):
-        if r.table('keys').get(request.headers.get('authorization', '')).coerce_to('bool').default(False).run(rdb):
+        if r.table('keys').get(request.headers.get('authorization', '')).coerce_to('bool').default(False).run(get_db()):
             return func(*args, **kwargs)
         else:
-            return make_response((jsonify({'status': 401,
-                                           'error': 'You are not authorized to access this endpoint'}),
-                                  401))
+            return jsonify({'status': 401, 'error': 'You are not authorized to access this endpoint'}), 401
+
     return wrapper
+
+
+@app.teardown_appcontext
+def close_db(error):
+    """Closes the database again at the end of the request."""
+    if hasattr(g, 'rdb'):
+        g.rdb.close()
 
 
 @app.route('/', methods=['GET'])
@@ -62,10 +84,7 @@ def dashboard():
 @ratelimit
 def api(endpoint):
     if endpoint not in endpoints.endpoints:
-        return make_response((
-            jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)}), 404))
-        # TODO: Figure out why setting status code here does not work and always returns 200
-
+        return jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)}), 404
     try:
         result = endpoints.endpoints[endpoint].run(key=request.headers.get('authorization'),
                                                    text=request.args.get('text', ''),
@@ -76,10 +95,8 @@ def api(endpoint):
                                                    )
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
-        result = make_response((jsonify({'status': 500,
-                                         'error': str(e)}), 500))
-        # TODO: Figure out why setting status code here does not work and always returns 200
-    return result
+        return jsonify({'status': 500, 'error': str(e)}), 500
+    return result, 200
 
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ from utils.endpoint import Endpoint
 
 class Dab(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/dab/dab.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/dab/dab.png')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((500, 500)).convert('RGBA')
         final_image = Image.new('RGBA', base.size)
 
@@ -23,5 +23,5 @@ class Dab(Endpoint):
         return send_file(b, mimetype='image/png')
 
 
-def setup():
-    return Dab()
+def setup(cache):
+    return Dab(cache)

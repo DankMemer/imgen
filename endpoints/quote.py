@@ -1,8 +1,8 @@
 from datetime import datetime
 from io import BytesIO
 
+from PIL import Image, ImageDraw, ImageOps
 from flask import send_file
-from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 from utils import http
 from utils.endpoint import Endpoint
@@ -12,9 +12,9 @@ class Quote(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((150, 150))
         base = Image.new('RGBA', (1500, 300))
-        font_med = ImageFont.truetype(font='assets/fonts/medium.woff', size=60)
-        font_time = ImageFont.truetype(font='assets/fonts/medium.woff', size=40)
-        font_sb = ImageFont.truetype(font='assets/fonts/semibold.woff', size=55)
+        font_med = self.assets.get_font('assets/fonts/medium.woff', size=60)
+        font_time = self.assets.get_font('assets/fonts/medium.woff', size=40)
+        font_sb = self.assets.get_font('assets/fonts/semibold.woff', size=55)
 
         poly = Image.new('RGBA', avatar.size)
         pdraw = ImageDraw.Draw(poly)
@@ -37,16 +37,18 @@ class Quote(Endpoint):
         canvas.text((230, 150), text, font=font_sb, fill=(160, 160, 160))
 
         timestamp_left = 230 + canvas.textsize(usernames[0], font=font_med)[0] + 20
-        canvas.text((timestamp_left, 90), 'Today at {}'.format(datetime.utcnow().strftime("%H:%M")), font=font_time, fill=(125, 125, 125))
+        canvas.text((timestamp_left, 90), 'Today at {}'.format(datetime.utcnow().strftime("%H:%M")), font=font_time,
+                    fill=(125, 125, 125))
 
         final = Image.alpha_composite(base, words)
         downscaled = final.resize((500, 100), Image.ANTIALIAS)
+        downscaled = downscaled.convert('RGB')
 
         b = BytesIO()
-        downscaled.save(b, format='png')
+        downscaled.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Quote()
+def setup(cache):
+    return Quote(cache)

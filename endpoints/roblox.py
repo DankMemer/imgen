@@ -9,7 +9,7 @@ from utils.endpoint import Endpoint
 
 class Roblox(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/roblox/roblox.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/roblox/roblox.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((56, 74)).convert('RGBA')
         base.paste(avatar, (168, 41), avatar)
 
@@ -19,5 +19,5 @@ class Roblox(Endpoint):
         return send_file(b, mimetype='image/png')
 
 
-def setup():
-    return Roblox()
+def setup(cache):
+    return Roblox(cache)

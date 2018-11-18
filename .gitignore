@@ -101,5 +101,6 @@ ENV/
 .mypy_cache/
 
 keys.json
+config.json
 
 .idea/

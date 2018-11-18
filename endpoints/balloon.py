@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint
@@ -9,8 +9,8 @@ from utils.textutils import auto_text_size
 
 class Balloon(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/balloon/balloon.jpg').convert('RGBA')
-        font = ImageFont.truetype(font='assets/fonts/sans.ttf')
+        base = Image.open(self.assets.get('assets/balloon/balloon.bmp')).convert('RGBA')
+        font = self.assets.get_font('assets/fonts/sans.ttf')
         canv = ImageDraw.Draw(base)
 
         text = text.split(', ')
@@ -29,12 +29,13 @@ class Balloon(Endpoint):
         canv.text((50, 530), balloon_text_2, font=balloon_text_2_font, fill='Black')
         canv.text((500, 520), balloon_text_3, font=balloon_text_3_font, fill='Black')
         canv.text((620, 155), label_text, font=label_font, fill='Black')
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Balloon()
+def setup(cache):
+    return Balloon(cache)

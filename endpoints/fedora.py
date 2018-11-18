@@ -9,7 +9,7 @@ from utils.endpoint import Endpoint
 
 class Fedora(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/fedora/fedora.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/fedora/fedora.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((275, 275)).convert('RGBA')
         final_image = Image.new('RGBA', base.size)
 
@@ -23,5 +23,5 @@ class Fedora(Endpoint):
         return send_file(b, mimetype='image/png')
 
 
-def setup():
-    return Fedora()
+def setup(cache):
+    return Fedora(cache)

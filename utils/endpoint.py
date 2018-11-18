@@ -1,21 +1,17 @@
 from abc import ABC, abstractmethod
-from time import time
-
-from utils import fixedlist
+from time import perf_counter
 
 import rethinkdb as r
-import json
+
+from utils import fixedlist
+from utils.db import get_db
 
 
 class Endpoint(ABC):
-    def __init__(self):
+    def __init__(self, cache):
         self.avg_generation_times = fixedlist.FixedList(20)
         self.hits = 0
-        self.config = json.load(open('config.json'))
-        self.RDB_ADDRESS = self.config['rdb_address']
-        self.RDB_PORT = self.config['rdb_port']
-        self.RDB_DB = self.config['rdb_db']
-        self.rdb = r.connect(self.RDB_ADDRESS, self.RDB_PORT, db=self.RDB_DB)
+        self.assets = cache
 
     @property
     def name(self):
@@ -30,17 +26,17 @@ class Endpoint(ABC):
 
     def run(self, key, **kwargs):
         self.hits += 1
-        start = time()
+        start = perf_counter()
         res = self.generate(**kwargs)
-        t = round((time() - start) * 1000, 2)  # Time in ms, formatted to 2dp
+        t = round((perf_counter() - start) * 1000, 2)  # Time in ms, formatted to 2dp
         self.avg_generation_times.append(t)
-        k = r.table('keys').get(key).run(self.rdb)
+        k = r.table('keys').get(key).run(get_db())
         try:
             usage = k['usages'][self.name]
         except KeyError:
             usage = 0
-        r.db(self.RDB_DB).table('keys').get(key).update({"total_usage": k['total_usage'] + 1,
-                                                         "usages": {self.name: usage + 1}}).run(self.rdb)
+        r.table('keys').get(key).update({"total_usage": k['total_usage'] + 1,
+                                         "usages": {self.name: usage + 1}}).run(get_db())
         return res
 
     @abstractmethod

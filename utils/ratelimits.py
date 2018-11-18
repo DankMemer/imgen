@@ -1,17 +1,9 @@
 from datetime import datetime, timedelta
 
+import rethinkdb as r
 from flask import request, make_response, jsonify
 
-import rethinkdb as r
-import json
-
-config = json.load(open('config.json'))
-
-RDB_ADDRESS = config['rdb_address']
-RDB_PORT = config['rdb_port']
-RDB_DB = config['rdb_db']
-
-rdb = r.connect(RDB_ADDRESS, RDB_PORT, db=RDB_DB)
+from utils.db import get_db
 
 
 class RatelimitCache(object):
@@ -57,21 +49,21 @@ cache = RatelimitCache()
 def ratelimit(func, max_usage=5):
     def wrapper(*args, **kwargs):
         auth = request.headers.get('authorization', None)
-        key = r.table('keys').get(auth).run(rdb)
+        key = r.table('keys').get(auth).run(get_db())
         if key['unlimited']:
             return make_response(
-                (func(*args, **kwargs), 200, {'X-RateLimit-Limit': 'Unlimited',
-                                              'X-RateLimit-Remaining': 'Unlimited',
-                                              'X-RateLimit-Reset': 2147483647}))
+                (*func(*args, **kwargs), {'X-RateLimit-Limit': 'Unlimited',
+                                          'X-RateLimit-Remaining': 'Unlimited',
+                                          'X-RateLimit-Reset': 2147483647}))
         if key['id'] in cache:
             # TODO: Check out why cache[key] has NoneType sometimes, does not seem to cause issues
             usage = cache.get(key['id'])
             if usage < max_usage:
                 cache.set(key['id'], usage + 1)
-                return make_response((func(*args, **kwargs), 200,
-                                      {'X-RateLimit-Limit': max_usage,
-                                       'X-RateLimit-Remaining': max_usage - usage - 1,
-                                       'X-RateLimit-Reset': cache.expires_on(key['id'])}))
+                return make_response(*(func(*args, **kwargs),
+                                       {'X-RateLimit-Limit': max_usage,
+                                        'X-RateLimit-Remaining': max_usage - usage - 1,
+                                        'X-RateLimit-Reset': cache.expires_on(key['id'])}))
             else:
                 return make_response((jsonify({'status': 429, 'error': 'You are being ratelimited'}), 429,
                                       {'X-RateLimit-Limit': max_usage,
@@ -79,8 +71,8 @@ def ratelimit(func, max_usage=5):
                                        'X-RateLimit-Reset': cache.expires_on(key['id'])}))
         else:
             cache.set(key['id'], 1)
-            return make_response((func(*args, **kwargs), 200, {'X-RateLimit-Limit': max_usage,
-                                                               'X-RateLimit-Remaining': max_usage - 1,
-                                                               'X-RateLimit-Reset': cache.expires_on(key['id'])}))
+            return make_response((*func(*args, **kwargs), {'X-RateLimit-Limit': max_usage,
+                                                           'X-RateLimit-Remaining': max_usage - 1,
+                                                           'X-RateLimit-Reset': cache.expires_on(key['id'])}))
 
     return wrapper

@@ -9,16 +9,17 @@ from utils.endpoint import Endpoint
 
 class Delete(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/delete/delete.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/delete/delete.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((195, 195)).convert('RGBA')
 
         base.paste(avatar, (120, 135), avatar)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Delete()
+def setup(cache):
+    return Delete(cache)

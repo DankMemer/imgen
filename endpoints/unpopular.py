@@ -1,7 +1,7 @@
 from io import BytesIO
 
+from PIL import Image, ImageDraw, ImageEnhance
 from flask import send_file
-from PIL import Image, ImageDraw, ImageFont, ImageEnhance
 
 from utils import http
 from utils.endpoint import Endpoint
@@ -11,9 +11,9 @@ from utils.textutils import wrap
 class Unpopular(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((666, 666)).convert('RGBA')
-        base = Image.open('assets/unpopular/unpopular.png').convert('RGBA')
-        font = ImageFont.truetype(font='assets/fonts/semibold.woff', size=100)
-        reticle = Image.open('assets/unpopular/reticle.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/unpopular/unpopular.bmp')).convert('RGBA')
+        font = self.assets.get_font('assets/fonts/semibold.woff', size=100)
+        reticle = Image.open(self.assets.get('assets/unpopular/reticle.bmp')).convert('RGBA')
         temp = Image.new('RGBA', (1200, 800), color=(0, 0, 0, 0))
         avatar_square = Image.new(mode='RGBA', size=(360, 270), color=(0, 0, 0, 0))
         avatar_mono = avatar.resize((300, 310)).rotate(16, expand=1).convert('1')
@@ -37,12 +37,13 @@ class Unpopular(Endpoint):
         canv.text((0, 0), wrapped, font=font, fill='Black')
         w = temp.rotate(1, expand=1)
         base.paste(w, (620, 280), w)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Unpopular()
+def setup(cache):
+    return Unpopular(cache)

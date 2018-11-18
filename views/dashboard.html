@@ -8,9 +8,13 @@
     {% include "partials/navbar.html" %}
     <div class="flex">
       <h1 class="welcome">Welcome {{ name }}</h1>
+      {% if admin %}
+        <a class="button" href="/admin">Admin Dashboard</a>
+      {% endif %}
     </div>
     <div class="flex flex-row">
-      <h3 style="display: inline;">Applications</h3><a class="button" href="/request">Request New</a>
+      <h3 style="display: inline;">Applications</h3>
+      <a class="button" href="/request">Request New</a>
     </div>
     <hr>
     <div class="flex flex-column">

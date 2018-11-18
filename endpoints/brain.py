@@ -1,7 +1,7 @@
 from io import BytesIO
 
+from PIL import Image, ImageDraw
 from flask import send_file
-from PIL import Image, ImageDraw, ImageFont
 
 from utils.endpoint import Endpoint
 from utils.textutils import wrap
@@ -9,8 +9,8 @@ from utils.textutils import wrap
 
 class Brain(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/brain/brain.jpg')
-        font = ImageFont.truetype('assets/fonts/verdana.ttf', size=30)
+        base = Image.open(self.assets.get('assets/brain/brain.bmp'))
+        font = self.assets.get_font('assets/fonts/verdana.ttf', size=30)
 
         if len(text.split(',')) < 4:
             a, b, c, d = 'you need, four items, for this, command (split by commas)'.split(',')
@@ -26,10 +26,10 @@ class Brain(Endpoint):
         canvas.text((15, 610), d, font=font, fill='Black')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Brain()
+def setup(cache):
+    return Brain(cache)

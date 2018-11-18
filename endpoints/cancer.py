@@ -9,16 +9,17 @@ from utils.endpoint import Endpoint
 
 class Cancer(Endpoint):
     def generate(self, avatars, text, usernames):
-        base = Image.open('assets/cancer/cancer.png').convert('RGBA')
+        base = Image.open(self.assets.get('assets/cancer/cancer.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((100, 100)).convert('RGBA')
 
         base.paste(avatar, (351, 200), avatar)
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Cancer()
+def setup(cache):
+    return Cancer(cache)

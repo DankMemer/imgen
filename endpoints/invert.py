@@ -19,11 +19,12 @@ class Invert(Endpoint):
         else:
             img = ImageOps.invert(img)
 
+        img = img.convert('RGB')
         b = BytesIO()
-        img.save(b, format='png')
+        img.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
 
 
-def setup():
-    return Invert()
+def setup(cache):
+    return Invert(cache)

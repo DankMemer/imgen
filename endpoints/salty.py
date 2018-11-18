@@ -13,7 +13,7 @@ class Salty(Endpoint):
         avatar = http.get_image(avatars[0]).convert('RGBA').resize((256, 256))
 
         salt = (
-            Image.open('assets/salty/salt.png')
+            Image.open(self.assets.get('assets/salty/salt.bmp'))
             .convert('RGBA')
             .resize((256, 256))
             .rotate(-130, resample=Image.BICUBIC)
@@ -39,5 +39,5 @@ class Salty(Endpoint):
         return send_file(b, mimetype='image/gif')
 
 
-def setup():
-    return Salty()
+def setup(cache):
+    return Salty(cache)
