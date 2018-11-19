@@ -1,7 +1,7 @@
 body {
-  margin: 0px;
+  margin: 0;
   background-color: #2C2F33;
-  font-family: 'Montserrat';
+  font-family: 'Montserrat', sans-serif;
 }
 
 th {
@@ -86,7 +86,7 @@ td {
 }
 
 .card {
-  margin-top: 7.5px;
+  margin-top: 8px;
   font-size: 1.15em;
 }
 
@@ -154,10 +154,8 @@ hr {
 .form input {
   background-color: #23272A;
   padding: 10px;
-  border-style: solid;
-  border-color: white;
   border-radius: 3px;
-  border-width: 1px;
+  border: 1px solid white;
   color: white;
   margin-top: 10px;
 }

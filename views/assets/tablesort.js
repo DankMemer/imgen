@@ -1,9 +1,9 @@
 // Shamelessly stolen from https://www.w3schools.com/howto/howto_js_sort_table.asp :^)
 function sortTable(n) {
-  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
   table = document.getElementById("gen-stats");
   switching = true;
-  dir = "asc"; 
+  dir = "asc";
   while (switching) {
     switching = false;
     rows = table.rows;
@@ -28,7 +28,7 @@ function sortTable(n) {
     if (shouldSwitch) {
       rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
       switching = true;
-      switchcount ++; 
+      switchcount ++;
     } else {
       if (switchcount == 0 && dir == "asc") {
         dir = "desc";

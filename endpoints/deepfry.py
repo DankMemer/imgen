@@ -1,8 +1,8 @@
 from io import BytesIO
 from random import randint
 
-from flask import send_file
 from PIL import Image, ImageEnhance
+from flask import send_file
 
 from utils import http, noisegen
 from utils.endpoint import Endpoint
@@ -12,6 +12,7 @@ class DeepFry(Endpoint):
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((400, 400)).convert('RGBA')
 
+        # noinspection PyPep8
         joy, hand, hundred, fire = [
             Image.open(self.assets.get(f'assets/deepfry/{asset}.bmp'))
                 .resize((100, 100))

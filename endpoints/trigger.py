@@ -1,8 +1,8 @@
 from io import BytesIO
 from random import randint
 
-from flask import send_file
 from PIL import Image
+from flask import send_file
 
 from utils import http
 from utils.endpoint import Endpoint

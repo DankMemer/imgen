@@ -1,7 +1,7 @@
 from io import BytesIO
 
-from flask import send_file
 from PIL import Image, ImageOps
+from flask import send_file
 
 from utils import http
 from utils.endpoint import Endpoint

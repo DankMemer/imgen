@@ -1,5 +1,6 @@
-from flask import session
 import json
+
+from flask import session
 from requests_oauthlib import OAuth2Session
 
 config = json.load(open('config.json'))
