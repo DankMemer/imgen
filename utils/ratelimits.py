@@ -60,7 +60,7 @@ def ratelimit(func, max_usage=5):
             usage = cache.get(key['id'])
             if usage < max_usage:
                 cache.set(key['id'], usage + 1)
-                return make_response(*(func(*args, **kwargs),
+                return make_response((*func(*args, **kwargs),
                                        {'X-RateLimit-Limit': max_usage,
                                         'X-RateLimit-Remaining': max_usage - usage - 1,
                                         'X-RateLimit-Reset': cache.expires_on(key['id'])}))
