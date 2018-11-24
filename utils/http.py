@@ -10,7 +10,8 @@ config = json.load(open('config.json'))
 def get_image(url):
     try:
         if 'proxy_url' in config:
-            return Image.open(BytesIO(requests.get(config['proxy_url'],params={'url': url}, stream=True).content))
+            return Image.open(BytesIO(requests.get(config['proxy_url'],
+                                                   params={'url': url}, stream=True).content))
         else:
             return Image.open(BytesIO(requests.get(url, stream=True).content))
     except OSError:
@@ -19,6 +20,7 @@ def get_image(url):
 
 def get_image_raw(url):
     if 'proxy_url' in config:
-        return requests.get(config['proxy_url'], params={'url': url}, stream=True).content
+        return requests.get(config['proxy_url'],
+                            params={'url': url}, stream=True).content
     else:
         return requests.get(url, stream=True).content
