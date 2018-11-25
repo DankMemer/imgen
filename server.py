@@ -19,6 +19,12 @@ app.register_blueprint(dash)
 app.config['SECRET_KEY'] = config['client_secret']
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
 
+if 'sentry_dsn' in config:
+    import sentry_sdk
+    from sentry_sdk.integrations.flask import FlaskIntegration
+    sentry_sdk.init(config['sentry_dsn'],
+                    integrations=[FlaskIntegration()])
+
 endpoints = None
 
 
