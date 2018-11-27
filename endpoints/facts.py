@@ -8,6 +8,8 @@ from utils.textutils import wrap
 
 
 class Facts(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/facts/facts.bmp'))
         # We need to create an image layer here for the rotation

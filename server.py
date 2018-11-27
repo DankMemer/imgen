@@ -75,14 +75,9 @@ def index():
     return render_template('index.html', data=data)
 
 
-@app.route('/endpoints')
-def api_endpoints():
-    return render_template('endpoints.html', data=sorted(endpoints.endpoints.keys()))
-
-
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
+@app.route('/documentation')
+def docs():
+    return render_template('docs.html', url=request.host_url, data=sorted(endpoints.endpoints.items()))
 
 
 @app.route('/api/<endpoint>', methods=['GET'])

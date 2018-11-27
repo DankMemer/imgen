@@ -8,6 +8,8 @@ from utils.textutils import wrap
 
 
 class ExcuseMe(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/excuseme/excuseme.bmp'))
 

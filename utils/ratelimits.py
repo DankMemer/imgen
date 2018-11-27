@@ -5,6 +5,11 @@ from flask import request, make_response, jsonify
 
 from utils.db import get_db
 
+import requests
+import json
+
+config = json.load(open('config.json'))
+
 
 class RatelimitCache(object):
     def __init__(self, expire_time=timedelta(0, 1, 0)):
@@ -56,7 +61,6 @@ def ratelimit(func, max_usage=5):
                                           'X-RateLimit-Remaining': 'Unlimited',
                                           'X-RateLimit-Reset': 2147483647}))
         if key['id'] in cache:
-            # TODO: Check out why cache[key] has NoneType sometimes, does not seem to cause issues
             usage = cache.get(key['id'])
             if usage < max_usage:
                 cache.set(key['id'], usage + 1)
@@ -65,6 +69,20 @@ def ratelimit(func, max_usage=5):
                                         'X-RateLimit-Remaining': max_usage - usage - 1,
                                         'X-RateLimit-Reset': cache.expires_on(key['id'])}))
             else:
+                try:
+                    ratelimit_reached = key['ratelimit_reached']
+                except KeyError:
+                    ratelimit_reached = 0
+                ratelimit_reached += 1
+                print(ratelimit_reached)
+                r.table('keys').get(auth).update({"ratelimit_reached": ratelimit_reached}).run(get_db())
+                if ratelimit_reached % 5 == 0 and 'webhook_url' in config:
+                    requests.post(config['webhook_url'], headers={'content-type': 'application/json'},
+                                  data=json.dumps({"embeds": [{
+                                      "title": f"Application '{key['name']}' ratelimited 5 times!",
+                                      "description": f"Owner: {key['owner']}\n"
+                                      f"Total: {ratelimit_reached}"}]}
+                                  ))
                 return make_response((jsonify({'status': 429, 'error': 'You are being ratelimited'}), 429,
                                       {'X-RateLimit-Limit': max_usage,
                                        'X-RateLimit-Remaining': 0,

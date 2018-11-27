@@ -9,6 +9,8 @@ from utils.endpoint import Endpoint
 
 
 class Trigger(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((320, 320)).convert('RGBA')
         triggered = Image.open(self.assets.get('assets/triggered/triggered.bmp'))

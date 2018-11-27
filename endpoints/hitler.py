@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Hitler(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/hitler/hitler.bmp'))
         img1 = http.get_image(avatars[0]).convert('RGBA').resize((140, 140))

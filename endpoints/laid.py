@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Laid(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/laid/laid.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((115, 115)).convert('RGBA')

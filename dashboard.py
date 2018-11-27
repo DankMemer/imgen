@@ -106,7 +106,8 @@ def create_key():
             "email": email,
             "total_usage": 0,
             "usages": {},
-            "unlimited": False
+            "unlimited": False,
+            "ratelimit_reached": 0
         }).run(get_db())
         result = 'Key Created 👌'
         return render_template('result.html', result=result, success=True)
@@ -146,7 +147,8 @@ def approve(key_id):
         "email": key['email'],
         "total_usage": 0,
         "usages": {},
-        "unlimited": False
+        "unlimited": False,
+        "ratelimit_reached": 0
     }).run(get_db())
     r.table('applications').get(key_id).delete().run(get_db())
     return redirect(url_for('.admin'))

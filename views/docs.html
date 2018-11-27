@@ -1,0 +1,60 @@
+<head>
+  {% include "partials/header.html" %}
+</head>
+
+<body>
+  <div class="content">
+    {% include "partials/navbar.html" %}
+    <div class="side-nav" style="display: flex; flex-direction: column; width: 13rem; position: fixed; background-color: #23272A; top: 100px; height: 100%; align-items: center;">
+            <h1>Contents</h1>
+            <a href="#endpoints">Endpoints</a>
+            <a href="#auth">Authorization</a>
+            <a href="#ratelimits">Rate Limits</a>
+      </div>
+    <div class="actual-content">
+      <div id="endpoints" style="margin-left: 13rem;">
+          <span class="warning">All endpoints require an <kbd>Authorization</kbd> header containing your key. You can request a key on the dashboard!</span>
+          <h1>Endpoints</h1>
+          {% for name, func in data %}
+          <div style="background-color: #23272A; padding: 0.75rem; border-radius: 3px;" class="card">
+            <p><b style="color: lawngreen">GET </b>{{ url }}api/{{name}}</p>
+            <p>Supported Query Parameters: </p>
+            {% for p in func.params %}
+                {% if p == 'avatar0' %}
+                <kbd>{{ p }}: Image URL. Usually a Discord Avatar. Supports at least JPG, PNG and BMP!</kbd><br>
+                {% elif p == 'avatar1' %}
+                <kbd>{{ p }}: Image URL. Used when two users are involved. Supports at least JPG, PNG and BMP!</kbd><br>
+                {% elif p == 'username0' %}
+                <kbd>{{ p }}: String. Username for the first user.</kbd><br>
+                {% elif p == 'username1' %}
+                <kbd>{{ p }}: String. Username for the second user.</kbd><br>
+                {% elif p == 'text' %}
+                <kbd>{{ p }}: String. Text to show on the generated image.</kbd><br>
+                {% endif %}
+            {% endfor %}
+          </div>
+          {% endfor %}
+      </div>
+      <div id="auth" style="margin-left: 13rem;">
+          <div class="card">
+              <h1>Authorization</h1>
+              <p>All requests must be made with an authorization header that includes your API key! If you don't have a key, request one on the dashboard.</p>
+              <p>Example:</p>
+              <code style="background-color: #23272A">{"Authorization": "tokengoeshere"}</code>
+          </div>
+      </div>
+      <div id="ratelimits" style="margin-left: 13rem;">
+          <div class="card">
+          <h1>Rate Limits</h1>
+          <p>API Usage is limited to 5 requests per second. If more is requested, a 429 response will be returned.</p>
+          <p>Ratelimit Headers:</p>
+          <ul>
+              <li>X-RateLimit-Limit: Maximum usage allowed per timeframe</li>
+              <li>X-Ratelimit-Remaining: Remaining requests that can be made during the timeframe</li>
+              <li>X-RateLimit-Reset: Unix Timestamp indicating when the new timeframe will start.</li>
+              </ul>
+          </div>
+      </div>
+      </div>
+    </div>
+</body>

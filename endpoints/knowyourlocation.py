@@ -8,6 +8,8 @@ from utils.textutils import auto_text_size
 
 
 class KnowYourLocation(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/knowyourlocation/knowyourlocation.bmp')).convert('RGBA')
         # We need a text layer here for the rotation

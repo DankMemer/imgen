@@ -8,6 +8,7 @@ from utils.textutils import wrap
 
 
 class Walking(Endpoint):
+    params = ['text']
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/walking/walking.bmp'))
 

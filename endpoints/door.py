@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Door(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/door/door.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((479, 479)).convert('RGBA')

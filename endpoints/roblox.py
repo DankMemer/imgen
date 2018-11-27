@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Roblox(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/roblox/roblox.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((56, 74)).convert('RGBA')
