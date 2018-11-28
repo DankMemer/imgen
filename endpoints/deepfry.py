@@ -15,9 +15,9 @@ class DeepFry(Endpoint):
         # noinspection PyPep8
         joy, hand, hundred, fire = [
             Image.open(self.assets.get(f'assets/deepfry/{asset}.bmp'))
-                .resize((100, 100))
-                .rotate(randint(-30, 30))
-                .convert('RGBA')
+            .resize((100, 100))
+            .rotate(randint(-30, 30))
+            .convert('RGBA')
             for asset in ['joy', 'ok-hand', '100', 'fire']
         ]
 
