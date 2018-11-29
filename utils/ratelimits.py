@@ -69,20 +69,14 @@ def ratelimit(func, max_usage=5):
                                         'X-RateLimit-Remaining': max_usage - usage - 1,
                                         'X-RateLimit-Reset': cache.expires_on(key['id'])}))
             else:
-                try:
-                    ratelimit_reached = key['ratelimit_reached']
-                except KeyError:
-                    ratelimit_reached = 0
-                ratelimit_reached += 1
-                print(ratelimit_reached)
+                ratelimit_reached = key['ratelimit_reached', 0] + 1
                 r.table('keys').get(auth).update({"ratelimit_reached": ratelimit_reached}).run(get_db())
                 if ratelimit_reached % 5 == 0 and 'webhook_url' in config:
-                    requests.post(config['webhook_url'], headers={'content-type': 'application/json'},
-                                  data=json.dumps({"embeds": [{
-                                      "title": f"Application '{key['name']}' ratelimited 5 times!",
-                                      "description": f"Owner: {key['owner']}\n"
-                                      f"Total: {ratelimit_reached}"}]}
-                                  ))
+                    requests.post(config['webhook_url'], json={"embeds": [{
+                                                              "title": f"Application '{key['name']}' ratelimited 5 times!",
+                                                              "description": f"Owner: {key['owner']}\n"
+                                                              f"Total: {ratelimit_reached}"}]}
+                                  )
                 return make_response((jsonify({'status': 429, 'error': 'You are being ratelimited'}), 429,
                                       {'X-RateLimit-Limit': max_usage,
                                        'X-RateLimit-Remaining': 0,
