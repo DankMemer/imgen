@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Satan(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/satan/satan.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((195, 195)).convert('RGBA')

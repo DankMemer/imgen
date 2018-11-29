@@ -9,6 +9,8 @@ from utils.endpoint import Endpoint
 
 
 class DeepFry(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((400, 400)).convert('RGBA')
 

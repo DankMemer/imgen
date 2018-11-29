@@ -9,6 +9,8 @@ from utils.endpoint import Endpoint
 
 
 class Quote(Endpoint):
+    params = ['avatar0', 'username0', 'text']
+
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((150, 150))
         base = Image.new('RGBA', (1500, 300))

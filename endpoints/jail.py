@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Jail(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         overlay = Image.open(self.assets.get('assets/jail/jail.bmp')).resize((350, 350))
         base = http.get_image(avatars[0]).convert('LA').resize((350, 350))

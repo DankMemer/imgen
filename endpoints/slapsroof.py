@@ -8,6 +8,8 @@ from utils.textutils import wrap
 
 
 class SlapsRoof(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/slapsroof/slapsroof.bmp'))
         font = self.assets.get_font('assets/fonts/medium.woff', size=33)

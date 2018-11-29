@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Warp(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         implode = '-{}'.format(str(randint(3, 15)))
         roll = '+{}+{}'.format(randint(0, 256), randint(0, 256))

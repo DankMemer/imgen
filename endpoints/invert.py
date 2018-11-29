@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Invert(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         img = http.get_image(avatars[0])
         if img.mode == 'RGBA':

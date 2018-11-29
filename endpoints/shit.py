@@ -8,6 +8,8 @@ from utils.textutils import wrap
 
 
 class Shit(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/shit/shit.bmp'))
         font = self.assets.get_font('assets/fonts/segoeuireg.ttf', size=30)

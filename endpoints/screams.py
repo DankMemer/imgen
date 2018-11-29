@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Screams(Endpoint):
+    params = ['avatar0', 'avatar1']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/screams/screams.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((175, 175)).convert('RGBA')

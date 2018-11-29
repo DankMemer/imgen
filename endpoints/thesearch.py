@@ -8,6 +8,8 @@ from utils.textutils import wrap
 
 
 class TheSearch(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/search/thesearch.bmp')).convert('RGBA')
         font = self.assets.get_font('assets/fonts/sans.ttf', size=16)

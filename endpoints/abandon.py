@@ -8,6 +8,8 @@ from utils.textutils import wrap
 
 
 class Abandon(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/abandon/abandon.bmp'))
         font = self.assets.get_font('assets/fonts/verdana.ttf', size=24)

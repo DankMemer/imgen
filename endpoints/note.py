@@ -8,6 +8,8 @@ from utils.textutils import wrap
 
 
 class Note(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/note/note.bmp')).convert('RGBA')
         # We need a text layer here for the rotation

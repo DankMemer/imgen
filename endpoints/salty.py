@@ -9,6 +9,8 @@ from utils.endpoint import Endpoint
 
 
 class Salty(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).convert('RGBA').resize((256, 256))
 
