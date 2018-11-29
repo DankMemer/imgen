@@ -11,6 +11,7 @@ from dashboard import dash
 from utils.db import get_db
 from utils.endpoint import endpoints
 from utils.ratelimits import ratelimit
+import endpoints as _  # noqa: F401
 
 # Initial require, the above line contains our endpoints.
 
