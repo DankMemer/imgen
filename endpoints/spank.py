@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Spank(Endpoint):
+    params = ['avatar0', 'avatar1']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/spank/spank.bmp')).resize((500, 500))
         img1 = http.get_image(avatars[0]).resize((140, 140)).convert('RGBA')

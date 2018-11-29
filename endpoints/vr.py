@@ -8,6 +8,8 @@ from utils.textutils import auto_text_size
 
 
 class Vr(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/vr/vr.bmp')).convert('RGBA')
         # We need a text layer here for the rotation

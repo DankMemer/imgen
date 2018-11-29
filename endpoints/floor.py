@@ -9,6 +9,8 @@ from utils.textutils import wrap
 
 
 class Floor(Endpoint):
+    params = ['avatar0', 'avatar1', 'text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/floor/floor.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((45, 45)).convert('RGBA')

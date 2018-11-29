@@ -19,6 +19,12 @@ app.register_blueprint(dash)
 app.config['SECRET_KEY'] = config['client_secret']
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
 
+if 'sentry_dsn' in config:
+    import sentry_sdk
+    from sentry_sdk.integrations.flask import FlaskIntegration
+    sentry_sdk.init(config['sentry_dsn'],
+                    integrations=[FlaskIntegration()])
+
 endpoints = None
 
 
@@ -69,14 +75,9 @@ def index():
     return render_template('index.html', data=data)
 
 
-@app.route('/endpoints')
-def api_endpoints():
-    return render_template('endpoints.html', data=sorted(endpoints.endpoints.keys()))
-
-
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
+@app.route('/documentation')
+def docs():
+    return render_template('docs.html', url=request.host_url, data=sorted(endpoints.endpoints.items()))
 
 
 @app.route('/api/<endpoint>', methods=['GET'])

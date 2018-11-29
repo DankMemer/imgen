@@ -31,6 +31,8 @@ td {
   background-color: #23272A;
   padding-left: 5px;
   padding-right: 5px;
+  position: fixed;
+  width: 100%;
 }
 
 .nav-title {
@@ -64,7 +66,7 @@ td {
 
 .stats {
   width: 90%;
-  margin-top: 20px;
+  margin-top: 120px;
   padding-bottom: 10px;
   color: white;
   margin-left: auto;
@@ -75,7 +77,7 @@ td {
 .actual-content {
   margin-left: 2em;
   margin-right: 2em;
-  margin-top: 20px;
+  margin-top: 120px;
 }
 
 .warning {
@@ -215,5 +217,40 @@ hr {
   text-decoration: none;
   color: white;
   margin-right: 2px;
+}
+
+.side-nav a {
+  text-align: center;
+  border: none;
+  width: 100%;
+  height: 40px;
+  background-color: transparent;
+  font-family: 'Open Sans Light', sans-serif;
+  outline: none;
+  color: white;
+  font-size: 18px;
+  transition: all 1s;
+  cursor: pointer;
+  vertical-align: middle;
+  padding-top: 20px;
+  text-decoration: none;
+}
+
+.side-nav a::before {
+  position: absolute;
+  content: '»';
+  opacity: 0;
+  transition: 0.5s;
+  left: 0px;
+}
+
+.side-nav a:hover::before {
+  opacity: 1;
+  transition: all 0.5s;
+  left: 10px;
+}
+
+.side-nav a:hover {
+  background-color: rgb(30, 30, 30);
 }
 

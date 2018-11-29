@@ -9,6 +9,8 @@ from utils.textutils import wrap
 
 
 class Byemom(Endpoint):
+    params = ['avatar0', 'avatar1', 'username0', 'text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/byemom/mom.bmp'))
         avatar = http.get_image(avatars[0]).convert('RGBA').resize((70, 70), resample=Image.BICUBIC)

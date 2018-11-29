@@ -8,6 +8,8 @@ from utils.textutils import wrap
 
 
 class Plan(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/plan/plan.bmp')).convert('RGBA')
         font = self.assets.get_font('assets/fonts/sans.ttf', size=16)

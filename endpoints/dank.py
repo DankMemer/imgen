@@ -10,6 +10,8 @@ from utils.endpoint import Endpoint
 
 
 class Dank(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         avatar = http.get_image(avatars[0]).resize((320, 320)).convert('RGBA')
 

@@ -8,6 +8,8 @@ from utils.textutils import wrap
 
 
 class Cry(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/cry/cry.bmp'))
         font = self.assets.get_font('assets/fonts/tahoma.ttf', size=20)

@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class MadeThis(Endpoint):
+    params = ['avatar0', 'avatar1']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/madethis/madethis.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((130, 130)).convert('RGBA')

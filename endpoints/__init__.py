@@ -7,7 +7,7 @@ from . import (abandon, bed, brain,  # noqa: F401
                failure, fakenews, fedora, floor, laid, note, ohno, plan, rip, satan, savehumanity, thesearch, dank,
                salty, screams, changemymind, balloon, knowyourlocation, madethis, humansgood, roblox, wanted, boo,
                armor, slapsroof, youtube, bongocat, unpopular, vr, affect, surprised, master, aborted, walking,
-               excuseme)
+               excuseme, radialblur)
 
 endpoints = {}
 asset_cache = AssetCache()

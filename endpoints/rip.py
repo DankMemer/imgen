@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Rip(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/rip/rip.bmp')).convert('RGBA').resize((642, 806))
         avatar = http.get_image(avatars[0]).resize((300, 300)).convert('RGBA')

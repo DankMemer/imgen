@@ -8,6 +8,8 @@ from utils.endpoint import Endpoint
 
 
 class Whodidthis(Endpoint):
+    params = ['avatar0']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/whodidthis/whodidthis.bmp'))
         avatar = http.get_image(avatars[0]).resize((720, 405)).convert('RGBA')

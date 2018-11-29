@@ -8,6 +8,8 @@ from utils.textutils import auto_text_size
 
 
 class Master(Endpoint):
+    params = ['text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/master/master.bmp')).convert('RGBA')
         text = text.split(',')
