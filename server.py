@@ -83,18 +83,29 @@ def docs():
     return render_template('docs.html', url=request.host_url, data=sorted(endpoints.items()))
 
 
-@app.route('/api/<endpoint>', methods=['GET'])
+@app.route('/api/<endpoint>', methods=['GET', 'POST'])
 @require_authorization
 @ratelimit
 def api(endpoint):
     if endpoint not in endpoints:
         return jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)}), 404
-
+    if request.method == 'GET':
+        text = request.args.get('text', '')
+        avatars = [x for x in [request.args.get('avatar1', None), request.args.get('avatar2', None)] if x]
+        usernames = [x for x in [request.args.get('username1', None), request.args.get('username2', None)] if x]
+    else:
+        if not request.is_json:
+            return jsonify({'status': 400, 'message': 'when submitting a POST request you must provide data in the '
+                                                      'json format'}), 400
+        request_data = request.json
+        text = request_data.get('text', '')
+        avatars = list(request_data.get('avatars', []))
+        usernames = list(request_data.get('usernames', []))
     try:
         result = endpoints[endpoint].run(key=request.headers.get('authorization'),
-                                         text=request.args.get('text', ''),
-                                         avatars=request.args.getlist('avatar'),
-                                         usernames=request.args.getlist('username'))
+                                         text=text,
+                                         avatars=avatars,
+                                         usernames=usernames)
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
         return jsonify({'status': 500, 'error': str(e)}), 500
