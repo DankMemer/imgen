@@ -13,6 +13,7 @@ from random import randint
 
 class Tweet(Endpoint):
     params = ['avatar0', 'username0', 'text']
+
     def generate(self, avatars, text, usernames):
         base = Image.open(self.assets.get('assets/tweet/trump.bmp'))
         avatar = http.get_image(avatars[0]).resize((98, 98)).convert('RGBA')
