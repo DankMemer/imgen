@@ -5,6 +5,10 @@ import rethinkdb as r
 
 from utils import fixedlist
 from utils.db import get_db
+from .asset_cache import AssetCache
+
+asset_cache = AssetCache()
+endpoints = {}
 
 
 class Endpoint(ABC):
@@ -21,8 +25,7 @@ class Endpoint(ABC):
         if len(self.avg_generation_times) == 0:
             return 0
 
-        return round(
-            sum(self.avg_generation_times) / len(self.avg_generation_times), 2)
+        return round(sum(self.avg_generation_times) / len(self.avg_generation_times), 2)
 
     def run(self, key, **kwargs):
         self.hits += 1
@@ -31,12 +34,11 @@ class Endpoint(ABC):
         t = round((perf_counter() - start) * 1000, 2)  # Time in ms, formatted to 2dp
         self.avg_generation_times.append(t)
         k = r.table('keys').get(key).run(get_db())
-        try:
-            usage = k['usages'][self.name]
-        except KeyError:
-            usage = 0
-        r.table('keys').get(key).update({"total_usage": k['total_usage'] + 1,
-                                         "usages": {self.name: usage + 1}}).run(get_db())
+        usage = k['usages'].get(self.name, 0) + 1
+        r.table('keys').get(key) \
+            .update({"total_usage": k['total_usage'] + 1,
+                     "usages": {self.name: usage}}) \
+            .run(get_db())
         return res
 
     @abstractmethod
@@ -44,3 +46,9 @@ class Endpoint(ABC):
         raise NotImplementedError(
             f"generate has not been implemented on endpoint {self.name}"
         )
+
+
+def setup(klass):
+    kls = klass(asset_cache)
+    endpoints[kls.name] = kls
+    return kls

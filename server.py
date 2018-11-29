@@ -10,6 +10,9 @@ from flask import Flask, render_template, request, g, jsonify
 from dashboard import dash
 from utils.db import get_db
 from utils.ratelimits import ratelimit
+from utils.endpoint import endpoints
+import endpoints as _  # noqa: F401
+# Initial require, the above line contains our endpoints.
 
 config = json.load(open('config.json'))
 
@@ -25,8 +28,6 @@ if 'sentry_dsn' in config:
     sentry_sdk.init(config['sentry_dsn'],
                     integrations=[FlaskIntegration()])
 
-endpoints = None
-
 
 @app.before_first_request
 def init_app():
@@ -41,10 +42,6 @@ def init_app():
     gc_thread = threading.Thread(target=run_gc_forever, args=(gc_loop,))
     gc_thread.start()
     g.gc_loop = gc_loop
-
-    import endpoints as endpnts
-    global endpoints
-    endpoints = endpnts
 
 
 def require_authorization(func):
@@ -68,29 +65,30 @@ def close_db(error):
 def index():
     data = {}
 
-    for endpoint in endpoints.endpoints:
-        data[endpoint] = {'hits': endpoints.endpoints[endpoint].hits,
-                          'avg_gen_time': endpoints.endpoints[endpoint].get_avg_gen_time()}
+    for endpoint in endpoints:
+        data[endpoint] = {'hits': endpoints[endpoint].hits,
+                          'avg_gen_time': endpoints[endpoint].get_avg_gen_time()}
 
     return render_template('index.html', data=data)
 
 
 @app.route('/documentation')
 def docs():
-    return render_template('docs.html', url=request.host_url, data=sorted(endpoints.endpoints.items()))
+    return render_template('docs.html', url=request.host_url, data=sorted(endpoints.items()))
 
 
 @app.route('/api/<endpoint>', methods=['GET'])
 @require_authorization
 @ratelimit
 def api(endpoint):
-    if endpoint not in endpoints.endpoints:
+    if endpoint not in endpoints:
         return jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)}), 404
+
     try:
-        result = endpoints.endpoints[endpoint].run(key=request.headers.get('authorization'),
-                                                   text=request.args.get('text', ''),
-                                                   avatars=request.args.getlist('avatar'),
-                                                   usernames=request.args.getlist('username'))
+        result = result = endpoints[endpoint].run(key=request.headers.get('authorization'),
+                                                  text=request.args.get('text', ''),
+                                                  avatars=request.args.getlist('avatar'),
+                                                  usernames=request.args.getlist('username'))
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
         return jsonify({'status': 500, 'error': str(e)}), 500

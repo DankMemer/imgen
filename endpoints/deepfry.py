@@ -5,9 +5,10 @@ from PIL import Image, ImageEnhance
 from flask import send_file
 
 from utils import http, noisegen
-from utils.endpoint import Endpoint
+from utils.endpoint import Endpoint, setup
 
 
+@setup
 class DeepFry(Endpoint):
     params = ['avatar0']
 
@@ -38,7 +39,3 @@ class DeepFry(Endpoint):
         noise.save(b, format='jpeg')
         b.seek(0)
         return send_file(b, mimetype='image/jpeg')
-
-
-def setup(cache):
-    return DeepFry(cache)

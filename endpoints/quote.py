@@ -5,9 +5,10 @@ from PIL import Image, ImageDraw, ImageOps
 from flask import send_file
 
 from utils import http
-from utils.endpoint import Endpoint
+from utils.endpoint import Endpoint, setup
 
 
+@setup
 class Quote(Endpoint):
     params = ['avatar0', 'username0', 'text']
 
@@ -50,7 +51,3 @@ class Quote(Endpoint):
         downscaled.save(b, format='jpeg')
         b.seek(0)
         return send_file(b, mimetype='image/jpeg')
-
-
-def setup(cache):
-    return Quote(cache)

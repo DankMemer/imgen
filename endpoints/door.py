@@ -4,9 +4,10 @@ from PIL import Image
 from flask import send_file
 
 from utils import http
-from utils.endpoint import Endpoint
+from utils.endpoint import Endpoint, setup
 
 
+@setup
 class Door(Endpoint):
     params = ['avatar0']
 
@@ -24,7 +25,3 @@ class Door(Endpoint):
         final_image.save(b, format='jpeg')
         b.seek(0)
         return send_file(b, mimetype='image/jpeg')
-
-
-def setup(cache):
-    return Door(cache)
