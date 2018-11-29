@@ -1,4 +1,6 @@
+from datetime import datetime
 from io import BytesIO
+from random import randint
 
 from PIL import Image, ImageDraw
 from flask import send_file
@@ -6,9 +8,6 @@ from flask import send_file
 from utils import http
 from utils.endpoint import Endpoint
 from utils.textutils import wrap
-
-from datetime import datetime
-from random import randint
 
 
 class Tweet(Endpoint):

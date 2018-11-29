@@ -89,11 +89,8 @@ def api(endpoint):
     try:
         result = endpoints.endpoints[endpoint].run(key=request.headers.get('authorization'),
                                                    text=request.args.get('text', ''),
-                                                   avatars=[request.args.get('avatar1', ''),
-                                                            request.args.get('avatar2', '')],
-                                                   usernames=[request.args.get('username1', ''),
-                                                              request.args.get('username2', '')]
-                                                   )
+                                                   avatars=request.args.getlist('avatar'),
+                                                   usernames=request.args.getlist('username'))
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
         return jsonify({'status': 500, 'error': str(e)}), 500
