@@ -9,9 +9,9 @@ from flask import Flask, render_template, request, g, jsonify
 
 from dashboard import dash
 from utils.db import get_db
-from utils.ratelimits import ratelimit
 from utils.endpoint import endpoints
-import endpoints as _  # noqa: F401
+from utils.ratelimits import ratelimit
+
 # Initial require, the above line contains our endpoints.
 
 config = json.load(open('config.json'))
@@ -25,6 +25,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
 if 'sentry_dsn' in config:
     import sentry_sdk
     from sentry_sdk.integrations.flask import FlaskIntegration
+
     sentry_sdk.init(config['sentry_dsn'],
                     integrations=[FlaskIntegration()])
 
@@ -85,10 +86,10 @@ def api(endpoint):
         return jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)}), 404
 
     try:
-        result = result = endpoints[endpoint].run(key=request.headers.get('authorization'),
-                                                  text=request.args.get('text', ''),
-                                                  avatars=request.args.getlist('avatar'),
-                                                  usernames=request.args.getlist('username'))
+        result = endpoints[endpoint].run(key=request.headers.get('authorization'),
+                                         text=request.args.get('text', ''),
+                                         avatars=request.args.getlist('avatar'),
+                                         usernames=request.args.getlist('username'))
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
         return jsonify({'status': 500, 'error': str(e)}), 500
