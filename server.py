@@ -9,13 +9,12 @@ from flask import Flask, render_template, request, g, jsonify
 
 from dashboard import dash
 from utils.db import get_db
-from utils.endpoint import endpoints
 from utils.ratelimits import ratelimit
-import endpoints as _  # noqa: F401
 
 # Initial require, the above line contains our endpoints.
 
 config = json.load(open('config.json'))
+endpoints = None
 
 app = Flask(__name__, template_folder='views', static_folder='views/assets')
 app.register_blueprint(dash)
@@ -44,6 +43,11 @@ def init_app():
     gc_thread = threading.Thread(target=run_gc_forever, args=(gc_loop,))
     gc_thread.start()
     g.gc_loop = gc_loop
+
+    from utils.endpoint import endpoints as endpnts
+    global endpoints
+    endpoints = endpnts
+    import endpoints as _  # noqa: F401
 
 
 def require_authorization(func):
