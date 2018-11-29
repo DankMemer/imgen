@@ -4,9 +4,10 @@ from PIL import Image
 from flask import send_file
 
 from utils import http
-from utils.endpoint import Endpoint
+from utils.endpoint import Endpoint, setup
 
 
+@setup
 class Dab(Endpoint):
     params = ['avatar0']
 
@@ -23,7 +24,3 @@ class Dab(Endpoint):
         final_image.save(b, format='png')
         b.seek(0)
         return send_file(b, mimetype='image/png')
-
-
-def setup(cache):
-    return Dab(cache)

@@ -4,9 +4,10 @@ from PIL import Image, ImageOps
 from flask import send_file
 
 from utils import http
-from utils.endpoint import Endpoint
+from utils.endpoint import Endpoint, setup
 
 
+@setup
 class Invert(Endpoint):
     params = ['avatar0']
 
@@ -26,7 +27,3 @@ class Invert(Endpoint):
         img.save(b, format='jpeg')
         b.seek(0)
         return send_file(b, mimetype='image/jpeg')
-
-
-def setup(cache):
-    return Invert(cache)

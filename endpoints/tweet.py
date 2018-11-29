@@ -1,16 +1,16 @@
-from io import BytesIO
-
-from PIL import Image, ImageDraw
-from flask import send_file
-
-from utils import http
-from utils.endpoint import Endpoint
-from utils.textutils import wrap
-
 from datetime import datetime
+from io import BytesIO
 from random import randint
 
+from flask import send_file
+from PIL import Image, ImageDraw
 
+from utils import http
+from utils.endpoint import Endpoint, setup
+from utils.textutils import wrap
+
+
+@setup
 class Tweet(Endpoint):
     params = ['avatar0', 'username0', 'text']
 
@@ -56,7 +56,3 @@ class Tweet(Endpoint):
         base.save(b, format='jpeg')
         b.seek(0)
         return send_file(b, mimetype='image/jpeg')
-
-
-def setup(cache):
-    return Tweet(cache)

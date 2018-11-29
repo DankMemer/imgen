@@ -4,9 +4,10 @@ from PIL import Image
 from flask import send_file
 
 from utils import http
-from utils.endpoint import Endpoint
+from utils.endpoint import Endpoint, setup
 
 
+@setup
 class Screams(Endpoint):
     params = ['avatar0', 'avatar1']
 
@@ -22,7 +23,3 @@ class Screams(Endpoint):
         base.save(b, format='jpeg')
         b.seek(0)
         return send_file(b, mimetype='image/jpeg')
-
-
-def setup(cache):
-    return Screams(cache)
