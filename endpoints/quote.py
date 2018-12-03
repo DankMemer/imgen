@@ -45,9 +45,9 @@ class Quote(Endpoint):
 
         final = Image.alpha_composite(base, words)
         downscaled = final.resize((500, 100), Image.ANTIALIAS)
-        downscaled = downscaled.convert('RGB')
+        downscaled = downscaled.convert('RGBA')
 
         b = BytesIO()
-        downscaled.save(b, format='jpeg')
+        downscaled.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')
