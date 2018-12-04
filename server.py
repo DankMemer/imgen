@@ -47,7 +47,7 @@ def init_app():
     from utils.endpoint import endpoints as endpnts
     global endpoints
     endpoints = endpnts
-    import endpoints as _
+    import endpoints as _  # noqa: F401
 
 
 def require_authorization(func):
