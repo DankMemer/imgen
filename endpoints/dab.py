@@ -12,7 +12,7 @@ class Dab(Endpoint):
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames):
-        base = Image.open(self.assets.get('assets/dab/dab.png')).convert('RGBA')
+        base = Image.open(self.assets.get('assets/dab/dab.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((500, 500)).convert('RGBA')
         final_image = Image.new('RGBA', base.size)
 
