@@ -24,8 +24,7 @@ def limited_access(func):
             user = discord.get(API_BASE_URL + '/users/@me').json()
 
             if 'id' not in user:
-                redirect(url_for('.login'))
-                return
+                return redirect(url_for('.login'))
 
             session['user'] = user  # TODO: Expiry
 
