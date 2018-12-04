@@ -15,9 +15,6 @@ class RedisFixedList:
     def __init__(self, key: str):
         self._keys = ("%s-usage" % key, "%s-times" % key)
 
-    def _init_hits(self):
-        return self.hits
-
     @property
     def hits(self):
         return int(redis.get(self._keys[0]) or 0)
@@ -45,7 +42,7 @@ class RedisFixedList:
 class Endpoint(ABC):
     def __init__(self, cache):
         self.avg_generation_times = RedisFixedList(self.name)
-        self.hits = self.avg_generation_times._init_hits()
+        self.hits = self.avg_generation_times.hits
         self.assets = cache
 
     @property
