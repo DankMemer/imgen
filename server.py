@@ -47,15 +47,15 @@ def init_app():
     from utils.endpoint import endpoints as endpnts
     global endpoints
     endpoints = endpnts
-    import endpoints as _  # noqa: F401
+    import endpoints as _
 
 
 def require_authorization(func):
     def wrapper(*args, **kwargs):
         if r.table('keys').get(request.headers.get('authorization', '')).coerce_to('bool').default(False).run(get_db()):
             return func(*args, **kwargs)
-        else:
-            return jsonify({'status': 401, 'error': 'You are not authorized to access this endpoint'}), 401
+
+        return jsonify({'status': 401, 'error': 'You are not authorized to access this endpoint'}), 401
 
     return wrapper
 
@@ -76,6 +76,11 @@ def index():
                           'avg_gen_time': endpoints[endpoint].get_avg_gen_time()}
 
     return render_template('index.html', data=data)
+
+
+@app.route('/endpoints.json', methods=['GET'])
+def endpoints():
+    return jsonify({"endpoints": [{'name': x, 'parameters': y.params} for x, y in sorted(endpoints.items())]})
 
 
 @app.route('/documentation')
@@ -108,7 +113,11 @@ def api(endpoint):
                                          usernames=usernames)
     except Exception as e:
         print(e, ''.join(traceback.format_tb(e.__traceback__)))
-        return jsonify({'status': 500, 'error': str(e)}), 500
+        return jsonify({'status': 500, 'error': str(e), 'sent_data': {
+            "text": text,
+            "avatars": avatars,
+            "usernames": usernames
+        }}), 500
     return result, 200
 
 

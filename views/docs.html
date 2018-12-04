@@ -21,13 +21,13 @@
             <p>Supported Query Parameters: </p>
             {% for p in func.params %}
                 {% if p == 'avatar0' %}
-                <kbd>[1] avatar: Image URL. Usually a Discord Avatar. Supports at least JPG, PNG and BMP!</kbd><br>
+                <kbd>avatar1: Image URL. Usually a Discord Avatar. Supports at least JPG, PNG and BMP!</kbd><br>
                 {% elif p == 'avatar1' %}
-                <kbd>[2] avatar: Image URL. Used when two users are involved. Supports at least JPG, PNG and BMP!</kbd><br>
+                <kbd>avatar2: Image URL. Used when two users are involved. Supports at least JPG, PNG and BMP!</kbd><br>
                 {% elif p == 'username0' %}
-                <kbd>[1] username: String. Username for the first user.</kbd><br>
+                <kbd>username1: String. Username for the first user.</kbd><br>
                 {% elif p == 'username1' %}
-                <kbd>[2] username: String. Username for the second user.</kbd><br>
+                <kbd>username2: String. Username for the second user.</kbd><br>
                 {% elif p == 'text' %}
                 <kbd>{{ p }}: String. Text to show on the generated image.</kbd><br>
                 {% endif %}

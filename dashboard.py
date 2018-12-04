@@ -17,6 +17,23 @@ AUTHORIZATION_BASE_URL = API_BASE_URL + '/oauth2/authorize'
 TOKEN_URL = API_BASE_URL + '/oauth2/token'
 
 
+def limited_access(func):
+    def wrapper(*args, **kwargs):
+        if 'user' not in session:
+            discord = make_session(token=session.get('oauth2_token'))
+            user = discord.get(API_BASE_URL + '/users/@me').json()
+
+            if 'id' not in user:
+                return redirect(url_for('.login'))
+
+            session['user'] = user  # TODO: Expiry
+
+        return func(*args, **kwargs)
+
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
 @dash.route('/login')
 def login():
     discord = make_session(scope='identify email', redirect_uri=request.host_url + 'callback')
@@ -34,6 +51,7 @@ def logout():
 def callback():
     if request.values.get('error'):
         return request.values['error']
+
     discord = make_session(state=session.get('oauth2_state'), redirect_uri=request.host_url + 'callback')
     token = discord.fetch_token(
         TOKEN_URL,
@@ -44,30 +62,30 @@ def callback():
 
 
 @dash.route('/dashboard')
+@limited_access
 def dashboard():
-    discord = make_session(token=session.get('oauth2_token'))
-    user = discord.get(API_BASE_URL + '/users/@me').json()
-    if 'id' not in user:
-        return redirect(url_for('.login'))
+    user = session['user']
     is_admin = user['id'] in config['admins']
     keys = r.table('keys').filter(r.row['owner'] == user['id']).run(get_db())
     return render_template('dashboard.html', name=user['username'], keys=keys, admin=is_admin)
 
 
 @dash.route('/request', methods=['GET', 'POST'])
+@limited_access
 def request_key():
-    discord = make_session(token=session.get('oauth2_token'))
-    user = discord.get(API_BASE_URL + '/users/@me').json()
-    if 'id' not in user:
-        return redirect(url_for('.login'))
+    user = session['user']
+
     if request.method == 'GET':
         return render_template('request.html')
+
     elif request.method == 'POST':
         name = request.form.get('name', None)
         reason = request.form.get('reason', None)
+
         if not reason or not name:
             result = 'Please enter a name and reason for your application'
             return render_template('result.html', result=result, success=False)
+
         r.table('applications').insert({
             "owner": user['id'],
             "email": user['email'],
@@ -80,13 +98,13 @@ def request_key():
 
 
 @dash.route('/createkey', methods=['GET', 'POST'])
+@limited_access
 def create_key():
-    discord = make_session(token=session.get('oauth2_token'))
-    user = discord.get(API_BASE_URL + '/users/@me').json()
-    if 'id' not in user:
-        return redirect(url_for('.login'))
+    user = session['user']
+
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
+
     if request.method == 'GET':
         return render_template('create.html')
     elif request.method == 'POST':
@@ -95,9 +113,11 @@ def create_key():
         owner = request.form.get('owner', None)
         owner_name = request.form.get('owner_name', None)
         email = request.form.get('email', None)
+
         if not token or not name or not owner or not owner_name or not email:
             result = 'Please fill in all required inputs'
             return render_template('result.html', result=result, success=False)
+
         r.table('keys').insert({
             "id": token,
             "name": name,
@@ -114,26 +134,26 @@ def create_key():
 
 
 @dash.route('/admin')
+@limited_access
 def admin():
-    discord = make_session(token=session.get('oauth2_token'))
-    user = discord.get(API_BASE_URL + '/users/@me').json()
-    if 'id' not in user:
-        return redirect(url_for('.login'))
+    user = session['user']
+
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
+
     apps = r.table('applications').run(get_db())
     keys = r.table('keys').run(get_db())
     return render_template('admin.html', name=user['username'], apps=apps, keys=keys)
 
 
 @dash.route('/approve/<key_id>')
+@limited_access
 def approve(key_id):
-    discord = make_session(token=session.get('oauth2_token'))
-    user = discord.get(API_BASE_URL + '/users/@me').json()
-    if 'id' not in user:
-        return redirect(url_for('.login'))
+    user = session['user']
+
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
+
     key = r.table('applications').get(key_id).run(get_db())
     m = hashlib.sha256()
     m.update(key['id'].encode())
@@ -155,23 +175,22 @@ def approve(key_id):
 
 
 @dash.route('/decline/<key_id>')
+@limited_access
 def decline(key_id):
-    discord = make_session(token=session.get('oauth2_token'))
-    user = discord.get(API_BASE_URL + '/users/@me').json()
-    if 'id' not in user:
-        return redirect(url_for('.login'))
+    user = session['user']
+
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
+
     r.table('applications').get(key_id).delete().run(get_db())
     return redirect(url_for('.admin'))
 
 
 @dash.route('/delete/<key_id>')
+@limited_access
 def delete(key_id):
-    discord = make_session(token=session.get('oauth2_token'))
-    user = discord.get(API_BASE_URL + '/users/@me').json()
-    if 'id' not in user:
-        return redirect(url_for('.login'))
+    user = session['user']
+
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
     r.table('keys').get(key_id).delete().run(get_db())
@@ -179,16 +198,14 @@ def delete(key_id):
 
 
 @dash.route('/unlimited/<key_id>')
+@limited_access
 def unlimited(key_id):
-    discord = make_session(token=session.get('oauth2_token'))
-    user = discord.get(API_BASE_URL + '/users/@me').json()
-    if 'id' not in user:
-        return redirect(url_for('.login'))
+    user = session['user']
+
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
+
     key = r.table('keys').get(key_id).run(get_db())
-    if key['unlimited']:
-        r.table('keys').get(key_id).update({"unlimited": False}).run(get_db())
-    else:
-        r.table('keys').get(key_id).update({"unlimited": True}).run(get_db())
+    unlimited = not key['unlimited']
+    r.table('keys').get(key_id).update({'unlimited': unlimited}).run(get_db())
     return redirect(url_for('.admin'))

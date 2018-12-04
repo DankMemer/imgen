@@ -183,6 +183,17 @@ hr {
   margin: 20px 20px 2px 20px;
 }
 
+h1, .app-card p {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.app-card header h5 {
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+
 .app-approve {
   align-self: self-start;
   background-color: #27ae60;
@@ -254,3 +265,11 @@ hr {
   background-color: rgb(30, 30, 30);
 }
 
+.clickme {
+  cursor: pointer;
+  user-select: none;
+}
+
+.hidden {
+  display: none;
+}
