@@ -41,7 +41,7 @@
             <h5>Owner: {{ key['owner_name'] }} ({{ key['owner'] }})</h5>
             <h5>E-Mail: {{ key['email'] }}</h5>
             <p>Token (Click to copy):</p>
-            <code class="block" onclick="navigator.window.writeText('{{ key['id'] }}')">{{ key['id'] }}</code>
+            <code class="block" style="cursor: pointer;" onclick="navigator.clipboard.writeText('{{ key['id'] }}')">{{ key['id'] }}</code>
           </header>
           <div class="flex flex-column">
             <h4 class="clickme" onclick="document.getElementById('{{ key['name'] }}').classList.toggle('hidden')">Usage (click to view):</h4>
