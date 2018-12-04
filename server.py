@@ -78,6 +78,11 @@ def index():
     return render_template('index.html', data=data)
 
 
+@app.route('/endpoints.json', methods=['GET'])
+def endpoints():
+    return jsonify({"endpoints": [{'name': x, 'parameters': y.params} for x, y in endpoints.items()]})
+
+
 @app.route('/documentation')
 def docs():
     return render_template('docs.html', url=request.host_url, data=sorted(endpoints.items()))
