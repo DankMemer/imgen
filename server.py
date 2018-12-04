@@ -54,8 +54,8 @@ def require_authorization(func):
     def wrapper(*args, **kwargs):
         if r.table('keys').get(request.headers.get('authorization', '')).coerce_to('bool').default(False).run(get_db()):
             return func(*args, **kwargs)
-        else:
-            return jsonify({'status': 401, 'error': 'You are not authorized to access this endpoint'}), 401
+
+        return jsonify({'status': 401, 'error': 'You are not authorized to access this endpoint'}), 401
 
     return wrapper
 
