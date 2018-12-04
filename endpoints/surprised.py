@@ -15,7 +15,7 @@ class Surprised(Endpoint):
         base = Image.open(self.assets.get('assets/surprised/surprised.bmp')).convert('RGBA')
         font = self.assets.get_font('assets/fonts/robotoregular.ttf', size=36)
         try:
-            text1, text2 = text.split.replace(', ', ',').split(',')
+            text1, text2 = text.replace(', ', ',').split(',')
         except ValueError:
             text1, text2 = 'tries to use surprised without splitting by comma,the command breaks'.split(',')
         text1 = wrap(font, 'me: ' + text1, 650)
