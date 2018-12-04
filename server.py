@@ -80,7 +80,7 @@ def index():
 
 @app.route('/endpoints.json', methods=['GET'])
 def endpoints():
-    return jsonify({"endpoints": [{'name': x, 'parameters': y.params} for x, y in sorted(endpoints.items())]})
+    return jsonify({"endpoints": [{'name': x, 'parameters': y.params} for x, y in endpoints.items()]})
 
 
 @app.route('/documentation')
