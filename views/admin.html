@@ -40,8 +40,8 @@
             <h1 style="max-width: 500px;">{{ key['name'] }}</h1>
             <h5>Owner: {{ key['owner_name'] }} ({{ key['owner'] }})</h5>
             <h5>E-Mail: {{ key['email'] }}</h5>
-            <p>Token:</p>
-            <code class="block">{{ key['id'] }}</code>
+            <p>Token (Click to copy):</p>
+            <code class="block" onclick="navigator.window.writeText('{{ key['id'] }}')">{{ key['id'] }}</code>
           </header>
           <div class="flex flex-column">
             <h4 class="clickme" onclick="document.getElementById('{{ key['name'] }}').classList.toggle('hidden')">Usage (click to view):</h4>
