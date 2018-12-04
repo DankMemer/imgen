@@ -47,7 +47,7 @@ def init_app():
     from utils.endpoint import endpoints as endpnts
     global endpoints
     endpoints = endpnts
-    import endpoints as _  # noqa: F401
+    import endpoints as _
 
 
 def require_authorization(func):
@@ -76,6 +76,11 @@ def index():
                           'avg_gen_time': endpoints[endpoint].get_avg_gen_time()}
 
     return render_template('index.html', data=data)
+
+
+@app.route('/endpoints.json', methods=['GET'])
+def endpoints():
+    return jsonify({"endpoints": [{'name': x, 'parameters': y.params} for x, y in sorted(endpoints.items())]})
 
 
 @app.route('/documentation')
