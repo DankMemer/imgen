@@ -39,7 +39,7 @@ class Tweet(Endpoint):
         tag_raw = usernames[1] if len(usernames) == 2 else usernames[0]
         text3 = wrap(font3, f'@{tag_raw}', 1150)
 
-        time = datetime.now().strftime('%I:%M %p - %d %b %Y')
+        time = datetime.now().strftime('%-I:%M %p - %d %b %Y')
         retweets = "{:,}".format(randint(0, 99999))
         likes = "{:,}".format(randint(0, 99999))
         text4 = wrap(font3, time, 1150)
