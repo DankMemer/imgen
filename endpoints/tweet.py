@@ -35,9 +35,9 @@ class Tweet(Endpoint):
 
         base.paste(avatar, (42, 38), avatar)
         canv = ImageDraw.Draw(base)
-        text = wrap(font, text, 1150)
         text2 = wrap(font2, usernames[0], 1150)
-        text3 = wrap(font3, f'@{usernames[0]}', 1150)
+        tag_raw = usernames[1] if len(usernames) == 2 else usernames[0]
+        text3 = wrap(font3, f'@{tag_raw}', 1150)
 
         time = datetime.now().strftime('%-I:%M %p - %d %b %Y')
         retweets = "{:,}".format(randint(0, 99999))
@@ -45,7 +45,21 @@ class Tweet(Endpoint):
         text4 = wrap(font3, time, 1150)
         text5 = wrap(font4, retweets, 1150)
         text6 = wrap(font4, likes, 1150)
-        canv.text((45, 160), text, font=font, fill='Black')
+        total_size = (45, 160)
+        for i in text.split(' '):
+            i = i + ' '
+            if i.startswith('@') or i.startswith('#'):
+                if total_size[0] > 1000:
+                    total_size = (45, total_size[1] + 65)
+                canv.text(total_size, i, font=font, fill='#1b95e0')
+                y = canv.textsize(i, font=font)
+                total_size = (total_size[0] + y[0], total_size[1])
+            else:
+                if total_size[0] > 1000:
+                    total_size = (45, total_size[1] + 65)
+                canv.text(total_size, i, font=font, fill='Black')
+                y = canv.textsize(i, font=font)
+                total_size = (total_size[0] + y[0], total_size[1])
         canv.text((160, 45), text2, font=font2, fill='Black')
         canv.text((160, 95), text3, font=font3, fill='Grey')
         canv.text((40, 570), text4, font=font3, fill='Grey')
