@@ -47,8 +47,8 @@ class Tweet(Endpoint):
         text6 = wrap(font4, likes, 1150)
         total_size = (45, 160)
         for i in text.split(' '):
-            i = i + ' '
-            if i.startswith('@') or i.startswith('#'):
+            i += ' '
+            if i.startswith(('@', '#')):
                 if total_size[0] > 1000:
                     total_size = (45, total_size[1] + 65)
                 canv.text(total_size, i, font=font, fill='#1b95e0')
