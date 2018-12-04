@@ -184,9 +184,9 @@ hr {
 }
 
 h1, .app-card p {
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .app-card header h5 {
