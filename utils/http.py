@@ -18,7 +18,7 @@ def get(url, **kwargs):
         raise KeyError(f'{url} is missing `content-length` header')
 
     if int(res.headers.get('content-length', 0)) > MAX_FILE_SIZE:
-        raise OverflowError(f'content-length may not exceed {MAX_FILE_SIZE}')
+        raise OverflowError(f'content-length may not exceed {MAX_FILE_SIZE} bytes')
 
     return res
 
