@@ -112,7 +112,7 @@ def api(endpoint):
                                          avatars=avatars,
                                          usernames=usernames)
     except Exception as e:
-        print(e, ''.join(traceback.format_tb(e.__traceback__)))
+        traceback.print_exc()
         return jsonify({'status': 500, 'error': str(e)}), 500
     return result, 200
 
