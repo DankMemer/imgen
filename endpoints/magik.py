@@ -15,13 +15,19 @@ class Magik(Endpoint):
         avatar = BytesIO(http.get_image_raw(avatars[0]))
         with image.Image(file=avatar) as img:
             img.transform(resize='400x400')
+            try:
+                multiplier = int(text)
+            except ValueError:
+                multiplier = 1
+            else:
+                multiplier = max(min(multiplier, 10), 1)
             img.liquid_rescale(width=int(img.width * 0.5),
                                height=int(img.height * 0.5),
-                               delta_x=0.5,
+                               delta_x=0.5 * multiplier,
                                rigidity=0)
             img.liquid_rescale(width=int(img.width * 1.5),
                                height=int(img.height * 1.5),
-                               delta_x=2,
+                               delta_x=2 * multiplier,
                                rigidity=0)
 
             b = BytesIO()
