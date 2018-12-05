@@ -10,6 +10,7 @@ from flask import Flask, render_template, request, g, jsonify
 from dashboard import dash
 from utils.db import get_db
 from utils.ratelimits import ratelimit
+from utils.exceptions import BadRequest
 
 # Initial require, the above line contains our endpoints.
 
@@ -111,6 +112,8 @@ def api(endpoint):
                                          text=text,
                                          avatars=avatars,
                                          usernames=usernames)
+    except BadRequest as br:
+        return jsonify({'status': 400, 'error': str(br)}), 400
     except Exception as e:
         traceback.print_exc()
         return jsonify({'status': 500, 'error': str(e)}), 500

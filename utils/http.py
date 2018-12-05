@@ -4,6 +4,8 @@ from io import BytesIO
 import requests
 from PIL import Image
 
+from utils import exceptions
+
 config = json.load(open('config.json'))
 MAX_FILE_SIZE = config.get('max_file_size', 5000000)  # in bytes
 
@@ -15,10 +17,10 @@ def get(url, **kwargs):
         res = requests.get(url, **kwargs)
 
     if 'content-length' not in res.headers:
-        raise KeyError(f'{url} is missing `content-length` header')
+        raise exceptions.BadRequest(f'{url} is missing `content-length` header')
 
     if int(res.headers.get('content-length', 0)) > MAX_FILE_SIZE:
-        raise OverflowError(f'content-length may not exceed {MAX_FILE_SIZE} bytes')
+        raise exceptions.BadRequest(f'content-length may not exceed {MAX_FILE_SIZE} bytes')
 
     return res
 
@@ -32,4 +34,4 @@ def get_image(url, **kwargs):
         raw = get_content_raw(url, **kwargs)
         return Image.open(BytesIO(raw))
     except OSError:
-        raise TypeError('An invalid image was provided! Check the URL and try again.')
+        raise exceptions.BadRequest('An invalid image was provided! Check the URL and try again.')
