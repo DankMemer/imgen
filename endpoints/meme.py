@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from PIL import ImageDraw
+from PIL import ImageDraw, ImageColor
 from flask import send_file
 
 from utils import http
@@ -9,24 +9,31 @@ from utils.endpoint import Endpoint, setup
 
 @setup
 class Meme(Endpoint):
-    params = ['avatar0', 'text']
+    params = ['avatar0', 'username0', 'username1' 'text']
 
     def generate(self, avatars, text, usernames):
         img = http.get_image(avatars[0]).convert('RGB')
-        font = self.assets.get_font('assets/fonts/impact.ttf', size=48, )
+        try:
+            font = self.assets.get_font(f'assets/fonts/{usernames[0].lower()}.ttf', size=48, )
+        except (OSError, IndexError):
+            font = self.assets.get_font('assets/fonts/impact.ttf', size=48, )
         # parse top and bottom text
         try:
             top_text, bottom_text = text.replace(', ', ',').split(',')
         except ValueError:
             top_text, bottom_text = 'TOP TEXT,BOTTOM TEXT'.split(',')
         draw = ImageDraw.Draw(img)
+        try:
+            color = ImageColor.getrgb(usernames[1]) or 'White'
+        except (ValueError, IndexError):
+            color = 'White'
 
         def draw_text_with_outline(text, x, y):
             draw.text((x - 2, y - 2), text, (0, 0, 0), font=font)
             draw.text((x + 2, y - 2), text, (0, 0, 0), font=font)
             draw.text((x + 2, y + 2), text, (0, 0, 0), font=font)
             draw.text((x - 2, y + 2), text, (0, 0, 0), font=font)
-            draw.text((x, y), text, (255, 255, 255), font=font)
+            draw.text((x, y), text, color, font=font)
             return
 
         def draw_text(string, pos):
