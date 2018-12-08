@@ -67,6 +67,6 @@ class Tweet(Endpoint):
         canv.text((205, 486), text6, font=font4, fill='#2C5F63')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

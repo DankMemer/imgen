@@ -39,9 +39,9 @@ class Youtube(Endpoint):
         canv.text((92, 34), op, font=font, fill='Black')
         canv.text((100 + size[0], 34), time, font=font2, fill='Grey')
         canv.text((92, 59), comment, font=font3, fill='Black')
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')
