@@ -14,9 +14,9 @@ class Meme(Endpoint):
     def generate(self, avatars, text, usernames):
         img = http.get_image(avatars[0]).convert('RGB')
         try:
-            font = self.assets.get_font(f'assets/fonts/{usernames[0].lower()}.ttf', size=48, )
+            font = self.assets.get_font(f'assets/fonts/{usernames[0].lower()}.ttf', size=48)
         except (OSError, IndexError):
-            font = self.assets.get_font('assets/fonts/impact.ttf', size=48, )
+            font = self.assets.get_font('assets/fonts/impact.ttf', size=48)
         # parse top and bottom text
         try:
             top_text, bottom_text = text.replace(', ', ',').split(',')
@@ -28,13 +28,12 @@ class Meme(Endpoint):
         except (ValueError, IndexError):
             color = 'White'
 
-        def draw_text_with_outline(text, x, y):
-            draw.text((x - 2, y - 2), text, (0, 0, 0), font=font)
-            draw.text((x + 2, y - 2), text, (0, 0, 0), font=font)
-            draw.text((x + 2, y + 2), text, (0, 0, 0), font=font)
-            draw.text((x - 2, y + 2), text, (0, 0, 0), font=font)
-            draw.text((x, y), text, color, font=font)
-            return
+        def draw_text_with_outline(string, x, y):
+            draw.text((x - 2, y - 2), string, (0, 0, 0), font=font)
+            draw.text((x + 2, y - 2), string, (0, 0, 0), font=font)
+            draw.text((x + 2, y + 2), string, (0, 0, 0), font=font)
+            draw.text((x - 2, y + 2), string, (0, 0, 0), font=font)
+            draw.text((x, y), string, color, font=font)
 
         def draw_text(string, pos):
             string = string.upper()
