@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Gay(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         img1 = http.get_image(avatars[0])
         img2 = Image.open(self.assets.get('assets/gay/gay.bmp')).convert('RGBA').resize(img1.size)
         img2.putalpha(128)

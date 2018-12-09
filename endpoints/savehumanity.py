@@ -11,7 +11,7 @@ from utils.textutils import wrap
 class SaveHumanity(Endpoint):
     params = ['text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/humanity/humanity.bmp')).convert('RGBA')
         # We need a text layer here for the rotation
         text_layer = Image.new('RGBA', base.size)

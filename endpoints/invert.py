@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Invert(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         img = http.get_image(avatars[0])
         if img.mode == 'RGBA':
             r, g, b, a = img.split()

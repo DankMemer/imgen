@@ -12,7 +12,7 @@ from utils.textutils import wrap
 class Unpopular(Endpoint):
     params = ['avatar0', 'text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((666, 666)).convert('RGBA')
         base = Image.open(self.assets.get('assets/unpopular/unpopular.bmp')).convert('RGBA')
         font = self.assets.get_font('assets/fonts/semibold.woff', size=100)

@@ -13,7 +13,7 @@ from utils.textutils import wrap
 class Youtube(Endpoint):
     params = ['avatar0', 'username0', 'text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((52, 52)).convert('RGBA')
         name = usernames[0]
         base = Image.open(self.assets.get('assets/youtube/youtube.bmp')).convert('RGBA')

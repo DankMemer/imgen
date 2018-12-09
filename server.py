@@ -99,6 +99,10 @@ def api(endpoint):
         text = request.args.get('text', '')
         avatars = [x for x in [request.args.get('avatar1', None), request.args.get('avatar2', None)] if x]
         usernames = [x for x in [request.args.get('username1', None), request.args.get('username2', None)] if x]
+        kwargs = {}
+        for arg in request.args:
+            if arg not in ['text', 'username1', 'username2', 'avatar1', 'avatar2']:
+                kwargs[arg] = request.args.get(arg)
     else:
         if not request.is_json:
             return jsonify({'status': 400, 'message': 'when submitting a POST request you must provide data in the '
@@ -107,11 +111,16 @@ def api(endpoint):
         text = request_data.get('text', '')
         avatars = list(request_data.get('avatars', []))
         usernames = list(request_data.get('usernames', []))
+        kwargs = {}
+        for arg in request_data:
+            if arg not in ['text', 'avatars', 'usernames']:
+                kwargs[arg] = request_data.get(arg)
     try:
         result = endpoints[endpoint].run(key=request.headers.get('authorization'),
                                          text=text,
                                          avatars=avatars,
-                                         usernames=usernames)
+                                         usernames=usernames,
+                                         kwargs=kwargs)
     except BadRequest as br:
         return jsonify({'status': 400, 'error': str(br)}), 400
     except Exception as e:

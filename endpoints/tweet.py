@@ -14,7 +14,7 @@ from utils.textutils import wrap
 class Tweet(Endpoint):
     params = ['avatar0', 'username0', 'text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/tweet/trump.bmp'))
         avatar = http.get_image(avatars[0]).resize((98, 98)).convert('RGBA')
         font = self.assets.get_font('assets/fonts/segoeuireg.ttf', size=50, )

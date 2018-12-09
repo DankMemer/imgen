@@ -11,7 +11,7 @@ from utils.textutils import wrap
 class Surprised(Endpoint):
     params = ['text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/surprised/surprised.bmp')).convert('RGBA')
         font = self.assets.get_font('assets/fonts/robotoregular.ttf', size=36)
         try:

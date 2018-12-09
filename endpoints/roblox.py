@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Roblox(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/roblox/roblox.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((56, 74)).convert('RGBA')
         base.paste(avatar, (168, 41), avatar)

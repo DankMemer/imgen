@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Bed(Endpoint):
     params = ['avatar0', 'avatar1']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/bed/bed.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((100, 100)).convert('RGBA')
         avatar2 = http.get_image(avatars[1]).resize((70, 70)).convert('RGBA')

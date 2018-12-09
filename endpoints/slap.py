@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Slap(Endpoint):
     params = ['avatar0', 'avatar1']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/batslap/batslap.bmp')).resize((1000, 500)).convert('RGBA')
         avatar = http.get_image(avatars[1]).resize((220, 220)).convert('RGBA')
         avatar2 = http.get_image(avatars[0]).resize((200, 200)).convert('RGBA')

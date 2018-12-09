@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Laid(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/laid/laid.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((115, 115)).convert('RGBA')
         final_image = Image.new('RGBA', base.size)

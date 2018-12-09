@@ -11,7 +11,7 @@ from utils.textutils import wrap
 class Brain(Endpoint):
     params = ['text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/brain/brain.bmp'))
         font = self.assets.get_font('assets/fonts/verdana.ttf', size=30)
 

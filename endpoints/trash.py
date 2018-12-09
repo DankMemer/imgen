@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Trash(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((483, 483)).convert('RGBA')
         base = Image.open(self.assets.get('assets/trash/trash.bmp')).convert('RGBA')
 

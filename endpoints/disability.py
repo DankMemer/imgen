@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Disability(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((175, 175)).convert('RGBA')
         base = Image.open(self.assets.get('assets/disability/disability.bmp')).convert('RGBA')
 

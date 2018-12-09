@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class SickBan(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/ban/ban.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((400, 400)).convert('RGBA')
         base.paste(avatar, (70, 344), avatar)

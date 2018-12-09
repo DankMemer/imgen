@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Cancer(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/cancer/cancer.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((100, 100)).convert('RGBA')
 

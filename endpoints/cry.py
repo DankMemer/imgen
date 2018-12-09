@@ -11,7 +11,7 @@ from utils.textutils import wrap
 class Cry(Endpoint):
     params = ['text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/cry/cry.bmp'))
         font = self.assets.get_font('assets/fonts/tahoma.ttf', size=20)
         canv = ImageDraw.Draw(base)

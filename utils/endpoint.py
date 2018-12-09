@@ -42,7 +42,7 @@ class Endpoint(ABC):
         return res
 
     @abstractmethod
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         raise NotImplementedError(
             f"generate has not been implemented on endpoint {self.name}"
         )
