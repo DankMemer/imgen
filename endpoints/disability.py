@@ -16,9 +16,9 @@ class Disability(Endpoint):
         base = Image.open(self.assets.get('assets/disability/disability.bmp')).convert('RGBA')
 
         base.paste(avatar, (450, 325), avatar)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

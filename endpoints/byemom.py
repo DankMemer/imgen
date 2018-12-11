@@ -36,9 +36,9 @@ class Byemom(Endpoint):
         base.paste(bye_layer, (150, 7))
         base.paste(avatar, (530, 15), avatar)
         base.paste(avatar2, (70, 340), avatar2)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

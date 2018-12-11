@@ -23,9 +23,9 @@ class Surprised(Endpoint):
         canv = ImageDraw.Draw(base)
         canv.text((20, 20), text1, font=font, fill='White')
         canv.text((20, 140), text2, font=font, fill='White')
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

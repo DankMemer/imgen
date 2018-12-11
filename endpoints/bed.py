@@ -20,9 +20,9 @@ class Bed(Endpoint):
         base.paste(avatar, (25, 300), avatar)
         base.paste(avatar_small, (53, 450), avatar_small)
         base.paste(avatar2, (53, 575), avatar2)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

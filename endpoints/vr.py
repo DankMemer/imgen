@@ -16,11 +16,11 @@ class Vr(Endpoint):
         # We need a text layer here for the rotation
         font, text = auto_text_size(text, self.assets.get_font('assets/fonts/sans.ttf'), 207, font_scalar=0.8)
         canv = ImageDraw.Draw(base)
-        w, _ = canv.textsize(text)
+        w, _ = canv.textsize(text, font)
         canv.multiline_text(((170 - w), 485), text, font=font, fill='Black', anchor='center')
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

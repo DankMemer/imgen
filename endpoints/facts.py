@@ -24,6 +24,6 @@ class Facts(Endpoint):
         base.paste(text_layer, (0, 0), text_layer)
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

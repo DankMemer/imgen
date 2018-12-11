@@ -33,9 +33,9 @@ class Boo(Endpoint):
 
         canv.text((35, 54), first_text, font=first_font, fill='Black')
         canv.text((267, 57), second_text, font=second_font, fill='Black')
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

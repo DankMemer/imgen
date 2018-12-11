@@ -19,6 +19,6 @@ class Gay(Endpoint):
         img1 = img1.convert('RGB')
 
         b = BytesIO()
-        img1.save(b, format='jpeg')
+        img1.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

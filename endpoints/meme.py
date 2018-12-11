@@ -12,7 +12,7 @@ class Meme(Endpoint):
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        img = http.get_image(avatars[0]).convert('RGB')
+        img = http.get_image(avatars[0]).convert('RGBA')
         factor = int(img.height / 10)
         font = self.assets.get_font(f'assets/fonts/{kwargs.get("font", "impact")}.ttf', size=factor)
         draw = ImageDraw.Draw(img)
@@ -88,6 +88,6 @@ class Meme(Endpoint):
         draw_text(kwargs.get('bottom_text', 'BOTTOM TEXT'), "bottom")
 
         b = BytesIO()
-        img.save(b, format='jpeg')
+        img.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

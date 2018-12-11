@@ -31,9 +31,9 @@ class Plan(Endpoint):
         canv.text((510, 60), b, font=font, fill='Black')
         canv.text((190, 280), c, font=font, fill='Black')
         canv.text((510, 280), c, font=font, fill='Black')
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

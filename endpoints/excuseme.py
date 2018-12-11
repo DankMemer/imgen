@@ -19,9 +19,9 @@ class ExcuseMe(Endpoint):
         text = wrap(font, text, 787)
         canv.text((20, 15), text, font=font, fill='Black')
 
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

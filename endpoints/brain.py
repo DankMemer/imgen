@@ -29,6 +29,6 @@ class Brain(Endpoint):
         canvas.text((15, 610), d, font=font, fill='Black')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

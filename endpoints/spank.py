@@ -17,9 +17,9 @@ class Spank(Endpoint):
         img2 = http.get_image(avatars[1]).resize((120, 120)).convert('RGBA')
         base.paste(img1, (225, 5), img1)
         base.paste(img2, (350, 220), img2)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

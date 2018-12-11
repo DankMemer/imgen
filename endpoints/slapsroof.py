@@ -19,8 +19,8 @@ class SlapsRoof(Endpoint):
         text = wrap(font, text + suffix, 1150)
         canv.text((335, 31), text, font=font, fill='Black')
 
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

@@ -17,9 +17,9 @@ class Trash(Endpoint):
 
         avatar = avatar.filter(ImageFilter.GaussianBlur(radius=6))
         base.paste(avatar, (480, 0), avatar)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

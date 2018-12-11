@@ -36,6 +36,6 @@ class DeepFry(Endpoint):
         noise = ImageEnhance.Color(noise).enhance(randint(-15, 15))
 
         b = BytesIO()
-        noise.save(b, format='jpeg')
+        noise.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

@@ -40,9 +40,9 @@ class Unpopular(Endpoint):
         canv.text((0, 0), wrapped, font=font, fill='Black')
         w = temp.rotate(1, expand=1)
         base.paste(w, (620, 280), w)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

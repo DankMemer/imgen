@@ -19,9 +19,9 @@ class MadeThis(Endpoint):
         base.paste(avatar2, (422, 267), avatar2)
         base.paste(avatar2, (406, 678), avatar2)
         base.paste(avatar2, (412, 1121), avatar2)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

@@ -24,9 +24,9 @@ class Floor(Endpoint):
 
         base.paste(avatar, (100, 90), avatar)
         base.paste(avatar2, (330, 90), avatar2)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

@@ -19,9 +19,9 @@ class Satan(Endpoint):
         # Put the base over the avatar
         final_image.paste(avatar, (200, 90), avatar)
         final_image.paste(base, (0, 0), base)
-        final_image = final_image.convert('RGB')
+        final_image = final_image.convert('RGBA')
 
         b = BytesIO()
-        final_image.save(b, format='jpeg')
+        final_image.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

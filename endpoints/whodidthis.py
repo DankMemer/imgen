@@ -15,9 +15,9 @@ class Whodidthis(Endpoint):
         base = Image.open(self.assets.get('assets/whodidthis/whodidthis.bmp'))
         avatar = http.get_image(avatars[0]).resize((720, 405)).convert('RGBA')
         base.paste(avatar, (0, 159), avatar)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

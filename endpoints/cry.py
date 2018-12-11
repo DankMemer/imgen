@@ -20,6 +20,6 @@ class Cry(Endpoint):
         canv.text((382, 80), text, font=font, fill='Black')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

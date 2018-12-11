@@ -15,9 +15,9 @@ class Aborted(Endpoint):
         base = Image.open(self.assets.get('assets/aborted/aborted.bmp'))
         img1 = http.get_image(avatars[0]).convert('RGBA').resize((90, 90))
         base.paste(img1, (390, 130), img1)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

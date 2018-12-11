@@ -17,9 +17,9 @@ class Screams(Endpoint):
         avatar2 = http.get_image(avatars[1]).resize((156, 156)).convert('RGBA')
         base.paste(avatar, (200, 1), avatar)
         base.paste(avatar2, (136, 231), avatar2)
-        base = base.convert("RGB")
+        base = base.convert("RGBA")
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

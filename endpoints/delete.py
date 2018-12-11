@@ -16,9 +16,9 @@ class Delete(Endpoint):
         avatar = http.get_image(avatars[0]).resize((195, 195)).convert('RGBA')
 
         base.paste(avatar, (120, 135), avatar)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

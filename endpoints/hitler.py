@@ -18,6 +18,6 @@ class Hitler(Endpoint):
         base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')
