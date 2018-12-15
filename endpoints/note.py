@@ -24,9 +24,9 @@ class Note(Endpoint):
         text_layer = text_layer.rotate(-23, resample=Image.BICUBIC)
 
         base.paste(text_layer, (0, 0), text_layer)
-        base = base.convert('RGBA')
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')

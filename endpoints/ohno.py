@@ -18,9 +18,9 @@ class Ohno(Endpoint):
 
         text = wrap(font, text, 260)
         canv.text((340, 30), text, font=font, fill='Black')
-        base = base.convert('RGBA')
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')

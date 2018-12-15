@@ -18,9 +18,9 @@ class Vr(Endpoint):
         canv = ImageDraw.Draw(base)
         w, _ = canv.textsize(text, font)
         canv.multiline_text(((170 - w), 485), text, font=font, fill='Black', anchor='center')
-        base = base.convert('RGBA')
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')

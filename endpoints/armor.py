@@ -19,9 +19,9 @@ class Armor(Endpoint):
         canv = ImageDraw.Draw(base)
 
         canv.text((34, 371), text, font=font, fill='Black')
-        base = base.convert('RGBA')
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')

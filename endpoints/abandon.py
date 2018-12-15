@@ -18,8 +18,8 @@ class Abandon(Endpoint):
         text = wrap(font, text, 320)
         canv.text((25, 413), text, font=font, fill='Black')
 
-        base = base.convert('RGBA')
+        base = base.convert('RGB')
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')

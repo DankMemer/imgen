@@ -24,9 +24,9 @@ class Shit(Endpoint):
         text_layer = text_layer.rotate(52, resample=Image.BICUBIC)
 
         base.paste(text_layer, (0, 50), text_layer)
-        base = base.convert('RGBA')
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')

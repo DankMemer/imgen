@@ -30,9 +30,9 @@ class KnowYourLocation(Endpoint):
 
         canv.text((64, 131), top_text, font=top_font, fill='Black')
         canv.text((120, 450), bottom_text, font=bottom_font, fill='Black')
-        base = base.convert('RGBA')
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')

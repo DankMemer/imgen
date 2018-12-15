@@ -32,9 +32,9 @@ class Balloon(Endpoint):
         canv.text((50, 530), balloon_text_2, font=balloon_text_2_font, fill='Black')
         canv.text((500, 520), balloon_text_3, font=balloon_text_3_font, fill='Black')
         canv.text((620, 155), label_text, font=label_font, fill='Black')
-        base = base.convert('RGBA')
+        base = base.convert('RGB')
 
         b = BytesIO()
-        base.save(b, format='png')
+        base.save(b, format='jpeg')
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/jpeg')
