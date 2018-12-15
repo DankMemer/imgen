@@ -97,7 +97,8 @@ def api(endpoint):
         return jsonify({'status': 404, 'error': 'Endpoint {} not found!'.format(endpoint)}), 404
     if request.method == 'GET':
         text = request.args.get('text', '')
-        avatars = [x for x in [request.args.get('avatar1', None), request.args.get('avatar2', None)] if x]
+        avatars = [x for x in [request.args.get('avatar1', request.args.get('image', None)),
+                               request.args.get('avatar2', None)] if x]
         usernames = [x for x in [request.args.get('username1', None), request.args.get('username2', None)] if x]
         kwargs = {}
         for arg in request.args:
@@ -109,7 +110,7 @@ def api(endpoint):
                                                       'json format'}), 400
         request_data = request.json
         text = request_data.get('text', '')
-        avatars = list(request_data.get('avatars', []))
+        avatars = list(request_data.get('avatars', list(request_data.get('images', []))))
         usernames = list(request_data.get('usernames', []))
         kwargs = {}
         for arg in request_data:
