@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Meme(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames, kwargs):
+    def generate(self, avatars, text, usernames, kwargs):  # pylint: disable=R0915
         img = http.get_image(avatars[0]).convert('RGBA')
         factor = int(img.height / 10)
         font = self.assets.get_font(f'assets/fonts/{kwargs.get("font", "impact")}.ttf', size=factor)
