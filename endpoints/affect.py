@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Affect(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((200, 157)).convert('RGBA')
         base = Image.open(self.assets.get('assets/affect/affect.bmp')).convert('RGBA')
 

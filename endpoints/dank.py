@@ -13,7 +13,7 @@ from utils.endpoint import Endpoint, setup
 class Dank(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((320, 320)).convert('RGBA')
 
         horn = Image.open(self.assets.get('assets/dank/horn.bmp'))\

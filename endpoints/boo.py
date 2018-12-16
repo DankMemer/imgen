@@ -11,7 +11,7 @@ from utils.textutils import auto_text_size
 class Boo(Endpoint):
     params = ['text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/boo/boo.bmp')).convert('RGBA')
         # We need a text layer here for the rotation
         canv = ImageDraw.Draw(base)

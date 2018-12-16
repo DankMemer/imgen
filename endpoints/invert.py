@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Invert(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         img = http.get_image(avatars[0])
         if img.mode == 'RGBA':
             r, g, b, a = img.split()
@@ -22,8 +22,8 @@ class Invert(Endpoint):
         else:
             img = ImageOps.invert(img)
 
-        img = img.convert('RGB')
+        img = img.convert('RGBA')
         b = BytesIO()
-        img.save(b, format='jpeg')
+        img.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

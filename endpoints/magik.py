@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Magik(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         avatar = BytesIO(http.get_content_raw(avatars[0]))
         with image.Image(file=avatar) as img:
             img.transform(resize='400x400')

@@ -10,7 +10,7 @@ from utils.endpoint import Endpoint, setup
 class RadialBlur(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         output = gm.radial_blur(avatars[0], 15, 'png')
 
         b = BytesIO(output)

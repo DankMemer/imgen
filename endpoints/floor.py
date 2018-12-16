@@ -12,7 +12,7 @@ from utils.textutils import wrap
 class Floor(Endpoint):
     params = ['avatar0', 'avatar1', 'text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/floor/floor.bmp')).convert('RGBA')
         avatar = http.get_image(avatars[0]).resize((45, 45)).convert('RGBA')
         avatar2 = avatar.copy().resize((23, 23))
@@ -24,9 +24,9 @@ class Floor(Endpoint):
 
         base.paste(avatar, (100, 90), avatar)
         base.paste(avatar2, (330, 90), avatar2)
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

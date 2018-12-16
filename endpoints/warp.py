@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Warp(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         implode = '-{}'.format(str(randint(3, 15)))
         roll = '+{}+{}'.format(randint(0, 256), randint(0, 256))
         swirl = '{}{}'.format(choice(["+", "-"]), randint(120, 180))

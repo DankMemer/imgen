@@ -11,7 +11,7 @@ from utils.textutils import auto_text_size
 class Balloon(Endpoint):
     params = ['text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/balloon/balloon.bmp')).convert('RGBA')
         font = self.assets.get_font('assets/fonts/sans.ttf')
         canv = ImageDraw.Draw(base)

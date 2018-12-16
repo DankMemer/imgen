@@ -11,7 +11,7 @@ from utils.textutils import wrap
 class Walking(Endpoint):
     params = ['text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/walking/walking.bmp'))
 
         font = self.assets.get_font('assets/fonts/sans.ttf', size=50)

@@ -14,7 +14,7 @@ from utils.textutils import wrap
 class Tweet(Endpoint):
     params = ['avatar0', 'username0', 'text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/tweet/trump.bmp'))
         avatar = http.get_image(avatars[0]).resize((98, 98)).convert('RGBA')
         font = self.assets.get_font('assets/fonts/segoeuireg.ttf', size=50, )
@@ -67,6 +67,6 @@ class Tweet(Endpoint):
         canv.text((205, 486), text6, font=font4, fill='#2C5F63')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

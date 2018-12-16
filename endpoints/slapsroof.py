@@ -11,7 +11,7 @@ from utils.textutils import wrap
 class SlapsRoof(Endpoint):
     params = ['text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/slapsroof/slapsroof.bmp'))
         font = self.assets.get_font('assets/fonts/medium.woff', size=33)
         canv = ImageDraw.Draw(base)
@@ -19,7 +19,7 @@ class SlapsRoof(Endpoint):
         text = wrap(font, text + suffix, 1150)
         canv.text((335, 31), text, font=font, fill='Black')
 
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
         b = BytesIO()
         base.save(b, format='jpeg')
         b.seek(0)

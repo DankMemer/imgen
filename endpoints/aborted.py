@@ -11,7 +11,7 @@ from utils.endpoint import Endpoint, setup
 class Aborted(Endpoint):
     params = ['avatar0']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/aborted/aborted.bmp'))
         img1 = http.get_image(avatars[0]).convert('RGBA').resize((90, 90))
         base.paste(img1, (390, 130), img1)

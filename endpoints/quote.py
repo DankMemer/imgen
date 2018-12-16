@@ -12,7 +12,7 @@ from utils.endpoint import Endpoint, setup
 class Quote(Endpoint):
     params = ['avatar0', 'username0', 'text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         avatar = http.get_image(avatars[0]).resize((150, 150))
         base = Image.new('RGBA', (1500, 300))
         font_med = self.assets.get_font('assets/fonts/medium.woff', size=60)

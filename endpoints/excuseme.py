@@ -11,7 +11,7 @@ from utils.textutils import wrap
 class ExcuseMe(Endpoint):
     params = ['text']
 
-    def generate(self, avatars, text, usernames):
+    def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/excuseme/excuseme.bmp'))
 
         font = self.assets.get_font('assets/fonts/sans.ttf', size=40)
