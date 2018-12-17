@@ -9,6 +9,14 @@ from utils.endpoint import Endpoint, setup
 
 @setup
 class Meme(Endpoint):
+    """
+    This endpoint works a bit differently from the other endpoints.
+    This endpoint takes in top_text and bottom_text parameters instead of text.
+    It also supports color and font parameters.
+    Fonts supported are: arial, arimobold, impact, robotomedium, robotoregular, sans, segoeuireg, tahoma and verdana.
+    Colors can be defined with HEX codes or web colors, e.g. black, white, orange etc. Try your luck ;)
+    The default is Impact in white
+    """
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):  # pylint: disable=R0915
