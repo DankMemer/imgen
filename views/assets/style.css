@@ -87,6 +87,13 @@ td {
   font-size: 1.25em;
 }
 
+.info {
+  background-color: #3273dc;
+  padding: 2px 20px 2px 20px;
+  border-radius: 2px;
+  font-size: 1.25em;
+}
+
 .card {
   margin-top: 8px;
   font-size: 1.15em;

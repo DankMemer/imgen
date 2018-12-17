@@ -15,9 +15,14 @@
       <div id="endpoints" style="margin-left: 13rem;">
           <span class="warning">All endpoints require an <kbd>Authorization</kbd> header containing your key. You can request a key on the dashboard!</span>
           <h1>Endpoints</h1>
+          <span class="info">All endpoints also support POST requests with JSON data. These use arrays, so use <kbd>{"avatars": [], "usernames": [], "text": "hi"}</kbd></span>
           {% for name, func in data %}
           <div style="background-color: #23272A; padding: 0.75rem; border-radius: 3px;" class="card">
             <p><b style="color: lawngreen">GET </b>{{ url }}api/{{name}}</p>
+            {% if func.__doc__ %}
+            <p>Details:</p>
+            <kbd>{{ func.__doc__ }}</kbd>
+            {% endif %}
             <p>Supported Query Parameters: </p>
             {% for p in func.params %}
                 {% if p == 'avatar0' %}
