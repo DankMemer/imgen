@@ -4,3 +4,5 @@ requests
 wand
 rethinkdb
 requests_oauthlib
+sentry_sdk
+blinker

@@ -14,6 +14,8 @@ class Magik(Endpoint):
     def generate(self, avatars, text, usernames, kwargs):
         avatar = BytesIO(http.get_content_raw(avatars[0]))
         with image.Image(file=avatar) as img:
+            if img.animation:
+                img = img.convert('png')
             img.transform(resize='400x400')
             try:
                 multiplier = int(text)
