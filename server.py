@@ -109,7 +109,7 @@ def api(endpoint):
     else:
         if not request.is_json:
             return jsonify({'status': 400, 'message': 'when submitting a POST request you must provide data in the '
-                                                      'json format'}), 400
+                                                      'JSON format'}), 400
         request_data = request.json
         text = request_data.get('text', '')
         avatars = list(request_data.get('avatars', list(request_data.get('images', []))))
@@ -126,6 +126,8 @@ def api(endpoint):
                                          kwargs=kwargs)
     except BadRequest as br:
         return jsonify({'status': 400, 'error': str(br)}), 400
+    except IndexError as e:
+        return jsonify({'status': 400, 'error': str(e) + '. Are you missing a parameter?'}), 400
     except Exception as e:
         traceback.print_exc()
         if 'sentry_dsn' in config:
