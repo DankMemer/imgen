@@ -126,6 +126,8 @@ def api(endpoint):
         return jsonify({'status': 400, 'error': str(br)}), 400
     except Exception as e:
         traceback.print_exc()
+        if 'sentry_dsn' in config:
+            sentry_sdk.capture_exception(e)
         return jsonify({'status': 500, 'error': str(e)}), 500
     return result, 200
 
