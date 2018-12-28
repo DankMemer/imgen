@@ -12,6 +12,8 @@ from utils.db import get_db
 from utils.ratelimits import ratelimit
 from utils.exceptions import BadRequest
 
+from sentry_sdk import capture_exception
+
 # Initial require, the above line contains our endpoints.
 
 config = json.load(open('config.json'))
@@ -127,7 +129,7 @@ def api(endpoint):
     except Exception as e:
         traceback.print_exc()
         if 'sentry_dsn' in config:
-            sentry_sdk.capture_exception(e)
+            capture_exception(e)
         return jsonify({'status': 500, 'error': str(e)}), 500
     return result, 200
 
