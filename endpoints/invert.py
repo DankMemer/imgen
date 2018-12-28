@@ -20,6 +20,7 @@ class Invert(Endpoint):
             r, g, b = inverted.split()
             img = Image.merge('RGBA', (r, g, b, a))
         else:
+            img = img.convert('RGB')
             img = ImageOps.invert(img)
 
         img = img.convert('RGBA')
