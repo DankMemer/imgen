@@ -17,16 +17,19 @@ class Magik(Endpoint):
         try:
             img = image.Image(file=avatar)
         except Exception as e:
-            raise BadRequest(f'The image could not be loaded: {e} ')
+            raise BadRequest(f'The image could not be loaded: {e}')
+
         if img.animation:
             img = img.convert('png')
         img.transform(resize='400x400')
+        
         try:
             multiplier = int(text)
         except ValueError:
             multiplier = 1
         else:
             multiplier = max(min(multiplier, 10), 1)
+
         img.liquid_rescale(width=int(img.width * 0.5),
                            height=int(img.height * 0.5),
                            delta_x=0.5 * multiplier,
@@ -39,4 +42,5 @@ class Magik(Endpoint):
         b = BytesIO()
         img.save(file=b)
         b.seek(0)
+        img.destroy()
         return send_file(b, mimetype='image/png')
