@@ -34,5 +34,3 @@ class Crab(Endpoint):
         video.write_videofile(name, threads=4, preset='superfast')
 
         return send_file(name, mimetype='video/mp4')
-
-
