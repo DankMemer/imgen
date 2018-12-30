@@ -47,11 +47,20 @@ class RatelimitCache(object):
         return self.__setitem__(key, value)
 
 
-cache = RatelimitCache()
+normalcache = RatelimitCache()
+
+videocache = RatelimitCache(expire_time=timedelta(0, 30, 0))
 
 
 def ratelimit(func, max_usage=5):
     def wrapper(*args, **kwargs):
+        endpoint = kwargs.get('endpoint')
+        if endpoint == 'crab':
+            allowed_usage = 1
+            cache = videocache
+        else:
+            allowed_usage = max_usage
+            cache = normalcache
         auth = request.headers.get('authorization', None)
         key = r.table('keys').get(auth).run(get_db())
         if key['unlimited']:
@@ -61,11 +70,11 @@ def ratelimit(func, max_usage=5):
                                           'X-RateLimit-Reset': 2147483647}))
         if key['id'] in cache:
             usage = cache.get(key['id'])
-            if usage < max_usage:
+            if usage < allowed_usage:
                 cache.set(key['id'], usage + 1)
                 return make_response((*func(*args, **kwargs),
-                                      {'X-RateLimit-Limit': max_usage,
-                                       'X-RateLimit-Remaining': max_usage - usage - 1,
+                                      {'X-RateLimit-Limit': allowed_usage,
+                                       'X-RateLimit-Remaining': allowed_usage - usage - 1,
                                        'X-RateLimit-Reset': cache.expires_on(key['id'])}))
             else:
                 ratelimit_reached = key.get('ratelimit_reached', 0) + 1
@@ -77,13 +86,13 @@ def ratelimit(func, max_usage=5):
                                       "description": f"Owner: {key['owner']}\n"
                                       f"Total: {ratelimit_reached}"}]})
                 return make_response((jsonify({'status': 429, 'error': 'You are being ratelimited'}), 429,
-                                      {'X-RateLimit-Limit': max_usage,
+                                      {'X-RateLimit-Limit': allowed_usage,
                                        'X-RateLimit-Remaining': 0,
                                        'X-RateLimit-Reset': cache.expires_on(key['id'])}))
         else:
             cache.set(key['id'], 1)
-            return make_response((*func(*args, **kwargs), {'X-RateLimit-Limit': max_usage,
-                                                           'X-RateLimit-Remaining': max_usage - 1,
+            return make_response((*func(*args, **kwargs), {'X-RateLimit-Limit': allowed_usage,
+                                                           'X-RateLimit-Remaining': allowed_usage - 1,
                                                            'X-RateLimit-Reset': cache.expires_on(key['id'])}))
 
     return wrapper
