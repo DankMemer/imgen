@@ -44,6 +44,6 @@ class Crab(Endpoint):
         video = CompositeVideoClip([clip, text.crossfadein(1), text2.crossfadein(1), text3.crossfadein(1)]).set_duration(15.4)
 
         name = uuid.uuid4().hex + '.mp4'
-        video.write_videofile(name, threads=4, preset='superfast')
+        video.write_videofile(name, threads=1, preset='superfast', verbose=False, progress_bar=False)
 
         return send_file(name, mimetype='video/mp4')
