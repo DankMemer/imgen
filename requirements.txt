@@ -7,3 +7,4 @@ requests_oauthlib
 sentry_sdk
 blinker
 moviepy
+redis
