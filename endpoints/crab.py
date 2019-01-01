@@ -42,5 +42,6 @@ class Crab(Endpoint):
 
         name = uuid.uuid4().hex + '.mp4'
         video.write_videofile(name, threads=1, preset='superfast', verbose=False, progress_bar=False)
-
+        clip.close()
+        video.close()
         return send_file(name, mimetype='video/mp4')
