@@ -10,9 +10,9 @@ RDB_ADDRESS = config['rdb_address']
 RDB_PORT = config['rdb_port']
 RDB_DB = config['rdb_db']
 
-REDIS_ADDRESS = config['redis_address'] if 'redis_address' in config else 'localhost'
-REDIS_PORT = config['redis_port'] if 'redis_port' in config else 6379
-REDIS_DB = config['redis_db'] if 'redis_db' in config else 1
+REDIS_ADDRESS = config.get('redis_address', 'localhost')
+REDIS_PORT = config.get('redis_port', 6379)
+REDIS_DB = config.get('redis_db', 1)
 
 
 def get_db():
