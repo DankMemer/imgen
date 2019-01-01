@@ -2,7 +2,7 @@ from utils.db import get_redis
 
 
 class FixedList():
-    def __init__(self, name='none', maximum_item_count: int=10):
+    def __init__(self, name='none', maximum_item_count: int = 10):
         self.max_items = maximum_item_count
         self.name = name + ':list'
 
