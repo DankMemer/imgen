@@ -1,4 +1,7 @@
-import json
+try:
+    import ujson as json
+except ImportError:
+    import json
 from datetime import datetime, timedelta
 
 import requests

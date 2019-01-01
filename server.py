@@ -1,5 +1,10 @@
 import asyncio
-import json
+
+try:
+    import ujson as json
+except ImportError:
+    import json
+
 import os
 import threading
 import traceback
