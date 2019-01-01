@@ -19,7 +19,6 @@ buckets = {}
 class Endpoint(ABC):
     def __init__(self, cache, rate, per):
         self.avg_generation_times = fixedlist.FixedList(name=self.name, maximum_item_count=20)
-        self.hits = int(get_redis().get(self.name + ':hits')) if get_redis().exists(self.name + ':hits') else 0
         self.assets = cache
         self.rate = rate
         self.per = per

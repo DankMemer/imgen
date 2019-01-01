@@ -75,7 +75,7 @@ def index():
     data = {}
 
     for endpoint in endpoints:
-        data[endpoint] = {'hits': get_redis().get(endpoint + ':hits') if get_redis().exists(endpoint + ':hits') else 0,
+        data[endpoint] = {'hits': get_redis().get(endpoint + ':hits') or 0,
                           'avg_gen_time': endpoints[endpoint].get_avg_gen_time()}
 
     return render_template('index.html', data=data)

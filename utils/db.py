@@ -23,5 +23,5 @@ def get_db():
 
 def get_redis():
     if 'redis' not in g:
-        g.redis = redis.StrictRedis(host=REDIS_ADDRESS, port=REDIS_PORT, db=REDIS_DB, decode_responses=True)
+        g.redis = redis.Redis(host=REDIS_ADDRESS, port=REDIS_PORT, db=REDIS_DB, decode_responses=True)
     return g.redis
