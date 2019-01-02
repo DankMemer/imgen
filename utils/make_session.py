@@ -1,4 +1,7 @@
-import json
+try:
+    import ujson as json
+except ImportError:
+    import json
 
 from flask import session
 from requests_oauthlib import OAuth2Session

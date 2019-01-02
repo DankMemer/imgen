@@ -23,6 +23,8 @@
             <p>Details:</p>
             <kbd>{{ func.__doc__ }}</kbd>
             {% endif %}
+            <p>Rate Limit</p>
+            <kbd>{{ func.rate }} request{% if func.rate != 1 %}s{% endif %} per {% if func.per != 1 %}{{ func.per }}{% endif %} second{% if func.per != 1 %}s{% endif %}</kbd>
             <p>Supported Query Parameters: </p>
             {% for p in func.params %}
                 {% if p == 'avatar0' %}
@@ -50,13 +52,22 @@
       </div>
       <div id="ratelimits" style="margin-left: 13rem;">
           <div class="card">
-          <h1>Rate Limits</h1>
-          <p>API Usage is limited to 5 requests per second. If more is requested, a 429 response will be returned.</p>
-          <p>Ratelimit Headers:</p>
-          <ul>
-              <li>X-RateLimit-Limit: Maximum usage allowed per timeframe</li>
-              <li>X-Ratelimit-Remaining: Remaining requests that can be made during the timeframe</li>
-              <li>X-RateLimit-Reset: Unix Timestamp indicating when the new timeframe will start.</li>
+              <h1>Rate Limits</h1>
+              <p>Each endpoint has it's own ratelimit, which you can find in it's documentation. Additionally, the API has a global ratelimit of 300 requests per minute.</p>
+              <p>
+                  The ratelimits for the endpoint are defined with X-RateLimit-:key, while the global ratelimit is defined with X-Global-RateLimit-:key.<br>
+                  When the global ratelimit is hit, the body will contain an additional JSON key "global" which will be set to true.
+              </p>
+              <p>Ratelimit Headers:</p>
+              <ul>
+                  <li>X-RateLimit-Limit: Maximum usage allowed per timeframe</li>
+                  <li>X-Ratelimit-Remaining: Remaining requests that can be made during the timeframe</li>
+                  <li>X-RateLimit-Reset: Timestamp indicating when the ratelimit will reset.</li>
+              </ul>
+              <ul>
+                  <li>X-Global-RateLimit-Limit: Maximum global usage allowed per timeframe</li>
+                  <li>X-Global-Ratelimit-Remaining: Remaining requests that can be made globally during the timeframe</li>
+                  <li>X-Global-RateLimit-Reset: Timestamp indicating when the global ratelimit will reset.</li>
               </ul>
           </div>
       </div>

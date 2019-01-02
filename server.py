@@ -1,15 +1,20 @@
 import asyncio
-import json
+
+try:
+    import ujson as json
+except ImportError:
+    import json
+
 import os
 import threading
 import traceback
 
 import rethinkdb as r
-from flask import Flask, render_template, request, g, jsonify
+from flask import Flask, render_template, request, g, jsonify, make_response
 
 from dashboard import dash
-from utils.db import get_db
-from utils.ratelimits import ratelimit
+from utils.db import get_db, get_redis
+from utils.ratelimits import ratelimit, endpoint_ratelimit
 from utils.exceptions import BadRequest
 
 from sentry_sdk import capture_exception
@@ -75,7 +80,7 @@ def index():
     data = {}
 
     for endpoint in endpoints:
-        data[endpoint] = {'hits': endpoints[endpoint].hits,
+        data[endpoint] = {'hits': get_redis().get(endpoint + ':hits') or 0,
                           'avg_gen_time': endpoints[endpoint].get_avg_gen_time()}
 
     return render_template('index.html', data=data)
@@ -83,7 +88,7 @@ def index():
 
 @app.route('/endpoints.json', methods=['GET'])
 def endpoints():
-    return jsonify({"endpoints": [{'name': x, 'parameters': y.params} for x, y in endpoints.items()]})
+    return jsonify({"endpoints": [{'name': x, 'parameters': y.params, 'ratelimit': f'{y.rate}/{y.per}s'} for x, y in endpoints.items()]})
 
 
 @app.route('/documentation')
@@ -118,6 +123,15 @@ def api(endpoint):
         for arg in request_data:
             if arg not in ['text', 'avatars', 'usernames']:
                 kwargs[arg] = request_data.get(arg)
+    cache = endpoints[endpoint].bucket
+    max_usage = endpoints[endpoint].rate
+    e_r = endpoint_ratelimit(auth=request.headers.get('Authorization', None), cache=cache, max_usage=max_usage)
+    if e_r['X-RateLimit-Remaining'] == -1:
+        x = make_response((jsonify({'status': 429, 'error': 'You are being ratelimited'}), 429,
+                          {'X-RateLimit-Limit': e_r['X-RateLimit-Limit'],
+                           'X-RateLimit-Remaining': 0,
+                           'X-RateLimit-Reset': e_r['X-RateLimit-Reset']}))
+        return x
     try:
         result = endpoints[endpoint].run(key=request.headers.get('authorization'),
                                          text=text,
@@ -133,8 +147,12 @@ def api(endpoint):
         if 'sentry_dsn' in config:
             capture_exception(e)
         return jsonify({'status': 500, 'error': str(e)}), 500
+
+    result.headers.add('X-RateLimit-Limit', max_usage)
+    result.headers.add('X-RateLimit-Remaining', e_r['X-RateLimit-Remaining'])
+    result.headers.add('X-RateLimit-Reset', e_r['X-RateLimit-Reset'])
     return result, 200
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=False, use_reloader=False)
