@@ -21,7 +21,7 @@ class RatelimitCache(object):
     def __getitem__(self, item):
         db = get_redis()
         c = db.hgetall(f'ratelimit-cache:{self.id}:{item}')
-        now = datetime.now()
+        now = datetime.utcnow()
         previous = datetime.strptime(c['timestamp'], '%Y-%m-%d %H:%M:%S.%f')
         expiry = datetime.strptime(c['expire_time'], '%H:%M:%S')
         expiry = expiry - datetime(1900, 1, 1)
@@ -38,7 +38,7 @@ class RatelimitCache(object):
 
     def __setitem__(self, key, value):
         db = get_redis()
-        data = {'data': value, 'timestamp': str(datetime.now()), 'expire_time': str(self.expire_time)}
+        data = {'data': value, 'timestamp': str(datetime.utcnow()), 'expire_time': str(self.expire_time)}
 
         db.hmset(f'ratelimit-cache:{self.id}:{key}', data)
         if db.ttl(f'ratelimit-cache:{self.id}:{key}') == -1:
