@@ -22,7 +22,7 @@ class Magik(Endpoint):
         if img.animation:
             img = img.convert('png')
         img.transform(resize='400x400')
-        
+
         try:
             multiplier = int(text)
         except ValueError:

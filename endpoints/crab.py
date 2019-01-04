@@ -19,12 +19,14 @@ class Crab(Endpoint):
 
     def generate(self, avatars, text, usernames, kwargs):
         @after_this_request
-        def remove(response):
+        def remove(response):  # pylint: disable=W0612
             try:
                 os.remove(name)
-            except Exception:
+            except (FileNotFoundError, OSError, PermissionError):
                 pass
+
             return response
+
         t = text.upper().replace(', ', ',').split(',')
         if len(t) != 2:
             raise BadRequest('You must submit exactly two strings split by comma')
