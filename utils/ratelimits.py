@@ -50,7 +50,8 @@ class RatelimitCache(object):
 
         previous = datetime.strptime(c['timestamp'], '%Y-%m-%d %H:%M:%S.%f')
         expire = datetime.strptime(c['expire_time'], '%H:%M:%S') - datetime(1900, 1, 1)
-        return previous + expire
+        date = (previous + expire).strftime('%a, %d %b %Y %H:%M:%S GMT')
+        return date
 
     def set(self, key, value):
         return self.__setitem__(key, value)

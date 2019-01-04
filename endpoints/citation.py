@@ -12,12 +12,9 @@ class Citation(Endpoint):
     params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
-        try:
-            text = text.replace(', ', ',').split(',')
-        except IndexError:
-            text = []
+        text = text.replace(', ', ',').split(',')
         if len(text) != 3:
-            text = ['M.O.A. CITATION', 'You must have 3 arguments split by comma', 'PENALTY ASSESED - WRONG IMAGE']
+            text = ['M.O.A. CITATION', 'You must have 3 arguments split by comma', 'PENALTY ASSESSED - WRONG IMAGE']
         base = Image.open(self.assets.get('assets/citation/citation.bmp'))
         font = self.assets.get_font('assets/fonts/bmmini.ttf', size=16)
         canv = ImageDraw.Draw(base)
