@@ -12,10 +12,7 @@ class Sword(Endpoint):
     params = ['text', 'username1']
 
     def generate(self, avatars, text, usernames, kwargs):
-        try:
-            text = text.replace(', ', ',').split(',')
-        except IndexError:
-            text = []
+        text = text.replace(', ', ',').split(',')
         if len(text) != 2:
             text = ['SPLIT BY', 'COMMA']
         base = Image.open(self.assets.get('assets/sword/sword.bmp'))
