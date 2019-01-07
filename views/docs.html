@@ -62,12 +62,14 @@
               <ul>
                   <li>X-RateLimit-Limit: Maximum usage allowed per timeframe</li>
                   <li>X-Ratelimit-Remaining: Remaining requests that can be made during the timeframe</li>
-                  <li>X-RateLimit-Reset: Timestamp indicating when the ratelimit will reset.</li>
+                  <li>X-RateLimit-Reset: Timestamp indicating when the ratelimit will reset in milliseconds.</li>
+                  <li>Retry-After: Time to wait in milliseconds until another request can be made. Only exposed if ratelimit is reached.</li>
               </ul>
               <ul>
                   <li>X-Global-RateLimit-Limit: Maximum global usage allowed per timeframe</li>
                   <li>X-Global-Ratelimit-Remaining: Remaining requests that can be made globally during the timeframe</li>
-                  <li>X-Global-RateLimit-Reset: Timestamp indicating when the global ratelimit will reset.</li>
+                  <li>X-Global-RateLimit-Reset: Timestamp indicating when the global ratelimit will resett in milliseconds.</li>
+                  <li>Retry-After: Time to wait in milliseconds until another request can be made. Only exposed if ratelimit is reached.</li>
               </ul>
           </div>
       </div>
