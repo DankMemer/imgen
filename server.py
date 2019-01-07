@@ -140,8 +140,14 @@ def api(endpoint):
                                          usernames=usernames,
                                          kwargs=kwargs)
     except BadRequest as br:
+        traceback.print_exc()
+        if 'sentry_dsn' in config:
+            capture_exception(br)
         return jsonify({'status': 400, 'error': str(br)}), 400
     except IndexError as e:
+        traceback.print_exc()
+        if 'sentry_dsn' in config:
+            capture_exception(e)
         return jsonify({'status': 400, 'error': str(e) + '. Are you missing a parameter?'}), 400
     except Exception as e:
         traceback.print_exc()
