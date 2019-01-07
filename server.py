@@ -130,7 +130,8 @@ def api(endpoint):
         x = make_response((jsonify({'status': 429, 'error': 'You are being ratelimited'}), 429,
                           {'X-RateLimit-Limit': e_r['X-RateLimit-Limit'],
                            'X-RateLimit-Remaining': 0,
-                           'X-RateLimit-Reset': e_r['X-RateLimit-Reset']}))
+                           'X-RateLimit-Reset': e_r['X-RateLimit-Reset'],
+                           'Retry-After': e_r['Retry-After']}))
         return x
     try:
         result = endpoints[endpoint].run(key=request.headers.get('authorization'),
