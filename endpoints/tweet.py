@@ -12,7 +12,10 @@ from utils.textutils import wrap
 
 @setup
 class Tweet(Endpoint):
-    params = ['avatar0', 'username0', 'text']
+    """
+    Note: You can actually use username2 as a way to set the @handle separately from the name
+    """
+    params = ['avatar0', 'username0', 'text', 'username1', 'altstyle']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/tweet/trump.bmp'))
