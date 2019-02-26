@@ -133,6 +133,9 @@ def api(endpoint):
                            'X-RateLimit-Reset': e_r['X-RateLimit-Reset'],
                            'Retry-After': e_r['Retry-After']}))
         return x
+    if endpoint == 'profile':
+        if request.headers.get('Authorization', None) != config.get('memer_token', None):
+            return jsonify({"error": 'This endpoint is limited to Dank Memer', 'status': 403}), 403
     try:
         result = endpoints[endpoint].run(key=request.headers.get('authorization'),
                                          text=text,

@@ -21,7 +21,7 @@
             <p><b style="color: lawngreen">GET </b>{{ url }}api/{{name}}</p>
             {% if func.__doc__ %}
             <p>Details:</p>
-            <kbd>{{ func.__doc__ }}</kbd>
+            <kbd>{{ func.__doc__|replace('\n', '<br>') | safe }}</kbd>
             {% endif %}
             <p>Rate Limit</p>
             <kbd>{{ func.rate }} request{% if func.rate != 1 %}s{% endif %} per {% if func.per != 1 %}{{ func.per }}{% endif %} second{% if func.per != 1 %}s{% endif %}</kbd>
@@ -37,6 +37,8 @@
                 <kbd>username2: String. Username for the second user.</kbd><br>
                 {% elif p == 'text' %}
                 <kbd>{{ p }}: String. Text to show on the generated image.</kbd><br>
+                {% else %}
+                <kbd>{{ p }}: Endpoint specific parameter</kbd><br>
                 {% endif %}
             {% endfor %}
           </div>

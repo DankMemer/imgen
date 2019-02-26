@@ -1,10 +1,11 @@
 from io import BytesIO
 
-from PIL import ImageDraw
+from PIL import ImageDraw, Image
 from flask import send_file
 
 from utils import http
 from utils.endpoint import Endpoint, setup
+from utils.textutils import wrap
 
 
 @setup
@@ -17,7 +18,7 @@ class Meme(Endpoint):
     Colors can be defined with HEX codes or web colors, e.g. black, white, orange etc. Try your luck ;)
     The default is Impact in white
     """
-    params = ['avatar0']
+    params = ['avatar0', 'top_text', 'bottom_text', 'color', 'font']
 
     def generate(self, avatars, text, usernames, kwargs):  # pylint: disable=R0915
         img = http.get_image(avatars[0]).convert('RGBA')
@@ -92,8 +93,21 @@ class Meme(Endpoint):
                 draw_text_with_outline(lines[i], x, y)
                 last_y = y
 
-        draw_text(kwargs.get('top_text', 'TOP TEXT'), "top")
-        draw_text(kwargs.get('bottom_text', 'BOTTOM TEXT'), "bottom")
+        if kwargs.get('altstyle', 'null').lower() == 'true':
+            text_font = self.assets.get_font(f'assets/fonts/{kwargs.get("font", "arial")}.ttf', size=24)
+            text = wrap(text_font, kwargs.get('top_text', 'TOP TEXT'), img.width)
+            text_img = Image.new('RGB', (img.width, 10000), 'white')
+            text_draw = ImageDraw.Draw(text_img)
+            text_size = text_draw.textsize(text, text_font)
+            new_image = Image.new('RGB', (img.width, img.height + text_size[1] + 10), 'white')
+            new_image.paste(img, (0, text_size[1] + 10))
+            new_draw = ImageDraw.Draw(new_image)
+            new_draw.text((0, 0), text, kwargs.get('color', 'black'), text_font)
+            img = new_image
+
+        else:
+            draw_text(kwargs.get('top_text', 'TOP TEXT'), "top")
+            draw_text(kwargs.get('bottom_text', 'BOTTOM TEXT'), "bottom")
 
         b = BytesIO()
         img.save(b, format='png')
