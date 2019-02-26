@@ -29,11 +29,11 @@ class Profile(Endpoint):
                 total_h = total_h + h
 
         base = Image.new('RGBA', (600, 600 + total_h), '#2C2F33')
-        image = http.get_image(kwargs.get('image', 'https://cdn.discordapp.com/attachments/470339470789443606/549944990076239872/dmlogooo.png')).resize((600, 260)).convert('RGB')
+        image = http.get_image(kwargs.get('image', 'https://i.imgur.com/G68osEq.jpg')).resize((600, 260)).convert('RGB')
         base.paste(image, (0, 0))
         avatar = http.get_image(avatars[0]).resize((96, 96)).convert('RGB')
 
-        avatar_pos = int(base.width / 2 - avatar.width / 2), int(image.height - avatar.height / 2) - 35
+        avatar_pos = int(base.width / 2 - avatar.width / 2), int(image.height - avatar.height / 2) - 20
 
         bio = kwargs.get('bio', 'I am uninteresting')
         if len(bio) > 40:
