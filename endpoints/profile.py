@@ -11,7 +11,7 @@ from utils.textutils import wrap
 @setup
 class Profile(Endpoint):
     """Note: This endpoint is only accessible to Dank Memer. Do NOT implement this!"""
-    params = ['text', 'avatar1', 'username1', 'image', 'bio', 'title', 'level', 'xp', 'total_xp', 'color', 'bank', 'wallet', 'inventory', 'prestige', 'active_effects', 'command', 'streak', 'multiplier']
+    params = ['avatar1', 'username1', 'image', 'bio', 'title', 'level', 'xp', 'total_xp', 'color', 'bank', 'wallet', 'inventory', 'prestige', 'active_effects', 'command', 'streak', 'multiplier']
 
     def generate(self, avatars, text, usernames, kwargs):
         font = self.assets.get_font('assets/fonts/MontserratBold.ttf', size=30, )
@@ -29,9 +29,9 @@ class Profile(Endpoint):
                 total_h = total_h + h
 
         base = Image.new('RGBA', (600, 600 + total_h), '#2C2F33')
-        image = http.get_image(kwargs.get('image', 'https://i.imgur.com/G68osEq.jpg')).resize((600, 260)).convert('RGB')
+        image = http.get_image(kwargs.get('image', 'https://i.imgur.com/G68osEq.jpg')).resize((600, 260), Image.LANCZOS).convert('RGB')
         base.paste(image, (0, 0))
-        avatar = http.get_image(avatars[0]).resize((96, 96)).convert('RGB')
+        avatar = http.get_image(avatars[0]).resize((96, 96), Image.LANCZOS).convert('RGB')
 
         avatar_pos = int(base.width / 2 - avatar.width / 2), int(image.height - avatar.height / 2) - 20
 
@@ -118,7 +118,7 @@ class Profile(Endpoint):
         current_level_size = draw.textsize(str(level), font=font2)
         draw.text((15, 340), str(level), font=font2)
         draw.text((15 + current_level_size[0] + 200 + 15, 340), str(int(level) + 1), font=font2)
-        draw.text((15, 365), f'{xp} experience -  {((level + 1) * 100) - int(xp)} remaining', font=font2)
+        draw.text((15, 365), f'{xp} XP - {((level + 1) * 100) - int(xp)} remaining', font=font2)
 
         draw.text((370, 290), 'Coins', font=font3)
         draw.text((370, 340), f'Wallet: {wallet}', font=font2)

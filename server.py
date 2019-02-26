@@ -137,7 +137,7 @@ def api(endpoint):
         if request.headers.get('Authorization', None) == config.get('memer_token', None):
             pass
         else:
-            return 'This endpoint is limited to Dank Memer', 403
+            return jsonify({"error": 'This endpoint is limited to Dank Memer', 'status': 403}), 403
     try:
         result = endpoints[endpoint].run(key=request.headers.get('authorization'),
                                          text=text,
