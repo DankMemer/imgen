@@ -28,18 +28,19 @@ class Profile(Endpoint):
                 w, h = test_draw.textsize(wrap(font2, i, 200), font2)
                 total_h = total_h + h
 
-        base = Image.new('RGBA', (600, 600 + total_h), '#2C2F33')
+        base = Image.new('RGBA', (600, 600 + total_h + 32), '#2C2F33')
         image = http.get_image(kwargs.get('image', 'https://i.imgur.com/G68osEq.jpg')).resize((600, 260), Image.LANCZOS).convert('RGB')
         base.paste(image, (0, 0))
         avatar = http.get_image(avatars[0]).resize((96, 96), Image.LANCZOS).convert('RGB')
 
         avatar_pos = int(base.width / 2 - avatar.width / 2), int(image.height - avatar.height / 2) - 20
 
-        bio = kwargs.get('bio', 'I am uninteresting')
-        if len(bio) > 40:
-            bio = bio[:40] + '...'
+        bio = kwargs.get('bio', None)
+        if bio:
+            if len(bio) > 40:
+                bio = bio[:40] + '...'
 
-        title = kwargs.get('title', 'Normie')
+        title = kwargs.get('title', None)
         xp = kwargs.get('xp', '0')
         level = int(int(xp) / 100)
         next_xp = (int(level) + 1) * 100
@@ -99,16 +100,17 @@ class Profile(Endpoint):
         name_box = Image.new('RGBA', (name_text[0] + 30, name_text[1] + 30), (0, 0, 0, 230))
         base.paste(name_box, (0, 20), name_box)
         draw.text((10, 34), usernames[0], font=font, fill=(255, 255, 255, 255))
+        if bio:
+            bio_text = draw.textsize(bio, font=font2)
+            bio_box = Image.new('RGBA', (bio_text[0] + 20, bio_text[1] + 20), (0, 0, 0, 230))
+            base.paste(bio_box, (0, 20 + name_box.height + 20), bio_box)
+            draw.text((10, bio_box.height + name_box.height + 4), bio, font=font2, fill=(255, 255, 255, 255))
 
-        bio_text = draw.textsize(bio, font=font2)
-        bio_box = Image.new('RGBA', (bio_text[0] + 20, bio_text[1] + 20), (0, 0, 0, 230))
-        base.paste(bio_box, (0, 20 + name_box.height + 20), bio_box)
-        draw.text((10, bio_box.height + name_box.height + 4), bio, font=font2, fill=(255, 255, 255, 255))
-
-        title_text = draw.textsize(title, font=font2)
-        title_box = Image.new('RGBA', (title_text[0] + 20, title_text[1] + 20), (0, 0, 0, 230))
-        base.paste(title_box, (0, 20 + name_box.height + bio_box.height + 60), title_box)
-        draw.text((10, bio_box.height + name_box.height + title_box.height + 46), title, font=font2, fill=(0, 256, 0))
+        if title:
+            title_text = draw.textsize(title, font=font2)
+            title_box = Image.new('RGBA', (title_text[0] + 20, title_text[1] + 20), (0, 0, 0, 230))
+            base.paste(title_box, (0, 20 + name_box.height + bio_box.height + 60), title_box)
+            draw.text((10, bio_box.height + name_box.height + title_box.height + 46), title, font=font2, fill=(0, 256, 0))
 
         draw.text((15, 290), 'Level', font=font3)
 
@@ -125,11 +127,11 @@ class Profile(Endpoint):
         draw.text((370, 365), f'Bank: {bank}', font=font2)
 
         draw.text((15, 410), 'Inventory', font=font3)
-        draw.text((15, 460), inventory, font=font2)
+        draw.text((15, 460), wrap(font2, inventory, 300), font=font2)
 
         draw.text((370, 410), 'Active Items', font=font3)
         if active_effects:
-            possible_effects = ['alcohol', 'cupidsbigtoe', 'fakeid', 'padlock', 'sand', 'santashat', 'spinner', 'tidepod']
+            possible_effects = ['alcohol', 'cupidsbigtoe', 'fakeid', 'padlock', 'sand', 'santashat', 'spinner', 'tidepod', 'landmine']
             height = 0
             for i in effects:
                 for j in possible_effects:
@@ -137,8 +139,8 @@ class Profile(Endpoint):
                         effect = i.replace(f':{j}:', '')
                         effect_icon = Image.open(self.assets.get(f'assets/profile/activeitems/{j}.png')).resize((32, 32), Image.LANCZOS)
                         base.paste(effect_icon, (365, 455 + height), effect_icon)
-                        w, h = draw.textsize(wrap(font2, effect, 200), font2)
-                        draw.text((402, 460 + height), wrap(font2, effect, 200), font=font2)
+                        w, h = draw.textsize(wrap(font2, effect, 170), font2)
+                        draw.text((402, 460 + height), wrap(font2, effect, 170), font=font2)
                         height = height + 15 + h
         else:
             draw.text((370, 460), 'No active items', font=font2)
