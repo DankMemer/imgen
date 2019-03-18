@@ -4,6 +4,7 @@ The microservice that powers [Dank Memer's](https://goo.gl/HL3zBi) Image Generat
 View a live instance [here](https://dankmemer.services)
 
 # Starting meme-server
+install rethinkdb
 git clone
 
 `cd` to meme-server
