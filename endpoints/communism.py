@@ -21,7 +21,7 @@ class Communism(Endpoint):
             img2.seek(i)
             f = img2.copy().convert('RGBA').resize((300, 300))
             f.paste(img1, (0, 0), img1)
-            out.append(f)
+            out.append(f.resize((256, 256)))
 
         b = BytesIO()
         out[0].save(b, format='gif', save_all=True, append_images=out[1:], loop=0, disposal=2, optimize=True, duration=40)
