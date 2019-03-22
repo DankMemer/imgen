@@ -24,7 +24,7 @@ class Airpods(Endpoint):
         # img1 = img1.rotate(21.5, expand=True, resample=Image.BICUBIC)
         white.paste(img1, (0, 0), img1)
         white.paste(base, (0, 0), base)
-        white = white.convert('RGBA')
+        white = white.convert('RGBA').resize((512, 341), Image.LANCZOS)
 
         b = BytesIO()
         white.save(b, format='png')
