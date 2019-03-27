@@ -105,6 +105,8 @@ class Profile(Endpoint):
             bio_box = Image.new('RGBA', (bio_text[0] + 20, bio_text[1] + 20), (0, 0, 0, 230))
             base.paste(bio_box, (0, 20 + name_box.height + 20), bio_box)
             draw.text((10, bio_box.height + name_box.height + 4), bio, font=font2, fill=(255, 255, 255, 255))
+        if not bio:
+            bio_box = Image.new('RGBA', (20, 20), (0, 0, 0, 230))
 
         if title:
             title_text = draw.textsize(title, font=font2)
@@ -144,7 +146,6 @@ class Profile(Endpoint):
                         height = height + 15 + h
         else:
             draw.text((370, 460), 'No active items', font=font2)
-
 
         # LEVEL BAR SHOULD BE DRAWN LAST. THAT MEANS YOU DEVOXIN. DON'T TOUCH
 
