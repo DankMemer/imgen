@@ -9,7 +9,7 @@ from utils.textutils import wrap
 
 @setup
 class Sword(Endpoint):
-    params = ['text', 'username1']
+    params = ['text', 'username0']
 
     def generate(self, avatars, text, usernames, kwargs):
         text = text.replace(', ', ',').split(',')
