@@ -10,7 +10,7 @@ from utils.textutils import wrap
 
 @setup
 class Byemom(Endpoint):
-    params = ['avatar0', 'avatar1', 'username0', 'text']
+    params = ['avatar0', 'username0', 'text']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/byemom/mom.bmp'))
