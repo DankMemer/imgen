@@ -5,7 +5,7 @@ from flask import send_file
 
 from utils import http
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -20,7 +20,7 @@ class Floor(Endpoint):
         canv = ImageDraw.Draw(base)
 
         text = wrap(font, text, 300)
-        canv.text((168, 36), text, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (168, 36), text, font=font, fill='Black')
 
         base.paste(avatar, (100, 90), avatar)
         base.paste(avatar2, (330, 90), avatar2)

@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import auto_text_size
+from utils.textutils import auto_text_size, render_text_with_emoji
 
 
 @setup
@@ -17,7 +17,7 @@ class Vr(Endpoint):
         font, text = auto_text_size(text, self.assets.get_font('assets/fonts/sans.ttf'), 207, font_scalar=0.8)
         canv = ImageDraw.Draw(base)
         w, _ = canv.textsize(text, font)
-        canv.multiline_text(((170 - (w/2)), 485), text, font=font, fill='Black', anchor='center', align='center')
+        render_text_with_emoji(base, canv, (int((170 - (w/2))), 485), text, font=font, fill='Black')
         base = base.convert('RGB')
 
         b = BytesIO()

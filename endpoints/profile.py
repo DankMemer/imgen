@@ -5,7 +5,7 @@ from flask import send_file
 from utils import http
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -99,12 +99,12 @@ class Profile(Endpoint):
         name_text = draw.textsize(usernames[0], font=font)
         name_box = Image.new('RGBA', (name_text[0] + 30, name_text[1] + 30), (0, 0, 0, 230))
         base.paste(name_box, (0, 20), name_box)
-        draw.text((10, 34), usernames[0], font=font, fill=(255, 255, 255, 255))
+        render_text_with_emoji(base, draw, (10, 34), usernames[0], font=font, fill=(255, 255, 255, 255))
         if bio:
             bio_text = draw.textsize(bio, font=font2)
             bio_box = Image.new('RGBA', (bio_text[0] + 20, bio_text[1] + 20), (0, 0, 0, 230))
             base.paste(bio_box, (0, 20 + name_box.height + 20), bio_box)
-            draw.text((10, bio_box.height + name_box.height + 4), bio, font=font2, fill=(255, 255, 255, 255))
+            render_text_with_emoji(base, draw, (10, bio_box.height + name_box.height + 4), bio, font=font2, fill=(255, 255, 255, 255))
         if not bio:
             bio_box = Image.new('RGBA', (20, 20), (0, 0, 0, 230))
 
@@ -112,7 +112,7 @@ class Profile(Endpoint):
             title_text = draw.textsize(title, font=font2)
             title_box = Image.new('RGBA', (title_text[0] + 20, title_text[1] + 20), (0, 0, 0, 230))
             base.paste(title_box, (0, 20 + name_box.height + bio_box.height + 60), title_box)
-            draw.text((10, bio_box.height + name_box.height + title_box.height + 46), title, font=font2, fill=(0, 256, 0))
+            render_text_with_emoji(title_box, draw, (10, bio_box.height + name_box.height + title_box.height + 46), title, font=font2, fill=(0, 256, 0))
 
         draw.text((15, 290), 'Level', font=font3)
 

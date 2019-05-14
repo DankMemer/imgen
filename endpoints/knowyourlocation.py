@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import auto_text_size
+from utils.textutils import auto_text_size, render_text_with_emoji
 
 
 @setup
@@ -27,9 +27,8 @@ class KnowYourLocation(Endpoint):
         bottom_font, bottom_text = auto_text_size(bottom,
                                                   self.assets.get_font('assets/fonts/sans.ttf'),
                                                   539)
-
-        canv.text((64, 131), top_text, font=top_font, fill='Black')
-        canv.text((120, 450), bottom_text, font=bottom_font, fill='Black')
+        render_text_with_emoji(base, canv, (64, 131), top_text, top_font, 'black')
+        render_text_with_emoji(base, canv, (120, 450), bottom_text, bottom_font, 'black')
         base = base.convert('RGB')
 
         b = BytesIO()

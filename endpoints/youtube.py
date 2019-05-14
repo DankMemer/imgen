@@ -6,7 +6,7 @@ from flask import send_file
 
 from utils import http
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -36,9 +36,9 @@ class Youtube(Endpoint):
         num = randint(1, 59)
         plural = '' if num == 1 else 's'
         time = f'{num} minute{plural} ago'
-        canv.text((92, 34), op, font=font, fill='Black')
-        canv.text((100 + size[0], 34), time, font=font2, fill='Grey')
-        canv.text((92, 59), comment, font=font3, fill='Black')
+        render_text_with_emoji(base, canv, (92, 34), op, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (100 + size[0], 34), time, font=font2, fill='Grey')
+        render_text_with_emoji(base, canv, (92, 59), comment, font=font3, fill='Black')
         base = base.convert('RGBA')
 
         b = BytesIO()

@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -19,7 +19,7 @@ class Note(Endpoint):
         canv = ImageDraw.Draw(text_layer)
 
         text = wrap(font, text, 150)
-        canv.text((455, 420), text, font=font, fill='Black')
+        render_text_with_emoji(text_layer, canv, (455, 420), text, font=font, fill='Black')
 
         text_layer = text_layer.rotate(-23, resample=Image.BICUBIC)
 

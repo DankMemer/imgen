@@ -6,6 +6,7 @@ from flask import send_file
 
 from utils import http
 from utils.endpoint import Endpoint, setup
+from utils.textutils import render_text_with_emoji
 
 
 @setup
@@ -36,11 +37,11 @@ class Quote(Endpoint):
         words = Image.new('RGBA', base.size)
         canvas = ImageDraw.Draw(words)
 
-        canvas.text((230, 70), usernames[0], font=font_med, fill='White')
-        canvas.text((230, 150), text, font=font_sb, fill=(160, 160, 160))
+        render_text_with_emoji(base, canvas, (230, 70), usernames[0], font=font_med, fill='White')
+        render_text_with_emoji(base, canvas, (230, 150), text, font=font_sb, fill=(160, 160, 160))
 
         timestamp_left = 230 + canvas.textsize(usernames[0], font=font_med)[0] + 20
-        canvas.text((timestamp_left, 90), 'Today at {}'.format(datetime.utcnow().strftime("%H:%M")), font=font_time,
+        render_text_with_emoji(base, canvas, (timestamp_left, 90), 'Today at {}'.format(datetime.utcnow().strftime("%H:%M")), font=font_time,
                     fill=(125, 125, 125))
 
         final = Image.alpha_composite(base, words)

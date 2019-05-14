@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw
 
 from utils import http
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -54,20 +54,20 @@ class Tweet(Endpoint):
             if i.startswith(('@', '#')):
                 if total_size[0] > 1000:
                     total_size = (45, total_size[1] + 65)
-                canv.text(total_size, i, font=font, fill='#1b95e0')
+                render_text_with_emoji(base, canv, total_size, i, font=font, fill='#1b95e0')
                 y = canv.textsize(i, font=font)
                 total_size = (total_size[0] + y[0], total_size[1])
             else:
                 if total_size[0] > 1000:
                     total_size = (45, total_size[1] + 65)
-                canv.text(total_size, i, font=font, fill='Black')
+                render_text_with_emoji(base, canv, total_size, i, font=font, fill='Black')
                 y = canv.textsize(i, font=font)
                 total_size = (total_size[0] + y[0], total_size[1])
-        canv.text((160, 45), text2, font=font2, fill='Black')
-        canv.text((160, 95), text3, font=font3, fill='Grey')
-        canv.text((40, 570), text4, font=font3, fill='Grey')
-        canv.text((40, 486), text5, font=font4, fill='#2C5F63')
-        canv.text((205, 486), text6, font=font4, fill='#2C5F63')
+        render_text_with_emoji(base, canv, (160, 45), text2, font=font2, fill='Black')
+        render_text_with_emoji(base, canv, (160, 95), text3, font=font3, fill='Grey')
+        render_text_with_emoji(base, canv, (40, 570), text4, font=font3, fill='Grey')
+        render_text_with_emoji(base, canv, (40, 486), text5, font=font4, fill='#2C5F63')
+        render_text_with_emoji(base, canv, (205, 486), text6, font=font4, fill='#2C5F63')
 
         b = BytesIO()
         base.save(b, format='png')

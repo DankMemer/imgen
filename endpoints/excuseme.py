@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -17,7 +17,7 @@ class ExcuseMe(Endpoint):
         font = self.assets.get_font('assets/fonts/sans.ttf', size=40)
         canv = ImageDraw.Draw(base)
         text = wrap(font, text, 787)
-        canv.text((20, 15), text, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (20, 15), text, font=font, fill='Black')
 
         base = base.convert('RGB')
 

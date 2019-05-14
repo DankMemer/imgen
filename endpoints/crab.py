@@ -35,7 +35,7 @@ class Crab(Endpoint):
         if (not t[0] and not t[0].strip()) or (not t[1] and not t[1].strip()):
             raise BadRequest('Cannot render empty text')
         clip = VideoFileClip("assets/crab/template.mp4")
-        text = TextClip(t[0], fontsize=48, color='white', font='Verdana')
+        text = TextClip(t[0], fontsize=48, color='white', font='Symbola')
         text2 = TextClip("____________________", fontsize=48, color='white', font='Verdana')\
             .set_position(("center", 210)).set_duration(15.4)
         text = text.set_position(("center", 200)).set_duration(15.4)
