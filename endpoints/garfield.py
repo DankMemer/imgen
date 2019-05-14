@@ -26,8 +26,7 @@ class Garfield(Endpoint):
         base.paste(avatar2, (40, 210), avatar2)
 
         draw = ImageDraw.Draw(base)
-        render_text_with_emoji(base, draw, (15, 0), wrap(font, text, base.width), font, 'black', 28)
-        # draw.text((15, 0), wrap(font, text, 565), font=font, fill='black')
+        render_text_with_emoji(base, draw, (15, 0), wrap(font, text, base.width), font, 'black')
 
         b = BytesIO()
         base.save(b, format='png')
