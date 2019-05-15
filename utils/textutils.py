@@ -62,8 +62,7 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
     emoji_set = 'twemoji'
     if emoji_set == 'apple':
         emojis = os.listdir('assets/emoji')
-        for i in range(0, len(text)):
-            char = text[i]
+        for i, char in enumerate(text):
             if char == '\n':
                 coords = (initial_coords[0], coords[1] + emoji_size)
             emoji = str(hex(ord(char))).upper().replace('0X', 'u')
@@ -118,8 +117,7 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
                 coords = (coords[0] + emoji_size + 4, coords[1])
     elif emoji_set == 'twemoji':
         emojis = os.listdir('assets/twemoji')
-        for i, value in enumerate(text):
-            char = value
+        for i, char in enumerate(text):
             if char == '\n':
                 coords = (initial_coords[0], coords[1] + emoji_size)
             emoji = str(hex(ord(char))).replace('0x', '')
