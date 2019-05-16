@@ -62,15 +62,13 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
     emoji_set = 'twemoji'
     if emoji_set == 'apple':
         emojis = os.listdir('assets/emoji')
-        for i, char in enumerate(text):
+        for i in range(0, len(text)):
+            char = text[i]
             if char == '\n':
                 coords = (initial_coords[0], coords[1] + emoji_size)
             emoji = str(hex(ord(char))).upper().replace('0X', 'u')
-            try:
-                text[i + 1]
-            except IndexError:
-                if emoji + '.png' not in emojis and emoji + '.0.png' in emojis:
-                    emoji = emoji + '.0'
+            if i + 1 <= len(text) and emoji + '.png' not in emojis and emoji + '.0.png' in emojis:
+                emoji = emoji + '.0'
             try:
                 u_vs = str(hex(ord(text[i + 1]))).upper().replace('0X', 'u')
                 try:
@@ -117,21 +115,19 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
                 coords = (coords[0] + emoji_size + 4, coords[1])
     elif emoji_set == 'twemoji':
         emojis = os.listdir('assets/twemoji')
-        for i, char in enumerate(text):
+        for i in range(0, len(text)):
+            char = text[i]
             if char == '\n':
                 coords = (initial_coords[0], coords[1] + emoji_size)
             emoji = str(hex(ord(char))).replace('0x', '')
-            try:
-                text[i + 1]
-            except IndexError:
-                if emoji + '.png' not in emojis and emoji + '.0.png' in emojis:
-                    emoji = emoji + '.0'
+            if i + 1 <= len(text) and emoji + '.png' not in emojis and emoji + '.0.png' in emojis:
+                emoji = emoji + '.0'
             try:
                 u_vs = str(hex(ord(text[i + 1]))).replace('0x', '')
                 try:
                     u_zws = str(hex(ord(text[i + 2]))).replace('0x', '')
                     if u_vs == 'fe0f' and u_zws == '200d':
-                        emoji = emoji + '-' + u_vs + '-' + u_zws + '-' +  str(hex(ord(text[i + 3]))).replace('0x', '')
+                        emoji = emoji + '-' + u_vs + '-' + u_zws + '-' + str(hex(ord(text[i + 3]))).replace('0x', '')
                         try:
                             text = text.replace(text[i + 3], '‍', 1)
                         except IndexError:
