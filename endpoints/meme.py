@@ -5,7 +5,7 @@ from flask import send_file
 
 from utils import http
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -28,11 +28,13 @@ class Meme(Endpoint):
         color = kwargs.get('color', 'white')
 
         def draw_text_with_outline(string, x, y):
-            draw.text((x - 2, y - 2), string, (0, 0, 0), font=font)
-            draw.text((x + 2, y - 2), string, (0, 0, 0), font=font)
-            draw.text((x + 2, y + 2), string, (0, 0, 0), font=font)
-            draw.text((x - 2, y + 2), string, (0, 0, 0), font=font)
-            draw.text((x, y), string, color, font=font)
+            x = int(x)
+            y = int(y)
+            render_text_with_emoji(img, draw, (x - 2, y - 2), string, font=font, fill=(0, 0, 0))
+            render_text_with_emoji(img, draw, (x + 2, y - 2), string, font=font, fill=(0, 0, 0))
+            render_text_with_emoji(img, draw, (x + 2, y + 2), string, font=font, fill=(0, 0, 0))
+            render_text_with_emoji(img, draw, (x - 2, y + 2), string, font=font, fill=(0, 0, 0))
+            render_text_with_emoji(img, draw, (x, y), string, font=font, fill=color)
 
         def draw_text(string, pos):
             string = string.upper()

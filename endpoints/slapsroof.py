@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -17,7 +17,7 @@ class SlapsRoof(Endpoint):
         canv = ImageDraw.Draw(base)
         suffix = ' in it'
         text = wrap(font, text + suffix, 1150)
-        canv.text((335, 31), text, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (335, 31), text, font=font, fill='Black')
 
         base = base.convert('RGB')
         b = BytesIO()

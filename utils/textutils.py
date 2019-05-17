@@ -1,9 +1,9 @@
 from math import floor
-
+import os
 
 # TODO: Chop long single-words
 # from PIL import ImageFont
-
+from PIL import Image, ImageFont
 
 def wrap(font, text, line_width):
     words = text.split()
@@ -53,3 +53,102 @@ def auto_text_size(text, font, desired_width, fallback_size=25, font_scalar=1):
 #         w, _ = ifont.getsize(text)
 #
 #     return ifont, wrap(ifont, text, container_width)
+
+
+def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: ImageFont='', fill='black'):
+    initial_coords = coords
+    emoji_size = font.getsize(text)[1]
+
+    emoji_set = 'twemoji'
+    if emoji_set == 'apple':
+        emojis = os.listdir('assets/emoji')
+        for i in range(0, len(text)):
+            char = text[i]
+            if char == '\n':
+                coords = (initial_coords[0], coords[1] + emoji_size)
+            emoji = str(hex(ord(char))).upper().replace('0X', 'u')
+            if i + 1 <= len(text) and emoji + '.png' not in emojis and emoji + '.0.png' in emojis:
+                emoji = emoji + '.0'
+            try:
+                u_vs = str(hex(ord(text[i + 1]))).upper().replace('0X', 'u')
+                try:
+                    u_zws = str(hex(ord(text[i+2]))).upper().replace('0X', 'u')
+                    if u_vs == 'uFE0F' and u_zws == 'u200D':
+                        emoji = emoji + '_' + str(hex(ord(text[i + 3]))).upper().replace('0X', 'u')
+                        try:
+                            text = text.replace(text[i + 3], '‍', 1)
+                        except IndexError:
+                            pass
+                except IndexError:
+                    pass
+                if emoji + '_' + u_vs + '.png' in emojis:
+                    emoji = emoji + '_' + u_vs
+                    text = text.replace(text[i + 1], '‍', 1)
+                if u_vs == 'u1F3FB':
+                    emoji = emoji + '.1'
+                    text = text.replace(text[i + 1], '‍', 1)
+                elif u_vs == 'u1F3FC':
+                    emoji = emoji + '.2'
+                    text = text.replace(text[i + 1], '‍', 1)
+                elif u_vs == 'u1F3FD':
+                    emoji = emoji + '.3'
+                    text = text.replace(text[i + 1], '‍', 1)
+                elif u_vs == 'u1F3FE':
+                    emoji = emoji + '.4'
+                    text = text.replace(text[i + 1], '‍', 1)
+                elif u_vs == 'u1F3FF':
+                    emoji = emoji + '.5'
+                    text = text.replace(text[i + 1], '‍', 1)
+                elif emoji == 'uFE0F' or emoji == 'u200D':
+                    continue
+            except IndexError:
+                pass
+            if emoji == 'u200D':
+                pass
+            elif emoji + '.png' not in emojis:
+                size = draw.textsize(char, font=font)
+                draw.text(coords, char, font=font, fill=fill)
+                coords = (coords[0] + size[0], coords[1])
+            else:
+                emoji_img = Image.open(f'assets/emoji/{emoji}.png').convert('RGBA').resize((emoji_size, emoji_size), Image.LANCZOS)
+                img.paste(emoji_img, (coords[0], coords[1] + 4), emoji_img)
+                coords = (coords[0] + emoji_size + 4, coords[1])
+    elif emoji_set == 'twemoji':
+        emojis = os.listdir('assets/twemoji')
+        for i in range(0, len(text)):
+            char = text[i]
+            if char == '\n':
+                coords = (initial_coords[0], coords[1] + emoji_size)
+            emoji = str(hex(ord(char))).replace('0x', '')
+            if i + 1 <= len(text) and emoji + '.png' not in emojis and emoji + '.0.png' in emojis:
+                emoji = emoji + '.0'
+            try:
+                u_vs = str(hex(ord(text[i + 1]))).replace('0x', '')
+                try:
+                    u_zws = str(hex(ord(text[i + 2]))).replace('0x', '')
+                    if u_vs == 'fe0f' and u_zws == '200d':
+                        emoji = emoji + '-' + u_vs + '-' + u_zws + '-' + str(hex(ord(text[i + 3]))).replace('0x', '')
+                        try:
+                            text = text.replace(text[i + 3], '‍', 1)
+                        except IndexError:
+                            pass
+                except IndexError:
+                    pass
+                if emoji + '-' + u_vs + '.png' in emojis:
+                    emoji = emoji + '-' + u_vs
+                    text = text.replace(text[i + 1], '‍', 1)
+                elif emoji == 'fe0f' or emoji == '200d':
+                    continue
+            except IndexError:
+                pass
+            if emoji == '200d':
+                pass
+            elif emoji + '.png' not in emojis:
+                size = draw.textsize(char, font=font)
+                draw.text(coords, char, font=font, fill=fill)
+                coords = (coords[0] + size[0], coords[1])
+            else:
+                emoji_img = Image.open(f'assets/twemoji/{emoji}.png').convert('RGBA').resize((emoji_size, emoji_size),
+                                                                                           Image.LANCZOS)
+                img.paste(emoji_img, (coords[0], coords[1] + 4), emoji_img)
+                coords = (coords[0] + emoji_size + 4, coords[1])

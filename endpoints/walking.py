@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -17,7 +17,7 @@ class Walking(Endpoint):
         font = self.assets.get_font('assets/fonts/sans.ttf', size=50)
         canv = ImageDraw.Draw(base)
         text = wrap(font, text, 1000)
-        canv.text((35, 35), text, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (35, 35), text, font=font, fill='black')
 
         base = base.convert('RGB')
 

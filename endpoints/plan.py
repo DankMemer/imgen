@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -27,10 +27,10 @@ class Plan(Endpoint):
 
         a, b, c = words
 
-        canv.text((190, 60), a, font=font, fill='Black')
-        canv.text((510, 60), b, font=font, fill='Black')
-        canv.text((190, 280), c, font=font, fill='Black')
-        canv.text((510, 280), c, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (190, 60), a, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (510, 60), b, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (190, 280), c, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (510, 280), c, font=font, fill='Black')
         base = base.convert('RGB')
 
         b = BytesIO()

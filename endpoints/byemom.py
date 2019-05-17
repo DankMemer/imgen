@@ -5,7 +5,7 @@ from flask import send_file
 
 from utils import http
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -28,8 +28,8 @@ class Byemom(Endpoint):
         text = wrap(font, text, 500)
         msg = wrap(font, msg, 200)
 
-        canv.text((0, 0), text, font=font, fill='Black')
-        bye.text((0, 0), msg, font=bye_font, fill=(42, 40, 165))
+        render_text_with_emoji(text_layer, canv, (0, 0), text, font=font, fill='Black')
+        render_text_with_emoji(bye_layer, bye, (0, 0), msg, font=bye_font, fill=(42, 40, 165))
         text_layer = text_layer.rotate(24.75, resample=Image.BICUBIC, expand=True)
 
         base.paste(text_layer, (350, 443), text_layer)

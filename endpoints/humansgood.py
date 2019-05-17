@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import auto_text_size
+from utils.textutils import auto_text_size, render_text_with_emoji
 
 
 @setup
@@ -17,8 +17,7 @@ class HumansGood(Endpoint):
         font, text = auto_text_size(text, self.assets.get_font('assets/fonts/sans.ttf'),
                                     125, font_scalar=0.7)
         canv = ImageDraw.Draw(base)
-
-        canv.text((525, 762), text, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (525, 762), text, font, 'black')
         base = base.convert('RGB')
 
         b = BytesIO()

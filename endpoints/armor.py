@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import auto_text_size
+from utils.textutils import auto_text_size, render_text_with_emoji
 
 
 @setup
@@ -18,7 +18,7 @@ class Armor(Endpoint):
                                     font_scalar=0.8)
         canv = ImageDraw.Draw(base)
 
-        canv.text((34, 371), text, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (34, 371), text, font=font, fill='Black')
         base = base.convert('RGB')
 
         b = BytesIO()

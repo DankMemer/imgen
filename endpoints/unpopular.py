@@ -5,7 +5,7 @@ from flask import send_file
 
 from utils import http
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -37,7 +37,7 @@ class Unpopular(Endpoint):
         base.paste(avatar_square, (-20, 1670), avatar_square)
         canv = ImageDraw.Draw(temp)
         wrapped = wrap(font, text, 1150)
-        canv.text((0, 0), wrapped, font=font, fill='Black')
+        render_text_with_emoji(temp, canv, (0, 0), wrapped, font, 'black')
         w = temp.rotate(1, expand=1)
         base.paste(w, (620, 280), w)
         base = base.convert('RGBA')

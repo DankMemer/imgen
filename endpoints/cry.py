@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from flask import send_file
 
 from utils.endpoint import Endpoint, setup
-from utils.textutils import wrap
+from utils.textutils import wrap, render_text_with_emoji
 
 
 @setup
@@ -17,7 +17,7 @@ class Cry(Endpoint):
         canv = ImageDraw.Draw(base)
 
         text = wrap(font, text, 180)
-        canv.text((382, 80), text, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (382, 80), text, font=font, fill='Black')
 
         b = BytesIO()
         base.save(b, format='jpeg')
