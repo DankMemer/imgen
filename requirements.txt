@@ -2,7 +2,7 @@ flask
 pillow
 requests
 wand
-rethinkdb
+rethinkdb==2.3.0.post6
 requests_oauthlib
 sentry_sdk
 blinker
