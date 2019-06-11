@@ -8,8 +8,6 @@ from flask import render_template, request, Blueprint, url_for, session, redirec
 from utils.db import get_db
 from utils.make_session import make_session
 
-from datetime import datetime
-
 config = json.load(open('config.json'))
 
 dash = Blueprint('dashboard', __name__, template_folder='views', static_folder='views/assets')
