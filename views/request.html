@@ -8,9 +8,24 @@
       <form action="?" method="POST">
         <div style="margin-top: 100px;" class="form">
           <label for="name">Application Name:</label>
-          <input type="text" id="name" name="name" placeholder="Your stupid bot">
-          <label for="reason">Why do you want access to Dank Memer Imgen</label>
-          <textarea  type="text" id="reason" name="reason" placeholder="Note: Please put some actual effort into your application. Low effort applications will be declined."></textarea>
+          <input required type="text" id="name" name="name" placeholder="Your Application">
+          <label for="description">Application Description: </label>
+          <textarea required id="description" name="description" placeholder="Tell us a bit about what your application does!"></textarea>
+          <label for="link">Application Link:</label>
+          <input required type="text" id="link" name="link" placeholder="Give us a link or resource where we can learn a bit more about your application">
+          <label for="type">Application Type:</label>
+          <select required name="type" id="type">
+              <option value="chatbot">Chatbot</option>
+              <option value="client">Imgen Client</option>
+              <option value="website">Website</option>
+              <option value="other">Other</option>
+          </select>
+          <label for="reason">Why do you want access to our API?</label>
+          <textarea required id="reason" name="reason" placeholder="Note: Please put some actual effort into your application. Low effort applications will be declined."></textarea>
+          <label for="tos">Do you agree to our TOS and Privacy Policy?</label>
+          <input required type="checkbox" id="tos" name="tos">
+          <label for="consent">Do you allow us to e-mail you about your application status?</label>
+          <input type="checkbox" id="consent" name="consent">
           <input style="cursor: pointer" type="submit" value="Request API Key">
         </div>
       </form>

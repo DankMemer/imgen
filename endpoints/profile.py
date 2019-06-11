@@ -11,7 +11,7 @@ from utils.textutils import wrap, render_text_with_emoji
 @setup
 class Profile(Endpoint):
     """Note: This endpoint is only accessible to Dank Memer. Do NOT implement this!"""
-    params = ['avatar1', 'username1', 'image', 'bio', 'title', 'level', 'xp', 'total_xp', 'color', 'bank', 'wallet', 'inventory', 'prestige', 'active_effects', 'command', 'streak', 'multiplier']
+    params = ['avatar0', 'username1', 'image', 'bio', 'title', 'level', 'xp', 'total_xp', 'color', 'bank', 'wallet', 'inventory', 'prestige', 'active_effects', 'command', 'streak', 'multiplier']
 
     def generate(self, avatars, text, usernames, kwargs):
         font = self.assets.get_font('assets/fonts/MontserratBold.ttf', size=30, )

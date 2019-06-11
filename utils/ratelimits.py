@@ -51,8 +51,15 @@ class RatelimitCache(object):
         db = get_redis()
         c = db.hgetall(f'ratelimit-cache:{self.id}:{item}')
 
-        previous = int(c['timestamp'])
-        expire = datetime.strptime(c['expire_time'], '%H:%M:%S') - datetime(1900, 1, 1)
+        try:
+            previous = int(c['timestamp'])
+        except KeyError:
+            previous = time()
+        try:
+            expire_time = c['expire_time']
+        except KeyError:
+            expire_time = time()
+        expire = datetime.strptime(expire_time, '%H:%M:%S') - datetime(1900, 1, 1)
         date = previous + (expire.seconds * 1000)
         return date
 

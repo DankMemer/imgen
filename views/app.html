@@ -1,0 +1,117 @@
+<head>
+  {% include "partials/header.html" %}
+  {% if key_type == 'key' %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+  {% endif %}
+</head>
+<body>
+  <div class="content">
+    {% include "partials/navbar.html" %}
+      <h1 style="margin-top: 120px; text-align: center">{{ key['name'] }}</h1>
+      <div style="margin-top: 20px; justify-content: space-evenly" class="flex flex-row">
+      <div class="flex flex-column app-card">
+        <h3>Info</h3>
+        {% if key_type == 'key' %}
+        <h3>Token (Click to copy):</h3>
+        <code class="block" style="cursor: pointer;" onclick="navigator.clipboard.writeText('{{ key['id'] }}')">{{ key['id'] }}</code>
+        {% endif %}
+        <h3>Owner: </h3>
+        <p>{{ key['owner_name'] }} ({{ key['owner'] }})</p>
+        <h3>E-Mail:</h3>
+        <a href="mailto:{{ key['email'] }}">{{ key['email'] }}</a>
+        <h3>Type: </h3>
+        <p>{{ key.get('type', 'Unknown') | title }}</p>
+        <h3>Link: </h3>
+        {% if not key.get('link', None) %}
+        <p>Unknown</p>
+        {% else %}
+        <a href="{{ key['link'] }}">{{ key['link'] }}</a>
+        {% endif %}
+        <h3>Description: </h3>
+        <p>{{ key.get('description', 'Unknown') }}</p>
+        <h3>Reason: </h3>
+        <p>{{ key.get('reason', 'Unknown') }}</p>
+        {% if admin %}
+        {% if key_type == 'app' %}
+        <footer style="margin-top: 1rem; width: 100%;" class="flex flex-row">
+          <a class="app-approve" href="/approve/{{ key['id'] }}">Approve</a>
+          <a class="app-decline" href="/decline/{{ key['id'] }}">Decline</a>
+        </footer>
+        {% else %}
+        <footer style="margin-top: 1rem; width: 100%;" class="flex flex-row">
+        {% if not key['unlimited'] %}
+        <a class="unlimited" href="/unlimited/{{ key['id'] }}">Make Unlimited</a>
+        {% else %}
+        <a class="unlimited" href="/unlimited/{{ key['id'] }}">Make Limited</a>
+        {% endif %}
+        <a class="app-decline" href="/delete/{{ key['id'] }}">Delete</a>
+        {% endif %}
+        </footer>
+        {% else %}
+        <footer style="margin-top: 1rem; width: 100%;" class="flex flex-row">
+            <a class="app-decline" href="/delete/{{ key['id'] }}">Delete</a>
+        </footer>
+      {% endif %}
+      </div>
+      {% if key_type == 'key' %}
+      <div class="flex flex-column app-card">
+            <h3>Usage</h3>
+            <h5 onclick="changeView();" class="clickme" id="switch_view">Chart View</h5>
+            <div id="text_view">
+              <p>Total: {{ key['total_usage'] }} requests made!</p>
+              {% for endpoint in key['usages'] %}
+              <p>{{ endpoint }}: {{ key['usages'][endpoint] }}</p>
+              {% endfor %}
+            </div>
+            <div id="chart_view" style="display: none; width: 300px; height: 300px;">
+                <p style="text-align: center;">Total: {{ key['total_usage'] }} requests made!</p>
+                <canvas id="chart" width="300" height="250"></canvas>
+            </div>
+          </div>
+      {% endif %}
+    </div>
+  </div>
+{% if key_type == 'key' %}
+<script>
+    const chart = document.getElementById('chart_view');
+    const text = document.getElementById('text_view');
+    const ctx = document.getElementById('chart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: [{% for endpoint in key['usages'] %}"{{ endpoint | title}}",{% endfor %}],
+            datasets: [{
+                label: "# of Requests",
+                data: [{% for endpoint in key['usages'] %}"{{ key['usages'][endpoint] }}",{% endfor %}],
+                backgroundColor: [{% for i in range(0, key['usages'] | length) %}'rgba({{ range(0, 255) | random }}, {{ range(0, 255) | random }}, {{ range(0, 255) | random }}, 1', {% endfor %}],
+                hoverBackgroundColor: 'rgba(255, 255, 255, 1)'
+            }]
+        },
+    options: {
+            scales: {
+                yAxex: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+        legend: {
+                display: false
+        }
+    }
+    })
+
+function changeView() {
+    if (chart.style.display === 'none') {
+        chart.style.display = null;
+        text.style.display = 'none';
+        document.getElementById('switch_view').innerText = 'Text View'
+    } else {
+        chart.style.display = 'none';
+        text.style.display = null;
+        document.getElementById('switch_view').innerText = 'Chart View'
+    }
+}
+</script>
+{% endif %}
+</body>

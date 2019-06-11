@@ -9,3 +9,5 @@ blinker
 moviepy
 redis
 numpy
+keras
+scipy
