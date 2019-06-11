@@ -17,25 +17,16 @@
       <a class="button" href="/request">Request New</a>
     </div>
     <hr>
-    <div class="flex flex-column">
+    <div class="flex flex-rox">
     {% for key in keys %}
-      <div class="flex flex-column">
-        <h3 style="cursor: pointer" onclick="expand('{{ key['id'] }}')">{{ key['name'] }} <i class="fas fa-arrow-down"></i></h3>
-        <div id="{{ key['id'] }}-info" style="display: none;" class="flex flex-column key-info">
-          <p>Token:</p>
-          <div class="flex flex-row">
-              <code id="{{ key['id'] }}-token" class="block">{{ key['id'] }}</code>
-              <a class="button" onclick="copy('{{ key['id'] }}')" href="javascript:void(0);">Copy Token</a>
-          </div>
-          <div class="flex flex-column">
-          <h4>Usage:</h4>
-          <p>Total: {{ key['total_usage'] }}</p>
-          {% for  endpoint in key['usages'] %}
-          <p>{{ endpoint }}: {{ key['usages'][endpoint] }}</p>
-          {% endfor %}
-          </div>
+      <div class="app-card" style="width: 300px;">
+          <h2 style="max-width: 300px; text-align: center; margin-bottom: .5rem; margin-top: .3rem;">{{ key['name'] }}</h2>
+          <footer style="justify-content: left; margin-top: 1rem;" class="flex flex-row">
+            <a class="app-view" href="/view/{{ key['id'] }}">View</a>
+            <a class="unlimited" href="#" onclick="navigator.clipboard.writeText('{{ key['id'] }}')">Copy Token</a>
+            <a class="app-decline" href="delete/{{ key['id'] }}">Delete</a>
+          </footer>
         </div>
-      </div>
     {% endfor %}
   </div>
   </div>

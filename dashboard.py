@@ -81,17 +81,29 @@ def request_key():
     elif request.method == 'POST':
         name = request.form.get('name', None)
         reason = request.form.get('reason', None)
+        app_type = request.form.get('type', None)
+        link = request.form.get('link', None)
+        description = request.form.get('description', None)
+        tos = request.form.get('tos', False)
+        consent = request.form.get('consent', False)
 
-        if not reason or not name:
-            result = 'Please enter a name and reason for your application'
+        if not reason or not name or not link or not app_type or not description or not tos:
+            result = 'Please make sure you have entered a name, description, type, link, description and have accepted our TOS before submitting your application'
             return render_template('result.html', result=result, success=False)
+        if not link.startswith('http'):
+            return render_template('result.html', result='URL must use HTTP(S) scheme!', success=False)
 
         r.table('applications').insert({
             "owner": user['id'],
             "email": user['email'],
             "name": name,
+            "description": description,
+            "link": link,
+            "type": app_type,
+            "email_consent": consent,
             "owner_name": f'{user["username"]}#{user["discriminator"]}',
-            "reason": reason
+            "reason": reason,
+            "time": r.now()
         }).run(get_db())
         result = 'Application Submitted 👌'
         return render_template('result.html', result=result, success=True)
@@ -140,10 +152,44 @@ def admin():
 
     if user['id'] not in config['admins']:
         return render_template('gitout.html')
+    sort = request.args.get('sort', 'age')
+    if sort == 'age_asc':
+        keys = r.table('keys').order_by(r.asc('creation_time')).run(get_db())
+    elif sort == 'age_desc':
+        keys = r.table('keys').order_by(r.desc('creation_time')).run(get_db())
+    elif sort == 'usage_asc':
+        keys = r.table('keys').order_by(r.asc('total_usage')).run(get_db())
+    elif sort == 'usage_desc':
+        keys = r.table('keys').order_by(r.desc('total_usage')).run(get_db())
+    elif sort == 'accept_asc':
+        keys = r.table('keys').order_by(r.asc('acceptance_time')).run(get_db())
+    elif sort == 'accept_desc':
+        keys = r.table('keys').order_by(r.desc('acceptance_time')).run(get_db())
+    else:
+        keys = r.table('keys').order_by(r.asc('creation_time')).run(get_db())
+    apps = r.table('applications').order_by('time').run(get_db())
+    return render_template('admin.html', name=user['username'], apps=apps, keys=keys, sort=sort)
 
-    apps = r.table('applications').run(get_db())
-    keys = r.table('keys').run(get_db())
-    return render_template('admin.html', name=user['username'], apps=apps, keys=keys)
+
+@dash.route('/view/<key_id>')
+@limited_access
+def view(key_id):
+    user = session['user']
+
+    if user['id'] in config['admins']:
+        admin = True
+    else:
+        admin = False
+
+    key = r.table('applications').get(key_id).run(get_db())
+    key_type = 'app'
+    if not key:
+        key = r.table('keys').get(key_id).run(get_db())
+        key_type = 'key'
+    if key['owner'] == user['id'] or admin:
+        return render_template('app.html', key=key, key_type=key_type, admin=admin)
+    else:
+        return render_template('gitout.html')
 
 
 @dash.route('/approve/<key_id>')
@@ -165,6 +211,13 @@ def approve(key_id):
         "owner": key['owner'],
         "owner_name": key['owner_name'],
         "email": key['email'],
+        "email_consent": key['email_consent'],
+        "description": key['description'],
+        "reason": key['reason'],
+        "link": key['link'],
+        "type": key['type'],
+        "creation_time": key['time'],
+        "acceptance_time": r.now(),
         "total_usage": 0,
         "usages": {},
         "unlimited": False,
@@ -190,11 +243,15 @@ def decline(key_id):
 @limited_access
 def delete(key_id):
     user = session['user']
-
-    if user['id'] not in config['admins']:
+    k = r.table('keys').get(key_id).run(get_db())
+    if user['id'] in config['admins']:
+        r.table('keys').get(key_id).delete().run(get_db())
+        return redirect(url_for('.admin'))
+    elif user['id'] == k['owner']:
+        r.table('keys').get(key_id).delete().run(get_db())
+        return redirect(url_for('.dashboard'))
+    else:
         return render_template('gitout.html')
-    r.table('keys').get(key_id).delete().run(get_db())
-    return redirect(url_for('.admin'))
 
 
 @dash.route('/unlimited/<key_id>')

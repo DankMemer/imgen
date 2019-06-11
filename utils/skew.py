@@ -14,6 +14,7 @@ def find_coeffs(source_coords, target_coords):
 
 
 def skew(img, target_cords: list, source_coords: list=None, resolution: int=1024):
+    # [(top_left), (top_right), (bottom_right), (bottom_left)]
     if source_coords:
         coeffs = find_coeffs(source_coords, target_cords)
     else:

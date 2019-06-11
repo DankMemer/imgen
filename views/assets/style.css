@@ -99,6 +99,15 @@ td {
   font-size: 1.15em;
 }
 
+.app-card {
+  align-self: start;
+  background-color: #23272A;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 3px 3px 10px black;
+  margin: 1rem;
+}
+
 .flex {
   display: flex;
   justify-content: center;
@@ -167,6 +176,7 @@ hr {
   border: 1px solid white;
   color: white;
   margin-top: 10px;
+  font-size: 16px;
 }
 
 .form textarea {
@@ -177,6 +187,21 @@ hr {
   border-radius: 3px;
   border-width: 1px;
   color: white;
+  font-family: sans-serif;
+  resize: vertical;
+  font-size: 16px;
+}
+
+.form select {
+  background-color: #23272A;
+  padding: 10px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 3px;
+  border-width: 1px;
+  color: white;
+  height: 3rem;
+  font-size: 20px;
   font-family: sans-serif;
   resize: vertical;
 }
@@ -197,8 +222,13 @@ h1 {
 }
 
 .app-card header h5 {
-  margin-top: 7px;
-  margin-bottom: 7px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+h5{
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 .app-approve {
@@ -222,7 +252,18 @@ h1 {
   text-align: center;
   text-decoration: none;
   color: white;
-  margin-left: 2px;
+}
+
+.app-view {
+  align-self: self-start;
+  background-color: #00d1b2;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 50%;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  margin-right: 2px;
 }
 
 .unlimited {
@@ -275,6 +316,11 @@ h1 {
 .clickme {
   cursor: pointer;
   user-select: none;
+  text-decoration: none;
+}
+
+.clickme:hover {
+  text-decoration: underline;
 }
 
 .hidden {
