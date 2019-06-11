@@ -9,6 +9,7 @@ from keras import backend as K
 from keras.models import load_model
 from random import randint
 
+
 def render_dream(avatar):
     K.clear_session()
 
@@ -23,7 +24,6 @@ def render_dream(avatar):
             loss_value, grad_values = eval_loss_and_grads(x)
             if max_loss is not None and loss_value > max_loss:
                 break
-            print('..Loss value at', i, ':', loss_value)
             x += step * grad_values
         return x
 
@@ -79,7 +79,6 @@ def render_dream(avatar):
     model = load_model('model.hdf5', compile=False)
 
     dream = model.input
-    print('Model loaded.')
 
     # Get the symbolic outputs of each "key" layer (we gave them unique names).
     layer_dict = dict([(layer.name, layer) for layer in model.layers])
@@ -129,7 +128,6 @@ def render_dream(avatar):
     shrunk_original_img = resize_img(img, successive_shapes[0])
 
     for shape in successive_shapes:
-        print('Processing image shape', shape)
         img = resize_img(img, shape)
         img = gradient_ascent(img,
                               iterations=iterations,
