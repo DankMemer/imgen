@@ -11,3 +11,5 @@ redis
 numpy
 keras
 scipy
+gevent
+tensorflow
