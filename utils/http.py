@@ -14,7 +14,7 @@ def get(url, **kwargs):
     if 'proxy_url' in config:
         res = requests.get(config['proxy_url'],
                            params={'url': url},
-                           headers={'Authorization': config['proxy_url_auth']},
+                           headers={'Authorization': config['proxy_auth']},
                            **kwargs)
     else:
         res = requests.get(url, **kwargs)
