@@ -12,7 +12,10 @@ MAX_FILE_SIZE = config.get('max_file_size', 5000000)  # in bytes
 
 def get(url, **kwargs):
     if 'proxy_url' in config:
-        res = requests.get(config['proxy_url'], params={'url': url}, **kwargs)
+        res = requests.get(config['proxy_url'],
+                           params={'url': url},
+                           headers={'Authorization': config['proxy_url_auth']},
+                           **kwargs)
     else:
         res = requests.get(url, **kwargs)
 
