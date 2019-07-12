@@ -8,7 +8,7 @@ from utils.deep_dream import render_dream
 from utils import http
 
 
-@setup(rate=1, per=20)
+# @setup(rate=1, per=20)
 class Dream(Endpoint):
     """This endpoint deep dreams your input image. This endpoint has a seperate ratelimit of 1 request per 20 seconds
     due to CPU and high generation time. Generating a deep dream can take anywhere between 10 and 20 seconds"""
