@@ -1,0 +1,24 @@
+<head>
+  {% include "partials/header.html" %}
+  <script src="/assets/tablesort.js"></script>
+</head>
+
+<body>
+  <div class="content">
+    {% include "partials/navbar.html" %}
+    <table class="stats" id="gen-stats">
+      <tr>
+        <th onclick="sortTable(0)">Endpoint</th>
+        <th onclick="sortTable(1)">Hits</th>
+        <th onclick="sortTable(2)">Avg. Gen Time</th>
+      </tr>
+      {% for ep in data %}
+      <tr>
+        <td>{{ep}}</td>
+        <td>{{data[ep]["hits"]}} hits</td>
+        <td>{{data[ep]["avg_gen_time"]}} ms</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</body>

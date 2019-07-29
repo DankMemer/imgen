@@ -7,7 +7,7 @@
 <body>
   <div class="content">
     {% include "partials/navbar.html" %}
-      <h1 style="margin-top: 120px; text-align: center">{{ key['name'] }}</h1>
+      <h1 style="margin-top: 50px; text-align: center">{{ key['name'] }}</h1>
       <div style="margin-top: 20px; justify-content: space-evenly" class="flex flex-row">
       <div class="flex flex-column app-card">
         <h3>Info</h3>
@@ -34,22 +34,22 @@
         {% if admin %}
         {% if key_type == 'app' %}
         <footer style="margin-top: 1rem; width: 100%;" class="flex flex-row">
-          <a class="app-approve" href="/approve/{{ key['id'] }}">Approve</a>
+          <a class="app-approve approve-left" href="/approve/{{ key['id'] }}">Approve</a>
           <a class="app-decline" href="/decline/{{ key['id'] }}">Decline</a>
         </footer>
         {% else %}
         <footer style="margin-top: 1rem; width: 100%;" class="flex flex-row">
         {% if not key['unlimited'] %}
-        <a class="unlimited" href="/unlimited/{{ key['id'] }}">Make Unlimited</a>
+        <a class="unlimited unlimited-left" href="/unlimited/{{ key['id'] }}">Make Unlimited</a>
         {% else %}
-        <a class="unlimited" href="/unlimited/{{ key['id'] }}">Make Limited</a>
+        <a class="unlimited unlimited-left" href="/unlimited/{{ key['id'] }}">Make Limited</a>
         {% endif %}
         <a class="app-decline" href="/delete/{{ key['id'] }}">Delete</a>
         {% endif %}
         </footer>
         {% else %}
         <footer style="margin-top: 1rem; width: 100%;" class="flex flex-row">
-            <a class="app-decline" href="/delete/{{ key['id'] }}">Delete</a>
+            <a class="app-decline decline-no-admin" href="/delete/{{ key['id'] }}">Delete</a>
         </footer>
       {% endif %}
       </div>

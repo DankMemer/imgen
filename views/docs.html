@@ -5,7 +5,7 @@
 <body>
   <div class="content">
     {% include "partials/navbar.html" %}
-    <div class="side-nav" style="display: flex; flex-direction: column; width: 13rem; position: fixed; background-color: #23272A; top: 100px; height: 100%; align-items: center;">
+    <div class="side-nav">
             <h1>Contents</h1>
             <a href="#endpoints">Endpoints</a>
             <a href="#auth">Authorization</a>
@@ -13,8 +13,8 @@
       </div>
     <div class="actual-content">
       <div id="endpoints" style="margin-left: 13rem;">
-          <span class="warning">All endpoints require an <kbd>Authorization</kbd> header containing your key. You can request a key on the dashboard!</span>
           <h1>Endpoints</h1>
+          <span class="warning">All endpoints require an <kbd>Authorization</kbd> header containing your key. You can request a key on the dashboard!</span><br><br><br>
           <span class="info">All endpoints also support POST requests with JSON data. These use arrays, so use <kbd>{"avatars": [], "usernames": [], "text": "hi"}</kbd></span>
           {% for name, func in data %}
           <div style="background-color: #23272A; padding: 0.75rem; border-radius: 3px;" class="card">

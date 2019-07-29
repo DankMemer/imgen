@@ -67,7 +67,7 @@ def dashboard():
     user = session['user']
     is_admin = user['id'] in config['admins']
     keys = r.table('keys').filter(r.row['owner'] == user['id']).run(get_db())
-    return render_template('dashboard.html', name=user['username'], keys=keys, admin=is_admin)
+    return render_template('dashboard.html', name=user['username'], keys=keys, admin=is_admin, active_dash='nav-active')
 
 
 @dash.route('/request', methods=['GET', 'POST'])
