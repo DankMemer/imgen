@@ -45,7 +45,7 @@ td {
   font-weight: bold;
   font-size: 2em;
   padding-right: 25px;
-  border-right: 3px solid #7289da !important;
+  border-right: 3px solid #7289da;
 }
 
 .nav-links {
@@ -68,7 +68,7 @@ td {
 }
 
 .nav-link:hover {
-  filter: brightness(90%) !important;
+  filter: brightness(90%);
 }
 
 .showcase {
@@ -119,7 +119,7 @@ td {
 }
 
 .slogan > span {
-  color: #7289da !important;
+  color: #7289da;
 }
 
 .footer {
