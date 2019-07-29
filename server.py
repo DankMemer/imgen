@@ -75,15 +75,20 @@ def close_db(error):
         g.rdb.close()
 
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def index():
+    return render_template('index.html', active_home="nav-active")
+
+
+@app.route('/stats', methods=['GET'])
+def stats():
     data = {}
 
     for endpoint in endpoints:
         data[endpoint] = {'hits': get_redis().get(endpoint + ':hits') or 0,
                           'avg_gen_time': endpoints[endpoint].get_avg_gen_time()}
 
-    return render_template('index.html', data=data)
+    return render_template('stats.html', data=data, active_stats="nav-active")
 
 
 @app.route('/endpoints.json', methods=['GET'])
@@ -93,7 +98,7 @@ def endpoints():
 
 @app.route('/documentation')
 def docs():
-    return render_template('docs.html', url=request.host_url, data=sorted(endpoints.items()))
+    return render_template('docs.html', url=request.host_url, data=sorted(endpoints.items()), active_docs="nav-active")
 
 
 @app.route('/api/<endpoint>', methods=['GET', 'POST'])

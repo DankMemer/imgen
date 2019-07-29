@@ -18,7 +18,7 @@ class Lick(Endpoint):
         base = Image.open(self.assets.get('assets/lick/lick.jpg'))
         font = self.assets.get_font('assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)
-        render_text_with_emoji(base, canv, (80, 200), wrap(font, text[0], 320), font, 'white')
+        render_text_with_emoji(base, canv, (80, 200), wrap(font, text[0], 220), font, 'white')
         render_text_with_emoji(base, canv, (290, 240), wrap(font, text[1], 320), font, 'white')
 
         base = base.convert('RGB')

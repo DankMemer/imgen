@@ -1,6 +1,6 @@
 flask
 pillow
-requests
+requests[socks]
 wand
 rethinkdb==2.3.0.post6
 requests_oauthlib

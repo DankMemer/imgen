@@ -11,13 +11,17 @@ MAX_FILE_SIZE = config.get('max_file_size', 5000000)  # in bytes
 
 
 def get(url, **kwargs):
-    if 'proxy_url' in config:
-        res = requests.get(config['proxy_url'],
-                           params={'url': url},
-                           headers={'Authorization': config['proxy_auth']},
-                           **kwargs)
+    if config.get('new_proxy', False):
+        proxies = config.get('proxies', {})
+        res = requests.get(url, proxies=proxies, **kwargs)
     else:
-        res = requests.get(url, **kwargs)
+        if 'proxy_url' in config:
+            res = requests.get(config['proxy_url'],
+                               params={'url': url},
+                               headers={'Authorization': config['proxy_auth']},
+                               **kwargs)
+        else:
+            res = requests.get(url, **kwargs)
 
     if 'content-length' not in res.headers:
         raise exceptions.BadRequest(f'{url} is missing `content-length` header')
