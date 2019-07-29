@@ -14,7 +14,7 @@ class JustPretending(Endpoint):
     def generate(self, avatars, text, usernames, kwargs):
         text = text.replace(', ', ',').split(',')
         if len(text) != 2:
-            text = ['hey guys free coins', 'pls rob']
+            text = ['you should add two things split by commas', 'idiot']
         base = Image.open(self.assets.get('assets/justpretending/justpretending.jpg'))
         font = self.assets.get_font('assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)
