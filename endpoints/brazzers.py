@@ -12,11 +12,20 @@ class Brazzers(Endpoint):
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        base = Image.open(self.assets.get('assets/brazzers/brazzers.bmp')).resize((300, 150)).convert('RGBA')
-        avatar = http.get_image(avatars[0]).resize((500, 500)).convert('RGBA')
+        avatar = http.get_image(avatars[0]).convert('RGBA')
+        base = Image.open(self.assets.get('assets/brazzers/brazzers.bmp'))
+        aspect = avatar.width / avatar.height
+
+        new_height = int(base.height * aspect)
+        new_width = int(base.width * aspect)
+        scale = new_width / avatar.width
+        size = (int(new_width / scale / 2), int(new_height / scale / 2))
+
+        base = base.resize(size).convert('RGBA')
 
         # avatar is technically the base
-        avatar.paste(base, (200, 390), base)
+        avatar.paste(base, (avatar.width - base.width,
+                            avatar.height - base.height), base)
         avatar = avatar.convert('RGBA')
 
         b = BytesIO()
