@@ -10,7 +10,7 @@ from utils.textutils import auto_text_size, render_text_with_emoji
 
 @setup
 class WhoThisIs(Endpoint):
-    params = ['avatar0']
+    params = ['avatar0', 'text']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/whothisis/whothisis.bmp'))
