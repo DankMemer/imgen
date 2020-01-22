@@ -15,7 +15,11 @@ class ViolentSparks(Endpoint):
         base = Image.open(self.assets.get('assets/violentsparks/violentsparks.bmp'))
         font = self.assets.get_font('assets/fonts/medium.woff', size=36)
         canv = ImageDraw.Draw(base)
-        me, sparks = text.replace(' ,', ',', 1).split(',', 1)
+        try:
+            me, sparks = text.replace(' ,', ',', 1).split(',', 1)
+        except ValueError:
+            sparks = 'me'
+            me = 'Dank Memer being mad that I forgot to split my text with a comma'
         me = wrap(font, me, 550)
         sparks = wrap(font, sparks, 400)
         render_text_with_emoji(base, canv, (15, 5), me, font=font, fill='White')

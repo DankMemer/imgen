@@ -15,7 +15,11 @@ class Cheating(Endpoint):
         base = Image.open(self.assets.get('assets/cheating/cheating.bmp'))
         font = self.assets.get_font('assets/fonts/medium.woff', size=26)
         canv = ImageDraw.Draw(base)
-        me, classmate = text.replace(' ,', ',', 1).split(',', 1)
+        try:
+            me, classmate = text.replace(' ,', ',', 1).split(',', 1)
+        except ValueError:
+            me = 'aight thx'
+            classmate = 'yo dude, you need to split the text with a comma'
         me = wrap(font, me, 150)
         classmate = wrap(font, classmate, 150)
         render_text_with_emoji(base, canv, (15, 300), me[:50], font=font, fill='White')

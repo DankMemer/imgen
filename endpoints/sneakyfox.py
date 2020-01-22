@@ -15,7 +15,11 @@ class SneakyFox(Endpoint):
         base = Image.open(self.assets.get('assets/sneakyfox/sneakyfox.bmp'))
         font = self.assets.get_font('assets/fonts/arimobold.ttf', size=36)
         canv = ImageDraw.Draw(base)
-        fox, otherthing = text.replace(' ,', ',', 1).split(',', 1)
+        try:
+            fox, otherthing = text.replace(' ,', ',', 1).split(',', 1)
+        except ValueError:
+            fox = 'Text that is not split with a comma'
+            otherthing = 'the bot'
         fox = wrap(font, fox, 500)
         otherthing = wrap(font, otherthing, 450)
         render_text_with_emoji(base, canv, (50, 385), fox[:180], font=font, fill='Black')

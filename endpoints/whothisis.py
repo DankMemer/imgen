@@ -16,8 +16,8 @@ class WhoThisIs(Endpoint):
         base = Image.open(self.assets.get('assets/whothisis/whothisis.bmp'))
         avatar = http.get_image(avatars[0]).resize((215, 215)).convert('RGBA')
         font = self.assets.get_font('assets/fonts/arimobold.ttf', size=40)
-        base.paste(avatar, (543, 15), avatar)
-        base.paste(avatar, (529, 567), avatar)
+        base.paste(avatar, (523, 15), avatar)
+        base.paste(avatar, (509, 567), avatar)
         base = base.convert('RGBA')
 
         canv = ImageDraw.Draw(base)

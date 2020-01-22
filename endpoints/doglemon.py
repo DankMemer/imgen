@@ -15,7 +15,11 @@ class DogLemon(Endpoint):
         base = Image.open(self.assets.get('assets/doglemon/doglemon.bmp'))
         font = self.assets.get_font('assets/fonts/medium.woff', size=30)
         canv = ImageDraw.Draw(base)
-        lemon, dog = text.replace(' ,', ',', 1).split(',', 1)
+        try:
+            lemon, dog = text.replace(' ,', ',', 1).split(',', 1)
+        except ValueError:
+            lemon = 'Text that is not seperated by comma'
+            dog = 'Dank Memer'
         lemon = wrap(font, lemon, 500)
         dog = wrap(font, dog, 450)
         render_text_with_emoji(base, canv, (750, 150), lemon[:180], font=font, fill='Black')
