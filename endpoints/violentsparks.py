@@ -23,7 +23,7 @@ class ViolentSparks(Endpoint):
         me = wrap(font, me, 550)
         sparks = wrap(font, sparks, 400)
         render_text_with_emoji(base, canv, (15, 5), me, font=font, fill='White')
-        render_text_with_emoji(base, canv, (15, 567), sparks, font=font, fill='White')
+        render_text_with_emoji(base, canv, (400, 430), sparks, font=font, fill='Black')
 
         base = base.convert('RGB')
         b = BytesIO()

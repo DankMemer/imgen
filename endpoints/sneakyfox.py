@@ -22,8 +22,8 @@ class SneakyFox(Endpoint):
             otherthing = 'the bot'
         fox = wrap(font, fox, 500)
         otherthing = wrap(font, otherthing, 450)
-        render_text_with_emoji(base, canv, (50, 385), fox[:180], font=font, fill='Black')
-        render_text_with_emoji(base, canv, (670, 150), otherthing[:180], font=font, fill='Black')
+        render_text_with_emoji(base, canv, (300, 350), fox[:180], font=font, fill='Black')
+        render_text_with_emoji(base, canv, (670, 120), otherthing[:180], font=font, fill='Black')
 
         base = base.convert('RGB')
         b = BytesIO()

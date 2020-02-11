@@ -20,10 +20,10 @@ class DogLemon(Endpoint):
         except ValueError:
             lemon = 'Text that is not seperated by comma'
             dog = 'Dank Memer'
-        lemon = wrap(font, lemon, 500)
+        lemon = wrap(font, lemon, 450)
         dog = wrap(font, dog, 450)
-        render_text_with_emoji(base, canv, (750, 150), lemon[:180], font=font, fill='Black')
-        render_text_with_emoji(base, canv, (33, 5), dog[:200], font=font, fill='White')
+        render_text_with_emoji(base, canv, (850, 100), lemon[:180], font=font, fill='Black')
+        render_text_with_emoji(base, canv, (500, 100), dog[:200], font=font, fill='White')
 
         base = base.convert('RGB')
         b = BytesIO()

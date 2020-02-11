@@ -24,10 +24,15 @@ class ExpandDong(Endpoint):
         for i in listdir('assets/expanddong'):
             if i.endswith('.bmp'):
                 chars[i[0]] = Image.open(f'assets/expanddong/{i}')
-        for char in text:
-            char = char.lower()
-            if chars.get(char):
-                base.paste(chars[char], (pos * 128, line * 128))
+        for word in text.split(' '):
+            if 15 - pos <= len(word):
+                pos = 0
+                line += 1
+            for char in word:
+                char = char.lower()
+                if chars.get(char):
+                    base.paste(chars[char], (pos * 128, line * 128))
+                pos += 1
             pos += 1
             if pos == 15:
                 pos = 0
