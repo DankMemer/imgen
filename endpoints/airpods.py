@@ -1,27 +1,35 @@
 from io import BytesIO
 
-from PIL import Image
 from flask import send_file
+from PIL import Image
 
 from utils import http
 from utils.endpoint import Endpoint, setup
-from utils.skew import skew
+
 
 @setup
 class Airpods(Endpoint):
     params = ['avatar0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        white = Image.new('RGBA', (2048, 1364), 0x00000000)
-        base = Image.open(self.assets.get('assets/airpods/airpods.png'))
-        img1 = http.get_image(avatars[0]).convert('RGBA').resize((512, 512), Image.LANCZOS)
-
-        img1 = skew(img1, [(476, 484), (781, 379), (956, 807), (668, 943)])
-        white.paste(img1, (0, 0), img1)
-        white.paste(base, (0, 0), base)
-        white = white.convert('RGBA').resize((512, 341), Image.LANCZOS)
+        blank = Image.new('RGBA', (400, 128), (255, 255, 255, 0))
+        avatar = http.get_image(avatars[0]).convert('RGBA').resize((128, 128))
+        left = Image.open('assets/airpods/left.gif')
+        right = Image.open('assets/airpods/right.gif')
+        out = []
+        for i in range(0, left.n_frames):
+            left.seek(i)
+            right.seek(i)
+            f = blank.copy().convert('RGBA')
+            l = left.copy().convert('RGBA')
+            r = right.copy().convert('RGBA')
+            f.paste(l, (0, 0), l)
+            f.paste(avatar, (136, 0), avatar)
+            f.paste(r, (272, 0), r)
+            out.append(f.resize((400, 128), Image.LANCZOS).convert('RGBA'))
 
         b = BytesIO()
-        white.save(b, format='png')
+        out[0].save(b, format='gif', save_all=True, append_images=out[1:], loop=0, disposal=2, optimize=True,
+                    duration=30, transparency=0)
         b.seek(0)
-        return send_file(b, mimetype='image/png')
+        return send_file(b, mimetype='image/gif')

@@ -15,8 +15,8 @@ class ExpandDong(Endpoint):
     MAX_WIDTH = 1280
 
     def generate(self, avatars, text, usernames, kwargs):
-        text = text[:200]
-        lines = ceil((len(text) * 128) / 1920)
+        text = text[:500]
+        lines = ceil((len(text) * 128) / 1920) + 1
         base = Image.new('RGB', (1920, lines * 128), 'White')
         line = 0
         pos = 0
@@ -34,7 +34,7 @@ class ExpandDong(Endpoint):
                     base.paste(chars[char], (pos * 128, line * 128))
                 pos += 1
             pos += 1
-            if pos == 15:
+            if pos >= 15:
                 pos = 0
                 line += 1
 
