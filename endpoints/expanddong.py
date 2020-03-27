@@ -17,7 +17,7 @@ class ExpandDong(Endpoint):
     def generate(self, avatars, text, usernames, kwargs):
         text = text[:500]
         lines = ceil((len(text) * 128) / 1920) + 1
-        base = Image.new('RGB', (1920, lines * 128), 'White')
+        base = Image.new('RGBA', (1920, lines * 128), (255, 255, 255, 0))
         line = 0
         pos = 0
         chars = dict()
@@ -39,9 +39,9 @@ class ExpandDong(Endpoint):
                 line += 1
 
 
-        base = base.convert('RGB')
+        base = base.convert('RGBA')
 
         b = BytesIO()
-        base.save(b, format='jpeg')
+        base.save(b, format='png')
         b.seek(0)
-        return send_file(b, mimetype='image/jpeg')
+        return send_file(b, mimetype='image/png')

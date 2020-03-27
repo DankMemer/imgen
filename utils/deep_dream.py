@@ -1,13 +1,13 @@
-from __future__ import print_function
+# from __future__ import print_function
 
-from keras.preprocessing.image import img_to_array
-import numpy as np
-import scipy
+# from keras.preprocessing.image import img_to_array
+# import numpy as np
+# import scipy
 
-from keras.applications import inception_v3
-from keras import backend as K
-from keras.models import load_model
-from random import randint
+# from keras.applications import inception_v3
+# from keras import backend as K
+# from keras.models import load_model
+# from random import randint
 
 
 def render_dream(avatar):
