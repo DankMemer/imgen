@@ -38,7 +38,7 @@ class LetMeIn(Endpoint):
 
 
 
-        textclip = TextClip(txt=text, bg_color='White', fontsize=32, font='Verdana', method='caption', size=(clip.size[0], None)).set_duration(clip.duration)
+        textclip = TextClip(txt=text, bg_color='White', fontsize=32, font='Verdana', method='caption', align='west', size=(clip.size[0], None)).set_duration(clip.duration)
 
         color = ColorClip((clip.size[0], textclip.size[1]), color=(255, 255, 255), ismask=False).set_duration(clip.duration)
 
