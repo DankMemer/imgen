@@ -21,9 +21,9 @@ class ViolentSparks(Endpoint):
             sparks = 'me'
             me = 'Dank Memer being mad that I forgot to split my text with a comma'
         me = wrap(font, me, 550)
-        sparks = wrap(font, sparks, 400)
+        sparks = wrap(font, sparks, 200)
         render_text_with_emoji(base, canv, (15, 5), me, font=font, fill='White')
-        render_text_with_emoji(base, canv, (400, 430), sparks, font=font, fill='Black')
+        render_text_with_emoji(base, canv, (350, 430), sparks, font=font, fill='Black')
 
         base = base.convert('RGB')
         b = BytesIO()
