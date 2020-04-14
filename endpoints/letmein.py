@@ -16,9 +16,7 @@ class LetMeIn(Endpoint):
     This endpoint returns an MP4 file. Make sure your application knows how to handle this format.
     Malformed requests count against your ratelimit for this endpoint.
     """
-    params = ['avatar0']
-
-
+    params = ['text']
 
     def generate(self, avatars, text, usernames, kwargs):
         name = uuid.uuid4().hex + '.mp4'
