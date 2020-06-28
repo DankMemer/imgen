@@ -107,7 +107,7 @@ def request_key():
             "reason": reason,
             "time": r.now()
         }).run(get_db())
-        result = 'Application Submitted 👌- If you do not get an email from us with a key within 2 weeks, consider your app denied'
+        result = 'Application Submitted 👌'
         return render_template('result.html', result=result, success=True)
 
 
