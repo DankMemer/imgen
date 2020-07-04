@@ -6,12 +6,16 @@ from utils import http
 
 from utils.endpoint import Endpoint, setup
 from utils.textutils import wrap, render_text_with_emoji
+from utils.db import get_redis
+import os
+import hashlib
+from time import time
 
 
 @setup
 class Profile(Endpoint):
     """Note: This endpoint is only accessible to Dank Memer. Do NOT implement this!"""
-    params = ['avatar0', 'username1', 'image', 'bio', 'title', 'level', 'xp', 'total_xp', 'color', 'bank', 'wallet', 'inventory', 'prestige', 'active_effects', 'command', 'streak', 'multiplier']
+    params = ['avatar0', 'username1', 'bio', 'title', 'level', 'xp', 'total_xp', 'color', 'bank', 'wallet', 'inventory', 'prestige', 'active_effects', 'command', 'streak', 'multiplier']
 
     def generate(self, avatars, text, usernames, kwargs):
         font = self.assets.get_font('assets/fonts/MontserratBold.ttf', size=30, )
@@ -20,25 +24,48 @@ class Profile(Endpoint):
         test = Image.new('L', (1, 1))
         test_draw = ImageDraw.Draw(test)
 
+        avatar_cache = os.listdir('cache/avatars')
+        file_hash = hashlib.md5((usernames[0] + avatars[0] + kwargs.get('bio', '') + kwargs.get('title', "") +
+                           kwargs.get('xp', "") + kwargs.get('total_xp', "") + kwargs.get('color', "") +
+                           kwargs.get('bank', "") + kwargs.get('wallet', "") + kwargs.get('inventory', "") +
+                           kwargs.get('prestige', "") + kwargs.get('active_effects', "") + kwargs.get('command', "") +
+                           kwargs.get('streak', "") + kwargs.get('multiplier', "")).encode()).hexdigest()
+
+        if file_hash + '.png' in os.listdir('cache'):
+            base = Image.open(self.assets.get(f'cache/{file_hash}.png'))
+            b = BytesIO()
+            base.save(b, format='png')
+            b.seek(0)
+            return send_file(b, mimetype='image/png')
+
         active_effects = kwargs.get('active_effects', None)
         total_h = 0
         if active_effects:
             effects = active_effects.split('-')
             for i in effects:
                 w, h = test_draw.textsize(wrap(font2, i, 200), font2)
-                total_h = total_h + h
+                return total_h + h
 
         base = Image.new('RGBA', (600, 600 + total_h + 32), '#2C2F33')
-        image = http.get_image(kwargs.get('image', 'https://i.imgur.com/G68osEq.jpg')).resize((600, 260), Image.LANCZOS).convert('RGB')
+        image = Image.open(self.assets.get('assets/profile/background.jpg')).resize((600, 260), Image.LANCZOS).convert('RGB')
         base.paste(image, (0, 0))
-        avatar = http.get_image(avatars[0]).resize((96, 96), Image.LANCZOS).convert('RGB')
+
+        avatar_hash = hashlib.sha256(avatars[0].encode()).hexdigest()
+        if avatar_hash + '.png' in avatar_cache:
+            avatar = Image.open(f'cache/avatars/{avatar_hash}.png')
+        else:
+            avatar = http.get_image(avatars[0]).resize((96, 96), Image.LANCZOS).convert('RGB')
+            avatar.save(f'cache/avatars/{avatar_hash}.png')
 
         avatar_pos = int(base.width / 2 - avatar.width / 2), int(image.height - avatar.height / 2) - 20
 
-        bio = kwargs.get('bio', None)
-        if bio:
-            if len(bio) > 40:
-                bio = bio[:40] + '...'
+        def render_profile():
+            bio = kwargs.get('bio', None)
+            if bio:
+                if len(bio) > 40:
+                   return bio[:40] + '...'
+
+        bio = render_profile()
 
         title = kwargs.get('title', None)
         xp = kwargs.get('xp', '0')
@@ -150,7 +177,7 @@ class Profile(Endpoint):
         # LEVEL BAR SHOULD BE DRAWN LAST. THAT MEANS YOU DEVOXIN. DON'T TOUCH
 
         level_bar = Image.new('RGBA', (200, 5), color='grey')
-        if color == 'gay':
+        if color == 'gay' or color == 'pride':
             next_bar = Image.new('RGBA', xp_dim, color='red')
             colours = [(255, 0, 0), (255, 127, 0), (255, 255, 0), (0, 255, 255), (0, 0, 255), (63, 0, 255), (127, 0, 255)]
             next_bar_draw = ImageDraw.Draw(next_bar)
@@ -192,5 +219,11 @@ class Profile(Endpoint):
 
         b = BytesIO()
         base.save(b, format='png')
+
+        base.save(f"cache/{file_hash}.png")
+
+        get_redis().set(f'expiry:{file_hash}', str(int(time())), ex=7200)
+        get_redis().set(f'expiry:avatar:{avatar_hash}', str(int(time())), ex=7200)
+
         b.seek(0)
         return send_file(b, mimetype='image/png')
