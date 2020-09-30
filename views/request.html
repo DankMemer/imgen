@@ -7,17 +7,20 @@
     {% include "partials/navbar.html" %}
       <form action="?" method="POST">
         <div style="margin-top: 50px;" class="form">
-          <label for="name">Application Name:</label>
-          <input required type="text" id="name" name="name" placeholder="Your Application">
-          <label for="description">Application Description: </label>
-          <textarea required id="description" name="description" placeholder="Tell us a bit about what your application does!"></textarea>
-          <label for="link">Application Link:</label>
-          <input required type="text" id="link" name="link" placeholder="Give us a link or resource where we can learn a bit more about your application">
-          <label for="type">Application Type:</label>
+          <label for="name">Bot Name:</label>
+          <input required type="text" id="name" name="name" placeholder="Your Bot">
+          <label for="description">Bot Description: </label>
+          <textarea required id="description" name="description" placeholder="Tell us a bit about what your bot does!"></textarea>
+          <label for="link">Bot Link:</label>
+          <input required type="text" id="link" name="link" placeholder="Give us a link or resource where we can learn a bit more about your bot">
+          <label for="link">Server Count:</label>
+          <input required type="text" id="servers" name="servers" placeholder="How many servers is your bot in?">
+          <label for="type">Bot Type:</label>
           <select required name="type" id="type">
-              <option value="chatbot">Chatbot</option>
-              <option value="client">Imgen Client</option>
-              <option value="website">Website</option>
+              <option value="discord">Discord Bot</option>
+              <option value="slack">Slack Bot</option>
+              <option value="telegram">Telegram bot</option>
+              <option value="twitter">Twitter bot</option>
               <option value="other">Other</option>
           </select>
           <label for="reason">Why do you want access to our API?</label>

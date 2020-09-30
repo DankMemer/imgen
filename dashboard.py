@@ -80,6 +80,7 @@ def request_key():
 
     elif request.method == 'POST':
         name = request.form.get('name', None)
+        servers = request.form.get('servers', None)
         reason = request.form.get('reason', None)
         app_type = request.form.get('type', None)
         link = request.form.get('link', None)
@@ -88,7 +89,7 @@ def request_key():
         consent = request.form.get('consent', False)
 
         if not reason or not name or not link or not app_type or not description or not tos:
-            result = 'Please make sure you have entered a name, description, type, link, description and have accepted our TOS before submitting your application'
+            result = 'Please make sure you have entered a name, description, type, server count, link, description and have accepted our TOS before submitting your application'
             return render_template('result.html', result=result, success=False)
         if not link.startswith('http'):
             return render_template('result.html', result='URL must use HTTP(S) scheme!', success=False)
@@ -97,6 +98,7 @@ def request_key():
             "owner": user['id'],
             "email": user['email'],
             "name": name,
+            "servers": servers,
             "description": description,
             "link": link,
             "type": app_type,

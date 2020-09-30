@@ -29,6 +29,8 @@
         {% endif %}
         <h3>Description: </h3>
         <p>{{ key.get('description', 'Unknown') }}</p>
+        <h3>Server Count: </h3>
+        <p>{{ key.get('servers', 'Unknown') }}</p>
         <h3>Reason: </h3>
         <p>{{ key.get('reason', 'Unknown') }}</p>
         {% if admin %}
