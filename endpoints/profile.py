@@ -33,6 +33,8 @@ class Profile(Endpoint):
         if os.path.isfile(cache_path):
             return send_file(cache_path, mimetype='image/png')
 
+        os.makedirs('cache/avatars', exist_ok=True)
+
         active_effects = kwargs.get('active_effects', None)
         total_h = 0
         if active_effects:
