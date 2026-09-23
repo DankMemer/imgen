@@ -209,9 +209,9 @@ def docs():
                            max_file_size=MAX_FILE_SIZE, active_docs="nav-active")
 
 
-@app.route('/templates/<endpoint>')
-def template_example(endpoint):
-    path = preview_path(endpoint)
+@app.route('/templates/<name>')
+def template_example(name):
+    path = preview_path(name)
     if not path:
         return jsonify({'status': 404, 'error': 'Template not found'}), 404
     return send_file(path)
