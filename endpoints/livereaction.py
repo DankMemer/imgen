@@ -1,7 +1,7 @@
 from io import BytesIO
 
 from flask import send_file
-from PIL import Image, ImageOps
+from PIL import Image
 
 from utils import http
 from utils.endpoint import Endpoint, setup
@@ -17,7 +17,7 @@ class LiveReaction(Endpoint):
         if not avatars:
             raise BadRequest('Provide avatar1.')
         image = Image.open(self.assets.get('assets/livereaction/livereaction.png')).convert('RGB')
-        inset = ImageOps.fit(http.get_image(avatars[0]).convert('RGB'), (929, 526), method=Image.LANCZOS)
+        inset = http.get_image(avatars[0]).convert('RGB').resize((929, 526), Image.LANCZOS)
         image.paste(inset, (15, 164))
         font = lambda size: self.assets.get_font('assets/fonts/arimobold.ttf', size=size)
         draw_fitted_text(image, text.upper(), (207, 16, 524, 146), font, 120, minimum=7, max_lines=1, fill='white')
