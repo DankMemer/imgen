@@ -9,12 +9,10 @@ from utils.textutils import wrap, render_text_with_emoji
 
 @setup
 class Sword(Endpoint):
-    params = ['text', 'username0']
+    params = ['text1', 'text2', 'username0']
 
     def generate(self, avatars, text, usernames, kwargs):
-        text = text.replace(', ', ',').split(',')
-        if len(text) != 2:
-            text = ['SPLIT BY', 'COMMA']
+        text = self.text_fields(kwargs, 2)
         base = Image.open(self.assets.get('assets/sword/sword.bmp'))
         font = self.assets.get_font('assets/fonts/verdana.ttf', size=48)
         temp = Image.new('RGBA', (1200, 800), color=(0, 0, 0, 0))

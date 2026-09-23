@@ -6,75 +6,63 @@
   <div class="content">
     {% include "partials/navbar.html" %}
     <div class="side-nav">
-            <h1>Contents</h1>
-            <a href="#endpoints">Endpoints</a>
-            <a href="#auth">Authorization</a>
-            <a href="#ratelimits">Rate Limits</a>
-      </div>
+      <h1>Contents</h1>
+      <a href="#endpoints">Endpoints</a>
+      <a href="#auth">Authorization</a>
+      <a href="#inputs">Image input</a>
+      <a href="#ratelimits">Rate limits</a>
+    </div>
     <div class="actual-content">
       <div id="endpoints" style="margin-left: 13rem;">
-          <h1>Endpoints</h1>
-          <span class="warning">All endpoints require an <kbd>Authorization</kbd> header containing your key. You can request a key on the dashboard!</span><br><br><br>
-          <span class="info">All endpoints also support POST requests with JSON data. These use arrays, so use <kbd>{"avatars": [], "usernames": [], "text": "hi"}</kbd></span>
-          {% for name, func in data %}
-          <div style="background-color: #23272A; padding: 0.75rem; border-radius: 3px;" class="card">
-            <p><b style="color: lawngreen">GET </b>{{ url }}api/{{name}}</p>
-            {% if func.__doc__ %}
-            <p>Details:</p>
-            <kbd>{{ func.__doc__|replace('\n', '<br>') | safe }}</kbd>
-            {% endif %}
-            <p>Rate Limit</p>
-            <kbd>{{ func.rate }} request{% if func.rate != 1 %}s{% endif %} per {% if func.per != 1 %}{{ func.per }}{% endif %} second{% if func.per != 1 %}s{% endif %}</kbd>
-            <p>Supported Query Parameters: </p>
-            {% for p in func.params %}
-                {% if p == 'avatar0' %}
-                <kbd>avatar1: Image URL. Usually a Discord Avatar. Supports at least JPG, PNG and BMP!</kbd><br>
-                {% elif p == 'avatar1' %}
-                <kbd>avatar2: Image URL. Used when two users are involved. Supports at least JPG, PNG and BMP!</kbd><br>
-                {% elif p == 'username0' %}
-                <kbd>username1: String. Username for the first user.</kbd><br>
-                {% elif p == 'username1' %}
-                <kbd>username2: String. Username for the second user.</kbd><br>
-                {% elif p == 'text' %}
-                <kbd>{{ p }}: String. Text to show on the generated image.</kbd><br>
-                {% else %}
-                <kbd>{{ p }}: Endpoint specific parameter</kbd><br>
-                {% endif %}
-            {% endfor %}
-          </div>
+        <h1>Endpoints</h1>
+        <p>Send a GET request to <kbd>/api/&lt;endpoint&gt;</kbd> with the listed query parameters, or a POST request to the same URL with a JSON body.</p>
+        <p>For POST, use <kbd>avatars</kbd> and <kbd>usernames</kbd> arrays in the listed order. Send all other parameter values as strings. For example: <kbd>{"avatars": ["https://example.com/avatar.png"], "usernames": ["name"], "text": "hello"}</kbd>.</p>
+        <p>Endpoints with multiple text fields require <kbd>text1</kbd>, <kbd>text2</kbd>, and so on. Each field accepts commas.</p>
+        {% for name, func in data %}
+        <div style="background-color: #23272A; padding: 0.75rem; border-radius: 3px;" class="card">
+          <p><b style="color: lawngreen">GET </b>/api/{{ name }}</p>
+          <p><b style="color: #7289da">POST </b>/api/{{ name }}</p>
+          <p>Response: <kbd>{{ output_type(name) }}</kbd></p>
+          {% if endpoint_notes.get(name) %}
+          <p>{{ endpoint_notes[name] }}</p>
+          {% endif %}
+          {% if previews[name] %}
+          <form action="{{ url_for('template_example', endpoint=name) }}" method="get" target="_blank">
+            <button class="example-button" type="submit">Example template</button>
+          </form>
+          {% endif %}
+          <p>Rate limit: <kbd>{{ func.rate }} request{% if func.rate != 1 %}s{% endif %} per {{ func.per }} second{% if func.per != 1 %}s{% endif %}</kbd></p>
+          <p>Parameters:</p>
+          {% if not func.params %}<kbd>None</kbd>{% endif %}
+          {% for p in func.params %}
+            <kbd>{{ public_parameter(p) }}: {{ text_labels.get(name, {}).get(p, parameter_descriptions.get(p, 'Text to render.')) }}</kbd><br>
           {% endfor %}
+        </div>
+        {% endfor %}
       </div>
       <div id="auth" style="margin-left: 13rem;">
-          <div class="card">
-              <h1>Authorization</h1>
-              <p>All requests must be made with an authorization header that includes your API key! If you don't have a key, request one on the dashboard.</p>
-              <p>Example:</p>
-              <code style="background-color: #23272A">{"Authorization": "tokengoeshere"}</code>
-          </div>
+        <div class="card">
+          <h1>Authorization</h1>
+          <p>Every API request requires a valid key in the <kbd>Authorization</kbd> header. Request a key on the dashboard.</p>
+          <kbd>Authorization: your-api-key</kbd>
+        </div>
+      </div>
+      <div id="inputs" style="margin-left: 13rem;">
+        <div class="card">
+          <h1>Image input</h1>
+          <p>Image parameters must be HTTP or HTTPS URLs that the service can fetch. GET accepts <kbd>image</kbd> as an alias for <kbd>avatar1</kbd>. POST accepts <kbd>images</kbd> as an alias for <kbd>avatars</kbd>.</p>
+          <p>JPEG, PNG, and BMP are supported. Other formats may work if the installed Pillow build can decode them. Animated inputs use the first frame.</p>
+          <p>The image response must include a <kbd>Content-Length</kbd> header and cannot exceed {{ max_file_size }} bytes.</p>
+        </div>
       </div>
       <div id="ratelimits" style="margin-left: 13rem;">
-          <div class="card">
-              <h1>Rate Limits</h1>
-              <p>Each endpoint has it's own ratelimit, which you can find in it's documentation. Additionally, the API has a global ratelimit of 300 requests per minute.</p>
-              <p>
-                  The ratelimits for the endpoint are defined with X-RateLimit-:key, while the global ratelimit is defined with X-Global-RateLimit-:key.<br>
-                  When the global ratelimit is hit, the body will contain an additional JSON key "global" which will be set to true.
-              </p>
-              <p>Ratelimit Headers:</p>
-              <ul>
-                  <li>X-RateLimit-Limit: Maximum usage allowed per timeframe</li>
-                  <li>X-Ratelimit-Remaining: Remaining requests that can be made during the timeframe</li>
-                  <li>X-RateLimit-Reset: Timestamp indicating when the ratelimit will reset in milliseconds.</li>
-                  <li>Retry-After: Time to wait in milliseconds until another request can be made. Only exposed if ratelimit is reached.</li>
-              </ul>
-              <ul>
-                  <li>X-Global-RateLimit-Limit: Maximum global usage allowed per timeframe</li>
-                  <li>X-Global-Ratelimit-Remaining: Remaining requests that can be made globally during the timeframe</li>
-                  <li>X-Global-RateLimit-Reset: Timestamp indicating when the global ratelimit will resett in milliseconds.</li>
-                  <li>Retry-After: Time to wait in milliseconds until another request can be made. Only exposed if ratelimit is reached.</li>
-              </ul>
-          </div>
-      </div>
+        <div class="card">
+          <h1>Rate limits</h1>
+          <p>Each endpoint has the rate limit shown above. The global limit is 300 requests per 60 seconds. Requests that fail after authorization count toward these limits.</p>
+          <p>Responses include <kbd>X-RateLimit-Limit</kbd>, <kbd>X-RateLimit-Remaining</kbd>, and <kbd>X-RateLimit-Reset</kbd> for the endpoint, plus the corresponding <kbd>X-Global-RateLimit-*</kbd> headers for the global limit. Reset timestamps and <kbd>Retry-After</kbd> values are in milliseconds.</p>
+          <p>A rate-limited request returns HTTP 429. Global rate-limit responses include <kbd>"global": true</kbd>.</p>
+        </div>
       </div>
     </div>
+  </div>
 </body>

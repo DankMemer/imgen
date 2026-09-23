@@ -9,12 +9,10 @@ from utils.textutils import render_text_with_emoji, wrap
 
 @setup
 class Lick(Endpoint):
-    params = ['text']
+    params = ['text1', 'text2']
 
     def generate(self, avatars, text, usernames, kwargs):
-        text = text.replace(', ', ',').split(',')
-        if len(text) != 2:
-            text = ['Dank Memer', 'People who do not split with a comma']
+        text = self.text_fields(kwargs, 2)
         base = Image.open(self.assets.get('assets/lick/lick.jpg'))
         font = self.assets.get_font('assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)

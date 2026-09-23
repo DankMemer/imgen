@@ -8,14 +8,16 @@ except ImportError:
 import os
 import threading
 import traceback
+from functools import lru_cache
 
 import rethinkdb as r
-from flask import Flask, render_template, request, g, jsonify, make_response
+from flask import Flask, render_template, request, g, jsonify, make_response, send_file
 
 from dashboard import dash
 from utils.db import get_db, get_redis
 from utils.ratelimits import ratelimit, endpoint_ratelimit
 from utils.exceptions import BadRequest
+from utils.http import MAX_FILE_SIZE
 
 from sentry_sdk import capture_exception
 
@@ -23,6 +25,103 @@ from sentry_sdk import capture_exception
 
 config = json.load(open('config.json'))
 endpoints = None
+
+JPEG_ENDPOINTS = set('abandon aborted affect armor balloon boo brain changemymind cheating citation confusedcat cry doglemon emergencymeeting excuseme expandingwwe facts farmer fuck godwhy goggles humansgood inator justpretending keepurdistance knowyourlocation lick master note nothing obama ohno piccolo plan presentation savehumanity shit slapsroof sneakyfox stroke surprised sword theoffice thesearch violence violentsparks vr walking'.split())
+GIF_ENDPOINTS = set('airpods america communism dank kowalski salty trigger'.split())
+VIDEO_ENDPOINTS = set('crab letmein'.split())
+PREVIEW_EXTENSIONS = ('bmp', 'png', 'jpg', 'jpeg', 'webp', 'gif')
+PREVIEW_OVERRIDES = {'profile': 'assets/profile/background.jpg', 'tweet': 'assets/tweet/trump.bmp', 'thesearch': 'assets/search/thesearch.bmp', 'savehumanity': 'assets/humanity/humanity.bmp'}
+TEXT_LABELS = {
+    'balloon': ('Balloon text', 'Label text'),
+    'boo': ('First caption', 'Second caption'),
+    'brain': ('First panel', 'Second panel', 'Third panel', 'Fourth panel'),
+    'cheating': ('Your message', 'Classmate message'),
+    'citation': ('Heading', 'Details', 'Penalty'),
+    'confusedcat': ('Left caption', 'Right caption'),
+    'crab': ('Top line', 'Bottom line'),
+    'doglemon': ('Lemon text', 'Dog text'),
+    'expandingwwe': ('First panel', 'Second panel', 'Third panel', 'Fourth panel', 'Fifth panel'),
+    'farmer': ('Cloud text', 'Farmer text'),
+    'fuck': ('Left caption', 'Right caption'),
+    'justpretending': ('Top caption', 'Repeated caption'),
+    'knowyourlocation': ('Top text', 'Bottom text'),
+    'lick': ('First caption', 'Second caption'),
+    'master': ('First caption', 'Second caption', 'Third caption'),
+    'plan': ('First panel', 'Second panel', 'Third panel'),
+    'sneakyfox': ('Fox text', 'Other text'),
+    'surprised': ('Me text', 'Also me text'),
+    'sword': ('Sword text', 'Food text'),
+    'theoffice': ('Left caption', 'Right caption'),
+    'violentsparks': ('Person text', 'Sparks text'),
+}
+PARAMETER_DESCRIPTIONS = {
+    'avatar0': 'Image URL for the first image.',
+    'avatar1': 'Image URL for the second image.',
+    'username0': 'First display name.',
+    'username1': 'Second display name. Optional for tweet; sets the handle.',
+    'text': 'Text to render.',
+    'top_text': 'Top caption. Defaults to TOP TEXT.',
+    'bottom_text': 'Bottom caption. Defaults to BOTTOM TEXT.',
+    'color': 'Color name or hex value. Sets meme text or the profile level bar.',
+    'font': 'Meme font name.',
+    'altstyle': 'String true or false. True places text above the image. Defaults to false.',
+    'bio': 'Profile bio. Text over 40 characters is shortened.',
+    'title': 'Profile title.',
+    'xp': 'Cumulative XP as decimal text. The profile level is XP divided by 100.',
+    'bank': 'Bank balance as decimal text.',
+    'wallet': 'Wallet balance as decimal text.',
+    'inventory': 'Inventory summary text.',
+    'prestige': 'Badge name from prestige1 through prestige10.',
+    'active_effects': 'Effects separated by hyphens, each formatted as :item:name.',
+    'command': 'Favorite command text.',
+    'streak': 'Daily streak text.',
+    'multiplier': 'Multiplier percentage text.',
+}
+ENDPOINT_NOTES = {
+    'corporate': 'avatar2 is optional. If omitted, avatar1 is used twice.',
+    'emergencymeeting': 'Text at or above 140 characters is shortened.',
+    'expanddong': 'Only the first 500 characters are rendered.',
+    'godwhy': 'Text at or above 127 characters is shortened.',
+    'keepurdistance': 'Text at or above 30 characters is shortened.',
+    'meme': 'Fonts: arial, arimobold, impact, robotomedium, robotoregular, sans, segoeuireg, tahoma, verdana. Standard style defaults to Impact and white. Alternate style uses text above the image, defaults to Arial and black, and ignores bottom_text.',
+    'profile': 'Use a valid profile badge name for prestige. Supported active-effect items: alcohol, cupidsbigtoe, fakeid, padlock, sand, santashat, spinner, tidepod, landmine.',
+    'nothing': 'Only the first 120 characters are rendered.',
+    'piccolo': 'Only the first 300 characters are rendered.',
+    'tweet': 'username2 sets the handle. If omitted, username1 is used.',
+    'letmein': 'Text at or above 400 characters is shortened.',
+    'yomomma': 'Returns a JSON object with a text field.',
+}
+
+
+def public_parameter(param):
+    return {'avatar0': 'avatar1', 'avatar1': 'avatar2',
+            'username0': 'username1', 'username1': 'username2'}.get(param, param)
+
+
+@lru_cache(maxsize=256)
+def preview_path(endpoint):
+    if endpoint not in endpoints:
+        return None
+    if endpoint in PREVIEW_OVERRIDES:
+        path = PREVIEW_OVERRIDES[endpoint]
+        return path if os.path.isfile(path) else None
+    for extension in PREVIEW_EXTENSIONS:
+        path = 'assets/{0}/{0}.{1}'.format(endpoint, extension)
+        if os.path.isfile(path):
+            return path
+    return None
+
+
+def output_type(endpoint):
+    if endpoint == 'yomomma':
+        return 'application/json'
+    if endpoint in VIDEO_ENDPOINTS:
+        return 'video/mp4'
+    if endpoint in GIF_ENDPOINTS:
+        return 'image/gif'
+    if endpoint in JPEG_ENDPOINTS:
+        return 'image/jpeg'
+    return 'image/png'
 
 app = Flask(__name__, template_folder='views', static_folder='views/assets')
 app.register_blueprint(dash)
@@ -93,12 +192,29 @@ def stats():
 
 @app.route('/endpoints.json', methods=['GET'])
 def endpoints():
-    return jsonify({"endpoints": [{'name': x, 'parameters': y.params, 'ratelimit': f'{y.rate}/{y.per}s'} for x, y in endpoints.items()]})
+    return jsonify({"endpoints": [{'name': x, 'parameters': [public_parameter(p) for p in y.params],
+                                   'ratelimit': f'{y.rate}/{y.per}s'} for x, y in endpoints.items()]})
 
 
 @app.route('/documentation')
 def docs():
-    return render_template('docs.html', url=request.host_url, data=sorted(endpoints.items()), active_docs="nav-active")
+    data = sorted(endpoints.items())
+    previews = {name: preview_path(name) for name, _ in data}
+    text_labels = {name: {'text{}'.format(i + 1): label for i, label in enumerate(labels)}
+                   for name, labels in TEXT_LABELS.items()}
+    return render_template('docs.html', data=data, previews=previews,
+                           output_type=output_type, text_labels=text_labels,
+                           public_parameter=public_parameter,
+                           parameter_descriptions=PARAMETER_DESCRIPTIONS, endpoint_notes=ENDPOINT_NOTES,
+                           max_file_size=MAX_FILE_SIZE, active_docs="nav-active")
+
+
+@app.route('/templates/<endpoint>')
+def template_example(endpoint):
+    path = preview_path(endpoint)
+    if not path:
+        return jsonify({'status': 404, 'error': 'Template not found'}), 404
+    return send_file(path)
 
 
 @app.route('/api/<endpoint>', methods=['GET', 'POST'])
@@ -138,9 +254,6 @@ def api(endpoint):
                            'X-RateLimit-Reset': e_r['X-RateLimit-Reset'],
                            'Retry-After': e_r['Retry-After']}))
         return x
-    if endpoint == 'profile':
-        if request.headers.get('Authorization', None) != config.get('memer_token', None):
-            return jsonify({"error": 'This endpoint is limited to Dank Memer', 'status': 403}), 403
     try:
         result = endpoints[endpoint].run(key=request.headers.get('authorization'),
                                          text=text,

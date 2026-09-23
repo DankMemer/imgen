@@ -9,16 +9,13 @@ from utils.textutils import wrap
 
 @setup
 class Brain(Endpoint):
-    params = ['text']
+    params = ['text1', 'text2', 'text3', 'text4']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/brain/brain.bmp'))
         font = self.assets.get_font('assets/fonts/verdana.ttf', size=30)
 
-        if len(text.split(',')) < 4:
-            a, b, c, d = 'you need, four items, for this, command (split by commas)'.split(',')
-        else:
-            a, b, c, d = text.split(',')[:4]
+        a, b, c, d = self.text_fields(kwargs, 4)
 
         a, b, c, d = [wrap(font, i, 225).strip() for i in [a, b, c, d]]
 

@@ -9,17 +9,13 @@ from utils.textutils import wrap, render_text_with_emoji
 
 @setup
 class ViolentSparks(Endpoint):
-    params = ['text']
+    params = ['text1', 'text2']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/violentsparks/violentsparks.bmp'))
         font = self.assets.get_font('assets/fonts/medium.woff', size=36)
         canv = ImageDraw.Draw(base)
-        try:
-            me, sparks = text.replace(' ,', ',', 1).split(',', 1)
-        except ValueError:
-            sparks = 'me'
-            me = 'Dank Memer being mad that I forgot to split my text with a comma'
+        me, sparks = self.text_fields(kwargs, 2)
         me = wrap(font, me, 550)
         sparks = wrap(font, sparks, 200)
         render_text_with_emoji(base, canv, (15, 5), me, font=font, fill='White')

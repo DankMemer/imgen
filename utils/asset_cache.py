@@ -57,7 +57,7 @@ class AssetCache(object):
             return c['data']
         else:
             obj = ImageFont.truetype(item, *args, **kwargs)
-            self._cache[item] = {'data': obj, 'expiry': now + self._expire_time}
+            self._cache[cache_unique] = {'data': obj, 'expiry': now + self._expire_time}
             return obj
 
     def __contains__(self, item):

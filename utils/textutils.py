@@ -1,9 +1,15 @@
 from math import floor
 import os
+from functools import lru_cache
 
 # TODO: Chop long single-words
 # from PIL import ImageFont
 from PIL import Image, ImageFont
+
+
+@lru_cache(maxsize=2)
+def emoji_files(path):
+    return set(os.listdir(path))
 
 def wrap(font, text, line_width):
     words = text.split()
@@ -61,7 +67,7 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
 
     emoji_set = 'twemoji'
     if emoji_set == 'apple':
-        emojis = os.listdir('assets/emoji')
+        emojis = emoji_files('assets/emoji')
         for i in range(0, len(text)):
             char = text[i]
             if char == '\n':
@@ -114,7 +120,7 @@ def render_text_with_emoji(img, draw, coords:tuple()=(0, 0), text='', font: Imag
                 img.paste(emoji_img, (coords[0], coords[1] + 4), emoji_img)
                 coords = (coords[0] + emoji_size + 4, coords[1])
     elif emoji_set == 'twemoji':
-        emojis = os.listdir('assets/twemoji')
+        emojis = emoji_files('assets/twemoji')
         for i in range(0, len(text)):
             char = text[i]
             if char == '\n':

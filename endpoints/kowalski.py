@@ -11,9 +11,8 @@ from moviepy.video.fx.rotate import rotate
 @setup(rate=1, per=30)
 class Kowalski(Endpoint):
     """
-    This endpoint returns an MP4 file. Make sure your application knows how to handle this format.
+    This endpoint returns a GIF file.
     Malformed requests count against your ratelimit for this endpoint.
-    Separate text with a comma.
     """
     params = ['text']
 

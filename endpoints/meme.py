@@ -18,7 +18,7 @@ class Meme(Endpoint):
     Colors can be defined with HEX codes or web colors, e.g. black, white, orange etc. Try your luck ;)
     The default is Impact in white
     """
-    params = ['avatar0', 'top_text', 'bottom_text', 'color', 'font']
+    params = ['avatar0', 'top_text', 'bottom_text', 'color', 'font', 'altstyle']
 
     def generate(self, avatars, text, usernames, kwargs):  # pylint: disable=R0915
         img = http.get_image(avatars[0]).convert('RGBA')

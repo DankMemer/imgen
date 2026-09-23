@@ -112,6 +112,15 @@ td {
   color: #7289da;
 }
 
+.example-button {
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-radius: 4px;
+  background-color: #40444b;
+  color: white;
+  cursor: pointer;
+}
+
 .slogan {
   font-size: 3em;
   margin: 2rem;

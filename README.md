@@ -1,15 +1,7 @@
-# meme-server
-The microservice that powers [Dank Memer's](https://goo.gl/HL3zBi) Image Generation.
+# imgen
 
-View a live instance [here](https://dankmemer.services)
+Image generation service for Dank Memer.
 
-# Starting meme-server
-install rethinkdb [here](https://github.com/rethinkdb/rethinkdb) and get that running
+The API reference, parameters, response types, and limits are listed at [memer.tech/documentation](https://memer.tech/documentation).
 
-```bash
-git clone
-cd meme-server
-./start.sh
-```
-
-You can use this in conjunction with pm2 or tmux to ensure it runs after exiting the SSH session.
+The service requires `config.json`, RethinkDB, Redis, and the packages in `requirements.txt`. The Linux `start.sh` script also requires Gunicorn and binds to `127.0.0.1:65535`.

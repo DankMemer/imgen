@@ -10,7 +10,7 @@ from utils.skew import skew
 
 @setup
 class Corporate(Endpoint):
-    params = ['avatar0']
+    params = ['avatar0', 'avatar1']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/corporate/corporate.jpg'))

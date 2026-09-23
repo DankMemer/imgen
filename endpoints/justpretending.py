@@ -9,12 +9,10 @@ from utils.textutils import render_text_with_emoji, wrap
 
 @setup
 class JustPretending(Endpoint):
-    params = ['text']
+    params = ['text1', 'text2']
 
     def generate(self, avatars, text, usernames, kwargs):
-        text = text.replace(', ', ',').split(',')
-        if len(text) != 2:
-            text = ['you should add two things split by commas', 'idiot']
+        text = self.text_fields(kwargs, 2)
         base = Image.open(self.assets.get('assets/justpretending/justpretending.jpg'))
         font = self.assets.get_font('assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)

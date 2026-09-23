@@ -9,15 +9,12 @@ from utils.textutils import wrap, render_text_with_emoji
 
 @setup
 class Surprised(Endpoint):
-    params = ['text']
+    params = ['text1', 'text2']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/surprised/surprised.bmp')).convert('RGBA')
         font = self.assets.get_font('assets/fonts/robotoregular.ttf', size=36)
-        try:
-            text1, text2 = text.replace(', ', ',').split(',')
-        except ValueError:
-            text1, text2 = 'tries to use surprised without splitting by comma,the command breaks'.split(',')
+        text1, text2 = self.text_fields(kwargs, 2)
         text1 = wrap(font, 'me: ' + text1, 650)
         text2 = wrap(font, 'also me: ' + text2, 650)
         canv = ImageDraw.Draw(base)

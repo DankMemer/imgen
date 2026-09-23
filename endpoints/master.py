@@ -9,15 +9,11 @@ from utils.textutils import auto_text_size
 
 @setup
 class Master(Endpoint):
-    params = ['text']
+    params = ['text1', 'text2', 'text3']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/master/master.bmp')).convert('RGBA')
-        text = text.split(',')
-        if len(text) == 3:
-            a, b, c = text
-        else:
-            a, b, c = ('you need 3 items', 'for this command', 'split by commas')
+        a, b, c = self.text_fields(kwargs, 3)
         font, text1 = auto_text_size(a, self.assets.get_font('assets/fonts/sans.ttf'), 250, font_scalar=0.2)
         font, text2 = auto_text_size(b, font, 250, font_scalar=0.3)
         font, text3 = auto_text_size(c, font, 300, font_scalar=0.2)

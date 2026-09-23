@@ -9,14 +9,14 @@ from utils.textutils import render_text_with_emoji, wrap
 
 @setup
 class Farmer(Endpoint):
-    params = ['text']
+    params = ['text1', 'text2']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/farmer/farmer.jpg'))
         font = self.assets.get_font('assets/fonts/verdana.ttf', size=24)
         canv = ImageDraw.Draw(base)
 
-        clouds, farmer = text.replace(', ', ',').split(',', 1)
+        clouds, farmer = self.text_fields(kwargs, 2)
 
         if len(clouds) >= 150:
             clouds = clouds[:147] + '...'

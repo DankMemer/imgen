@@ -3,7 +3,6 @@ import os
 from flask import send_file, after_this_request
 
 from utils.endpoint import Endpoint, setup
-from utils.exceptions import BadRequest
 
 from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
 
@@ -13,9 +12,8 @@ class Crab(Endpoint):
     """
     This endpoint returns an MP4 file. Make sure your application knows how to handle this format.
     Malformed requests count against your ratelimit for this endpoint.
-    Separate text with a comma.
     """
-    params = ['text']
+    params = ['text1', 'text2']
 
     def generate(self, avatars, text, usernames, kwargs):
         name = uuid.uuid4().hex + '.mp4'
@@ -29,11 +27,7 @@ class Crab(Endpoint):
 
             return response
 
-        t = text.upper().replace(', ', ',').split(',')
-        if len(t) != 2:
-            raise BadRequest('You must submit exactly two strings split by comma')
-        if (not t[0] and not t[0].strip()) or (not t[1] and not t[1].strip()):
-            raise BadRequest('Cannot render empty text')
+        t = [value.upper() for value in self.text_fields(kwargs, 2)]
         clip = VideoFileClip("assets/crab/template.mp4")
         text = TextClip(t[0], fontsize=48, color='white', font='Symbola')
         text2 = TextClip("____________________", fontsize=48, color='white', font='Verdana')\

@@ -9,12 +9,10 @@ from utils.textutils import wrap
 
 @setup
 class Citation(Endpoint):
-    params = ['text']
+    params = ['text1', 'text2', 'text3']
 
     def generate(self, avatars, text, usernames, kwargs):
-        text = text.replace(', ', ',').split(',')
-        if len(text) != 3:
-            text = ['M.O.A. CITATION', 'You must have 3 arguments split by comma', 'PENALTY ASSESSED - WRONG IMAGE']
+        text = self.text_fields(kwargs, 3)
         base = Image.open(self.assets.get('assets/citation/citation.bmp'))
         font = self.assets.get_font('assets/fonts/bmmini.ttf', size=16)
         canv = ImageDraw.Draw(base)

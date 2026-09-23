@@ -14,8 +14,7 @@ from time import time
 
 @setup
 class Profile(Endpoint):
-    """Note: This endpoint is only accessible to Dank Memer. Do NOT implement this!"""
-    params = ['avatar0', 'username1', 'bio', 'title', 'level', 'xp', 'total_xp', 'color', 'bank', 'wallet', 'inventory', 'prestige', 'active_effects', 'command', 'streak', 'multiplier']
+    params = ['avatar0', 'username0', 'bio', 'title', 'xp', 'color', 'bank', 'wallet', 'inventory', 'prestige', 'active_effects', 'command', 'streak', 'multiplier']
 
     def generate(self, avatars, text, usernames, kwargs):
         font = self.assets.get_font('assets/fonts/MontserratBold.ttf', size=30, )
@@ -24,19 +23,15 @@ class Profile(Endpoint):
         test = Image.new('L', (1, 1))
         test_draw = ImageDraw.Draw(test)
 
-        avatar_cache = os.listdir('cache/avatars')
         file_hash = hashlib.md5((usernames[0] + avatars[0] + kwargs.get('bio', '') + kwargs.get('title', "") +
-                           kwargs.get('xp', "") + kwargs.get('total_xp', "") + kwargs.get('color', "") +
+                           kwargs.get('xp', "") + kwargs.get('color', "") +
                            kwargs.get('bank', "") + kwargs.get('wallet', "") + kwargs.get('inventory', "") +
                            kwargs.get('prestige', "") + kwargs.get('active_effects', "") + kwargs.get('command', "") +
                            kwargs.get('streak', "") + kwargs.get('multiplier', "")).encode()).hexdigest()
 
-        if file_hash + '.png' in os.listdir('cache'):
-            base = Image.open(self.assets.get(f'cache/{file_hash}.png'))
-            b = BytesIO()
-            base.save(b, format='png')
-            b.seek(0)
-            return send_file(b, mimetype='image/png')
+        cache_path = f'cache/{file_hash}.png'
+        if os.path.isfile(cache_path):
+            return send_file(cache_path, mimetype='image/png')
 
         active_effects = kwargs.get('active_effects', None)
         total_h = 0
@@ -44,14 +39,14 @@ class Profile(Endpoint):
             effects = active_effects.split('-')
             for i in effects:
                 w, h = test_draw.textsize(wrap(font2, i, 200), font2)
-                return total_h + h
+                total_h += h
 
         base = Image.new('RGBA', (600, 600 + total_h + 32), '#2C2F33')
         image = Image.open(self.assets.get('assets/profile/background.jpg')).resize((600, 260), Image.LANCZOS).convert('RGB')
         base.paste(image, (0, 0))
 
         avatar_hash = hashlib.sha256(avatars[0].encode()).hexdigest()
-        if avatar_hash + '.png' in avatar_cache:
+        if os.path.isfile(f'cache/avatars/{avatar_hash}.png'):
             avatar = Image.open(f'cache/avatars/{avatar_hash}.png')
         else:
             avatar = http.get_image(avatars[0]).resize((96, 96), Image.LANCZOS).convert('RGB')
@@ -59,13 +54,9 @@ class Profile(Endpoint):
 
         avatar_pos = int(base.width / 2 - avatar.width / 2), int(image.height - avatar.height / 2) - 20
 
-        def render_profile():
-            bio = kwargs.get('bio', None)
-            if bio:
-                if len(bio) > 40:
-                   return bio[:40] + '...'
-
-        bio = render_profile()
+        bio = kwargs.get('bio', None)
+        if bio and len(bio) > 40:
+            bio = bio[:40] + '...'
 
         title = kwargs.get('title', None)
         xp = kwargs.get('xp', '0')
@@ -139,7 +130,7 @@ class Profile(Endpoint):
             title_text = draw.textsize(title, font=font2)
             title_box = Image.new('RGBA', (title_text[0] + 20, title_text[1] + 20), (0, 0, 0, 230))
             base.paste(title_box, (0, 20 + name_box.height + bio_box.height + 60), title_box)
-            render_text_with_emoji(title_box, draw, (10, bio_box.height + name_box.height + title_box.height + 46), title, font=font2, fill=(0, 256, 0))
+            render_text_with_emoji(base, draw, (10, bio_box.height + name_box.height + title_box.height + 46), title, font=font2, fill=(0, 255, 0))
 
         draw.text((15, 290), 'Level', font=font3)
 

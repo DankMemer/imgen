@@ -10,7 +10,7 @@ from utils import http
 
 @setup
 class Obama(Endpoint):
-    params = ['text']
+    params = ['avatar0', 'username0']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/obama/obama.jpg'))

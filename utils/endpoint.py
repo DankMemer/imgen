@@ -7,6 +7,7 @@ from utils import fixedlist
 from utils.db import get_db, get_redis
 from .asset_cache import AssetCache
 from utils.ratelimits import RatelimitCache
+from utils.exceptions import BadRequest
 
 from datetime import timedelta
 
@@ -36,6 +37,14 @@ class Endpoint(ABC):
             return 0
 
         return round(self.avg_generation_times.sum(), 2)
+
+    @staticmethod
+    def text_fields(kwargs, count):
+        names = ['text{}'.format(i) for i in range(1, count + 1)]
+        values = [kwargs.get(name) for name in names]
+        if len(values) != count or any(not isinstance(value, str) or not value.strip() for value in values):
+            raise BadRequest('Provide {} non-empty text fields: {}'.format(count, ', '.join(names)))
+        return [value.strip() for value in values]
 
     def run(self, key, **kwargs):
         get_redis().incr(self.name + ':hits')

@@ -9,19 +9,14 @@ from utils.textutils import auto_text_size, render_text_with_emoji
 
 @setup
 class KnowYourLocation(Endpoint):
-    params = ['text']
+    params = ['text1', 'text2']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/knowyourlocation/knowyourlocation.bmp')).convert('RGBA')
         # We need a text layer here for the rotation
         canv = ImageDraw.Draw(base)
 
-        text = text.split(', ')
-
-        if len(text) != 2:
-            text = ["Separate the items with a", "comma followed by a space"]
-
-        top, bottom = text
+        top, bottom = self.text_fields(kwargs, 2)
 
         top_font, top_text = auto_text_size(top, self.assets.get_font('assets/fonts/sans.ttf'), 630)
         bottom_font, bottom_text = auto_text_size(bottom,

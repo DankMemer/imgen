@@ -9,19 +9,14 @@ from utils.textutils import auto_text_size
 
 @setup
 class Boo(Endpoint):
-    params = ['text']
+    params = ['text1', 'text2']
 
     def generate(self, avatars, text, usernames, kwargs):
         base = Image.open(self.assets.get('assets/boo/boo.bmp')).convert('RGBA')
         # We need a text layer here for the rotation
         canv = ImageDraw.Draw(base)
 
-        text = text.split(', ')
-
-        if len(text) != 2:
-            text = ["Separate the items with a", "comma followed by a space"]
-
-        first, second = text
+        first, second = self.text_fields(kwargs, 2)
 
         first_font, first_text = auto_text_size(first,
                                                 self.assets.get_font('assets/fonts/sans.ttf'), 144,
