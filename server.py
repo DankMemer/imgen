@@ -26,9 +26,9 @@ from sentry_sdk import capture_exception
 config = json.load(open('config.json'))
 endpoints = None
 
-JPEG_ENDPOINTS = set('abandon aborted affect armor balloon boo brain changemymind cheating citation confusedcat cry doglemon emergencymeeting excuseme expandingwwe facts farmer fuck godwhy goggles humansgood inator justpretending keepurdistance knowyourlocation lick master note nothing obama ohno piccolo plan presentation savehumanity shit slapsroof sneakyfox stroke surprised sword theoffice thesearch violence violentsparks vr walking'.split())
+JPEG_ENDPOINTS = set('abandon aborted affect armor balloon boo brain changemymind cheating citation confusedcat cry doglemon emergencymeeting excuseme expandingwwe facts farmer fuck godwhy goggles humansgood inator jarvis justpretending keepurdistance knowyourlocation lick master note nothing obama ohno piccolo plan presentation savehumanity shit slapsroof sneakyfox stroke surprised sword theoffice thesearch todo violence violentsparks vr walking'.split())
 GIF_ENDPOINTS = set('airpods america communism dank kowalski salty trigger'.split())
-VIDEO_ENDPOINTS = set('crab letmein'.split())
+VIDEO_ENDPOINTS = set('crab letmein scaryabove'.split())
 PREVIEW_EXTENSIONS = ('bmp', 'png', 'jpg', 'jpeg', 'webp', 'gif')
 PREVIEW_OVERRIDES = {'profile': 'assets/profile/background.jpg', 'tweet': 'assets/tweet/trump.bmp', 'thesearch': 'assets/search/thesearch.bmp', 'savehumanity': 'assets/humanity/humanity.bmp'}
 TEXT_LABELS = {
@@ -46,6 +46,7 @@ TEXT_LABELS = {
     'justpretending': ('Top caption', 'Repeated caption'),
     'knowyourlocation': ('Top text', 'Bottom text'),
     'lick': ('First caption', 'Second caption'),
+    'machine': ('What your body turns', 'What it turns into'),
     'master': ('First caption', 'Second caption', 'Third caption'),
     'plan': ('First panel', 'Second panel', 'Third panel'),
     'sneakyfox': ('Fox text', 'Other text'),
@@ -89,6 +90,8 @@ ENDPOINT_NOTES = {
     'piccolo': 'Only the first 300 characters are rendered.',
     'tweet': 'username2 sets the handle. If omitted, username1 is used.',
     'letmein': 'Text at or above 400 characters is shortened.',
+    'livereaction': 'avatar1 is placed in the reaction frame.',
+    'scaryabove': 'Text is placed in the white bar above the video.',
     'yomomma': 'Returns a JSON object with a text field.',
 }
 
