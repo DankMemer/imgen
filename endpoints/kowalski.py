@@ -1,10 +1,12 @@
 import uuid
 import os
 from flask import send_file, after_this_request
+from numpy import array
 
 from utils.endpoint import Endpoint, setup
+from utils.video_text import render_video_text
 
-from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
+from moviepy.editor import VideoFileClip, ImageClip, CompositeVideoClip
 from moviepy.video.fx.rotate import rotate
 
 
@@ -28,9 +30,8 @@ class Kowalski(Endpoint):
 
             return response
         clip = VideoFileClip("assets/kowalski/kowalski.gif")
-        text = TextClip(text, fontsize=36, method='caption', size=(245, None), align='West',  color='black',
-                        stroke_color='black', stroke_width=1,
-                        font='Verdana').set_duration(clip.duration)
+        text = ImageClip(array(render_video_text(text, 'Verdana', 36, 'black', width=245, stroke_width=1)))\
+            .set_duration(clip.duration)
         text = text.set_position((340, 65)).set_duration(clip.duration)
         text = rotate(text, angle=10, resample='bilinear')
 

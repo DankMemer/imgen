@@ -1,13 +1,15 @@
 import uuid
 import os
 from flask import send_file, after_this_request
+from numpy import array
 
 from utils.endpoint import Endpoint, setup
 from utils.exceptions import BadRequest
 from utils import http
 from utils.textutils import wrap
+from utils.video_text import render_video_text
 
-from moviepy.editor import VideoFileClip, ImageClip, CompositeVideoClip, TextClip, ColorClip
+from moviepy.editor import VideoFileClip, ImageClip, CompositeVideoClip, ColorClip
 
 
 @setup(rate=1, per=30)
@@ -36,7 +38,8 @@ class LetMeIn(Endpoint):
 
 
 
-        textclip = TextClip(txt=text, bg_color='White', fontsize=32, font='Verdana', method='caption', align='west', size=(clip.size[0], None)).set_duration(clip.duration)
+        textclip = ImageClip(array(render_video_text(text, 'Verdana', 32, 'black', width=clip.size[0], background='white')))\
+            .set_duration(clip.duration)
 
         color = ColorClip((clip.size[0], textclip.size[1]), color=(255, 255, 255), ismask=False).set_duration(clip.duration)
 
