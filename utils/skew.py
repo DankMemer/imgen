@@ -7,7 +7,7 @@ def find_coeffs(source_coords, target_coords):
     for s, t in zip(source_coords, target_coords):
         matrix.append([t[0], t[1], 1, 0, 0, 0, -s[0] * t[0], -s[0] * t[1]])
         matrix.append([0, 0, 0, t[0], t[1], 1, -s[1] * t[0], -s[1] * t[1]])
-    a = numpy.matrix(matrix, dtype=numpy.float)
+    a = numpy.matrix(matrix, dtype=float)
     b = numpy.array(source_coords).reshape(8)
     res = numpy.dot(numpy.linalg.inv(a.T * a) * a.T, b)
     return numpy.array(res).reshape(8)
